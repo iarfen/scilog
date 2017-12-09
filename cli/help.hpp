@@ -1,5 +1,5 @@
-#ifndef SCIENCELOG_HELP_HPP_INCLUDED
-#define SCIENCELOG_HELP_HPP_INCLUDED
+#ifndef SCILOG_HELP_HPP_INCLUDED
+#define SCILOG_HELP_HPP_INCLUDED
 
 using namespace std;
 
@@ -8,4 +8,4 @@ namespace scilog_cli
 	void help_command();
 }
 
-#endif // SCIENCELOG_HELP_HPP_INCLUDED
+#endif // SCILOG_HELP_HPP_INCLUDED
