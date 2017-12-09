@@ -1,5 +1,7 @@
 # scilog
-scilog is an small utility to track research activity, divided between learn and project activities, it allows to don't lose time remembering the work done during the week or month, cause it tracks everything you add.
+scilog is under development, it can't be installed yet, so don't try it :D
+
+*scilog* is an small utility to track research activity, divided between learn and project activities, it allows to don't lose time remembering the work done during the week or month, cause it tracks everything you add.
 scilog works with .xml files as the following, which are edited using any xml editor (or the notepad):
 
 ```xml
@@ -15,14 +17,11 @@ The scilog file is very simple. <scilog> is the general tag to use for <scilog> 
 You can write scilog files with any xml editor you like, or with any notepad. There's no problem with what you choose to use: everything is useful to edit the scilog file and add new entries.
 
 # Install
-To install scilog under Linux just use:
-
+### Linux
 ```
 apt-get install scilog
 ```
-
-To install scilog under Windows use CMake:
-
+### Windows
 ```
 cmake -G "MSYS Makefiles" (or "MinGW Makefiles" if you use MinGW)
 make
@@ -30,7 +29,7 @@ make install
 ```
 
 # Suggestions
-If you've any suggestions related to scilog, feel free to send them to ismael.correa.castro@gmail.com
+If you've any *suggestions* related to scilog, feel free to send them to *ismael.correa.castro@gmail.com*
 
 # Author
-scilog has been created by Ismael Correa C. You can email me at ismael.correa.castro@gmail.com if you have any question related to scilog.
+scilog has been created by *Ismael Correa C.* You can email me at *ismael.correa.castro@gmail.com* if you have any question related to scilog.
