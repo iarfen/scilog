@@ -1,5 +1,6 @@
-# scilog
-<img src="https://github.com/Iarfen/scilog/tree/master/docs/logo-scilog.svg" style="width: 500px;">
+<p align="center">
+	<img alt="scilog" src="https://github.com/Iarfen/scilog/blob/master/docs/logo-scilog.svg?sanitize=true" width="550">
+</p>
 scilog is under development, it can't be installed yet, so don't try it :D
 
 **scilog** is an small utility to track research activity, divided between learn and project activities, it allows to don't lose time remembering the work done during the week or month, cause it tracks everything you add.
