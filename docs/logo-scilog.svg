@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="150"
+   width="93"
    height="30"
-   viewBox="0 0 39.687499 7.9375002"
+   viewBox="0 0 24.60625 7.9375002"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
@@ -71,8 +71,7 @@
      style="opacity:1">
     <g
        transform="translate(-283.57791,102.54749)"
-       id="g71-5"
-       style="" />
+       id="g71-5" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:6.28791332px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.15719785"
@@ -84,9 +83,9 @@
          x="0.86447585"
          y="294.96695"
          style="fill:#ffffff;stroke-width:0.15719785"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Ravie;-inkscape-font-specification:Ravie;stroke-width:0.15719785;fill:#37c871;stroke:#2ca05a"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Ravie;-inkscape-font-specification:Ravie;fill:#37c871;stroke:#2ca05a;stroke-width:0.15719785"
            id="tspan1500">sci</tspan><tspan
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:cambria;-inkscape-font-specification:cambria;stroke-width:0.15719785;stroke:#00ffff"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:cambria;-inkscape-font-specification:cambria;stroke:#00ffff;stroke-width:0.15719785"
            id="tspan947">Log</tspan></tspan></text>
   </g>
 </svg>
