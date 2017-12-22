@@ -4,6 +4,7 @@
 #include "cli/help.hpp"
 #include "cli/list.hpp"
 #include "cli/summary.hpp"
+#include "cli/validate.hpp"
 #include "cli/version.hpp"
 
 #include <iostream>
@@ -26,6 +27,23 @@ int main(int argc, char* argv[])
 	{
 		scilog_cli::version_command();
 		return 0;
+	}
+	else if (string(argv[1]) == "validate")
+	{
+		if (argc > 3)
+		{
+			return 0;
+		}
+		if (argc == 3)
+		{
+			scilog_cli::validate_month_file(string(argv[2]));
+			return 0;
+		}
+		else
+		{
+			scilog_cli::validate_year_files();
+			return 0;
+		}
 	}
 	else if (string(argv[1]) == "list")
 	{

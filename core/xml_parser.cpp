@@ -78,7 +78,7 @@ namespace scilog_cli
 				for (rapidxml::xml_attribute<>* node_attribute = entry_node->first_attribute(); node_attribute; node_attribute = node_attribute->next_attribute())
 				{
 					string attribute_name = string(node_attribute->name());
-					if (!(attribute_name == "type" and attribute_name == "subtype" and attribute_name == "topic" and attribute_name == "date"))
+					if (!(attribute_name == "type" or attribute_name == "subtype" or attribute_name == "topic" or attribute_name == "date"))
 					{
 						out << "Invalid attribute name '" << attribute_name << "'" << endl;
 					}
@@ -125,6 +125,10 @@ namespace scilog_cli
 						{
 							has_date = true;
 						}
+					}
+					if (attribute_name=="subtype" and string(node_attribute->value()) == "planification")
+					{
+						has_topic = true;
 					}
 				}
 				string error_sentence;

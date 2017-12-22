@@ -22,8 +22,10 @@ cli/create.hpp
 cli/help.hpp
 cli/list.hpp
 cli/summary.hpp
+cli/validate.hpp
 cli/version.hpp
 core/entry.hpp
+core/scilog_file.hpp
 core/xml_parser.hpp)
 
 set(TARGET_SRC
@@ -31,9 +33,11 @@ cli/create.cpp
 cli/help.cpp
 cli/list.cpp
 cli/summary.cpp
+cli/validate.cpp
 cli/version.cpp
 main.cpp
 core/entry.cpp
+core/scilog_file.cpp
 core/xml_parser.cpp)
 
 project(scilog)
