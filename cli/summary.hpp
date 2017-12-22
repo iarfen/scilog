@@ -9,6 +9,8 @@ namespace scilog_cli
 {
 	void command_summary_month(const string&);
 	void command_summary_month_by_topics(const string&);
+
+	void command_summary_year();
 }
 
 #endif // SCILOG_CLI_SUMMARY_HPP_INCLUDED

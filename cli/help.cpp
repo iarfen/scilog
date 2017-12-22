@@ -24,5 +24,8 @@ namespace scilog_cli
 		cout << "    list <file> --order_by=date|topic    list entries ordered by the value given" << endl;
 		cout << "    summary-month <file>                 summarizes the work of the month" << endl;
 		cout << "    summary-month <file> --topics        summarizes the topics worked and learned" << endl;
+		cout << "    summary-year                         summarizes the work of the year" << endl;
+		cout << "    create-month-file <month-number>     creates the file of the given month" << endl;
+		cout << "    create-year-files                    creates all the files of the year" << endl;
 	}
 }

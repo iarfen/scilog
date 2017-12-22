@@ -1,5 +1,6 @@
 #include "main.hpp"
 
+#include "cli/create.hpp"
 #include "cli/help.hpp"
 #include "cli/list.hpp"
 #include "cli/summary.hpp"
@@ -45,6 +46,20 @@ int main(int argc, char* argv[])
 		}
 		scilog_cli::list_command(string(argv[2]),selected_type);
 		return 0;
+	}
+	else if (string(argv[1]) == "summary-year")
+	{
+		cout << "hello!" << endl;
+		scilog_cli::command_summary_year();
+		return 0;
+	}
+	else if (string(argv[1]) == "create-month-file")
+	{
+		scilog_cli::create_month_file(string(argv[2]));
+	}
+	else if (string(argv[1]) == "create-year-files")
+	{
+		scilog_cli::create_year_files();
 	}
 	else if (string(argv[2]) == "summary-month")
 	{
