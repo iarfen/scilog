@@ -36,6 +36,7 @@ namespace scilog_cli
 		validate_month_file("10");
 		validate_month_file("11");
 		validate_month_file("12");
+		validate_topics_file("topics.xml");
 	}
 
 	void validate_topics_file(const string& x)
