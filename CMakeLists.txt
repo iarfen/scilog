@@ -18,27 +18,10 @@ configure_file(config.hpp.in config.hpp)
 
 set(TARGET_LOCAL_H
 config.hpp
-cli/create.hpp
-cli/help.hpp
-cli/list.hpp
-cli/summary.hpp
-cli/validate.hpp
-cli/version.hpp
-core/entry.hpp
-core/scilog_file.hpp
-core/xml_parser.hpp)
+cli
+core)
 
-set(TARGET_SRC
-cli/create.cpp
-cli/help.cpp
-cli/list.cpp
-cli/summary.cpp
-cli/validate.cpp
-cli/version.cpp
-main.cpp
-core/entry.cpp
-core/scilog_file.cpp
-core/xml_parser.cpp)
+file(GLOB_RECURSE TARGET_SRC cli/*.cpp core/*.cpp)
 
 project(scilog)
 

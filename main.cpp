@@ -34,16 +34,27 @@ int main(int argc, char* argv[])
 		{
 			return 0;
 		}
-		if (argc == 3)
+		bool topics = false;
+		for (unsigned int i = 2; i < argc; i++)
+		{
+			if (string(argv[i]) == "--topics")
+			{
+				topics = true;
+			}
+		}
+		if (topics)
+		{
+			scilog_cli::validate_topics_file("topics.xml");
+		}
+		else if (argc == 3)
 		{
 			scilog_cli::validate_month_file(string(argv[2]));
-			return 0;
 		}
 		else
 		{
 			scilog_cli::validate_year_files();
-			return 0;
 		}
+		return 0;
 	}
 	else if (string(argv[1]) == "list")
 	{
@@ -67,8 +78,29 @@ int main(int argc, char* argv[])
 	}
 	else if (string(argv[1]) == "summary-year")
 	{
-		cout << "hello!" << endl;
-		scilog_cli::command_summary_year();
+		if (argc > 3)
+		{
+			return 0;
+		}
+		if (argc == 2)
+		{
+			scilog_cli::command_summary_year();
+		}
+		else
+		{
+			bool topics = false;
+			for (unsigned int i = 2; i < argc; i++)
+			{
+				if (string(argv[i]) == "--topics")
+				{
+					topics = true;
+				}
+			}
+			if (topics)
+			{
+				scilog_cli::command_summary_year_by_topics();
+			}
+		}
 		return 0;
 	}
 	else if (string(argv[1]) == "create-month-file")

@@ -1,11 +1,12 @@
 #include "summary.hpp"
 #include "core/entry.hpp"
+#include "core/categories.hpp"
 
+#include <algorithm>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <vector>
-
 
 #include "core/xml_parser.hpp"
 
@@ -121,6 +122,82 @@ namespace scilog_cli
 		}
 	}
 
+	void command_summary_month_by_sciences(const string& filename)
+	{
+		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename);
+		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(filename);
+		map<string,int> learn_sciences_count = map<string,int>();
+		map<string,int> project_sciences_count = map<string,int>();
+		bool learn_entry;
+		for (const shared_ptr<entry>& log_entry : entries)
+		{
+			if (log_entry->get_type() == "learn")
+			{
+				learn_entry = true;
+			}
+			else
+			{
+				learn_entry = false;
+			}
+			const shared_ptr<topic>& actual_topic = *(find_if(topics.begin(),topics.end(),[log_entry](const shared_ptr<topic>& x) -> bool { return x->get_name() == log_entry->get_topic(); }));
+			if (learn_entry)
+			{
+				if (learn_sciences_count[actual_topic->get_category()] == 0)
+				{
+					learn_sciences_count[actual_topic->get_category()] = 0;
+				}
+				learn_sciences_count[actual_topic->get_category()]++;
+			}
+			else
+			{
+				if (project_sciences_count[actual_topic->get_category()] == 0)
+				{
+					project_sciences_count[actual_topic->get_category()] = 0;
+				}
+				project_sciences_count[actual_topic->get_category()]++;
+			}
+			if (actual_topic->get_parent_category() != "")
+			{
+				category& actual_category = default_categories[actual_topic->get_parent_category()];
+				while (true)
+				{
+					if (learn_entry)
+					{
+						if (learn_sciences_count[actual_category.get_name()] == 0)
+						{
+							learn_sciences_count[actual_category.get_name()] = 0;
+						}
+						learn_sciences_count[actual_category.get_name()]++;
+					}
+					else
+					{
+						if (project_sciences_count[actual_category.get_name()] == 0)
+						{
+							project_sciences_count[actual_category.get_name()] = 0;
+						}
+						project_sciences_count[actual_category.get_name()]++;
+					}
+					actual_category = default_categories[actual_category.get_parent_category()];
+					if (actual_category.get_parent_category() != "")
+					{
+						break;
+					}
+				}
+			}
+		}
+		cout << "total of learn entries: " << learn_sciences_count.size() << endl << endl;
+		for (const auto& learn_science_count : learn_sciences_count)
+		{
+			cout << "learn " << learn_science_count.first << ": " << learn_science_count.second << endl;
+		}
+		cout << endl << endl;
+		cout << "total of project entries: " << project_sciences_count.size() << endl << endl;
+		for (const auto& project_science_count : project_sciences_count)
+		{
+			cout << "project " << project_science_count.first << ": " << project_science_count.second << endl;
+		}
+	}
+
 	void command_summary_year()
 	{
 		int total_entries = 0;
@@ -196,5 +273,52 @@ namespace scilog_cli
 		cout << "project design entries: " << total_project_design_entries << "    " << (100 * total_project_design_entries / total_project_entries) << " %" << endl;
 		cout << "project programming entries: " << total_project_programming_entries << "    " << (100 * total_project_programming_entries / total_project_entries) << " %" << endl;
 		cout << "project planification entries: " << total_project_planification_entries << "    " << (100 * total_project_planification_entries / total_project_entries) << " %" << endl << endl;
+	}
+
+	void command_summary_year_by_topics()
+	{
+		vector<string> filenames = {/*"01-january","02-february","03-march","04-april","05-may","06-june","07-july","08-august","09-september","10-october",*/"11-november","12-december"};
+
+		int total_entries = 0;
+		map<string,int> learn_topics_count = map<string,int>();
+		map<string,int> project_topics_count = map<string,int>();
+
+		for (const string& filename : filenames)
+		{
+			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename + ".xml");
+			total_entries += entries.size();
+			for (const shared_ptr<entry>& entry : entries)
+			{
+				if (entry->get_topic() != "")
+				{
+					if (entry->get_type() == "learn")
+					{
+						if (learn_topics_count.count(entry->get_topic()) == 0)
+						{
+							learn_topics_count[entry->get_topic()] = 0;
+						}
+						learn_topics_count[entry->get_topic()]++;
+					}
+					else if (entry->get_type() == "project")
+					{
+						if (project_topics_count.count(entry->get_topic()) == 0)
+						{
+							project_topics_count[entry->get_topic()] = 0;
+						}
+						project_topics_count[entry->get_topic()]++;
+					}
+				}
+			}
+		}
+		cout << "total topics: " << total_entries << endl << endl;
+		for (auto learn_topic_count : learn_topics_count)
+		{
+			cout << "learn " << learn_topic_count.first << ": " << learn_topic_count.second << endl;
+		}
+		cout << endl;
+		for (auto project_topic_count : project_topics_count)
+		{
+			cout << "project " << project_topic_count.first << ": " << project_topic_count.second << endl;
+		}
 	}
 }

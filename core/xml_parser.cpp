@@ -14,7 +14,7 @@ namespace scilog_cli
 		rapidxml::file<> file(filename.c_str());
 		rapidxml::xml_document<> xml_file;
 		xml_file.parse<0>(file.data());
-		rapidxml::xml_node<> * root_node;
+		rapidxml::xml_node<>* root_node;
 		root_node = xml_file.first_node("scilog");
 		vector<shared_ptr<entry>> entries = vector<shared_ptr<entry>>();
 		for (rapidxml::xml_node<>* entry_node = root_node->first_node(); entry_node; entry_node = entry_node->next_sibling())
@@ -31,6 +31,31 @@ namespace scilog_cli
 			}
 		}
 		return entries;
+	}
+
+	vector<shared_ptr<topic>> create_topics_from_scilog_file(const string& filename)
+	{
+		rapidxml::file<> file(filename.c_str());
+		rapidxml::xml_document<> xml_file;
+		xml_file.parse<0>(file.data());
+		rapidxml::xml_node<>* root_node;
+		root_node = xml_file.first_node("scilog");
+		vector<shared_ptr<topic>> topics = vector<shared_ptr<topic>>();
+		for (rapidxml::xml_node<>* topic_node = root_node->first_node(); topic_node; topic_node = topic_node->next_sibling())
+		{
+			if (string(topic_node->name()) == "topic")
+			{
+				string type = topic_node->first_attribute("type") ? topic_node->first_attribute("type")->value() : "";
+				string name = topic_node->first_attribute("name") ? topic_node->first_attribute("name")->value() : "";
+				string start_date = topic_node->first_attribute("start_date") ? topic_node->first_attribute("start_date")->value() : "";
+				string category = topic_node->first_attribute("category") ? topic_node->first_attribute("category")->value() : "";
+				string parent_category = topic_node->first_attribute("parent_category") ? topic_node->first_attribute("parent_category")->value() : "";
+				string description = topic_node->value() ? topic_node->value() : "";
+				shared_ptr<topic> new_topic(new topic(type,category,parent_category,name,start_date,description));
+				topics.push_back(new_topic);
+			}
+		}
+		return topics;
 	}
 
 	string create_scilog_file_from_entries(const vector<shared_ptr<entry>>& entries)
@@ -126,7 +151,7 @@ namespace scilog_cli
 							has_date = true;
 						}
 					}
-					if (attribute_name=="subtype" and string(node_attribute->value()) == "planification")
+					if (attribute_name == "subtype" and string(node_attribute->value()) == "planification")
 					{
 						has_topic = true;
 					}
@@ -176,6 +201,149 @@ namespace scilog_cli
 				if (description == "")
 				{
 					out << error_sentence << " has an empty description" << endl;
+				}
+			}
+		}
+		return out.str();
+	}
+
+	string validate_topics_xml_file(const string& filename)
+	{
+		rapidxml::file<> file(filename.c_str());
+		rapidxml::xml_document<> xml_file;
+		xml_file.parse<0>(file.data());
+		rapidxml::xml_node<> * root_node;
+		root_node = xml_file.first_node("scilog");
+		ostringstream out;
+		for (rapidxml::xml_node<>* entry_node = root_node->first_node(); entry_node; entry_node = entry_node->next_sibling())
+		{
+			if (string(entry_node->name()) != "topic")
+			{
+				out << "Invalid tag name '" << string(entry_node->name()) << "'. Only <topic> is allowed" << endl;
+			}
+			else
+			{
+				bool has_type = false;
+				bool repeated_type = false;
+				bool has_category = false;
+				bool repeated_category = false;
+				bool has_parent_category = false;
+				bool repeated_parent_category = false;
+				bool has_name = false;
+				bool repeated_name = false;
+				bool has_start_date = false;
+				bool repeated_start_date = false;
+				for (rapidxml::xml_attribute<>* node_attribute = entry_node->first_attribute(); node_attribute; node_attribute = node_attribute->next_attribute())
+				{
+					string attribute_name = string(node_attribute->name());
+					if (!(attribute_name == "type" or attribute_name == "category" or attribute_name == "parent_category" or attribute_name == "name" or attribute_name == "start_date"))
+					{
+						out << "Invalid attribute name '" << attribute_name << "'" << endl;
+					}
+					else if (attribute_name == "type")
+					{
+						if (has_type)
+						{
+							repeated_type = true;
+						}
+						else
+						{
+							has_type = true;
+						}
+					}
+					else if (attribute_name == "category")
+					{
+						if (has_category)
+						{
+							repeated_category = true;
+						}
+						else
+						{
+							has_category = true;
+						}
+					}
+					else if (attribute_name == "parent_category")
+					{
+						if (has_parent_category)
+						{
+							repeated_parent_category = true;
+						}
+						else
+						{
+							has_parent_category = true;
+						}
+					}
+					else if (attribute_name == "name")
+					{
+						if (has_name)
+						{
+							repeated_name = true;
+						}
+						else
+						{
+							has_name = true;
+						}
+					}
+					else if (attribute_name == "start_date")
+					{
+						if (has_start_date)
+						{
+							repeated_start_date = true;
+						}
+						else
+						{
+							has_start_date = true;
+						}
+					}
+				}
+				string error_sentence;
+				if (has_name)
+				{
+					error_sentence = "The entry '" + string(entry_node->first_attribute("type")->value()) + "'";
+				}
+				else
+				{
+					error_sentence = "An anonymous entry";
+				}
+				if (!has_type)
+				{
+					out << error_sentence << " doesn't has type" << endl;
+				}
+				if (repeated_type)
+				{
+					out << error_sentence << "' has a type repeated" << endl;
+				}
+				if (!has_category)
+				{
+					out << error_sentence << " doesn't has category" << endl;
+				}
+				if (repeated_category)
+				{
+					out << error_sentence << "' has a category repeated" << endl;
+				}
+				if (!has_parent_category)
+				{
+					out << error_sentence << " doesn't has parent category" << endl;
+				}
+				if (repeated_parent_category)
+				{
+					out << error_sentence << "' has a parent category repeated" << endl;
+				}
+				if (!has_name)
+				{
+					out << error_sentence << " doesn't has name" << endl;
+				}
+				if (repeated_name)
+				{
+					out << error_sentence << "' has a name repeated" << endl;
+				}
+				if (!has_start_date)
+				{
+					out << error_sentence << " doesn't has start date" << endl;
+				}
+				if (repeated_start_date)
+				{
+					out << error_sentence << "' has a start date repeated" << endl;
 				}
 			}
 		}

@@ -25,9 +25,11 @@ namespace scilog_cli
 		cout << "    summary-month <file>                 summarizes the work of the month" << endl;
 		cout << "    summary-month <file> --topics        summarizes the topics worked and learned" << endl;
 		cout << "    summary-year                         summarizes the work of the year" << endl;
+		cout << "    summary-year --topics                summarizes the topics worked and learned during the year" << endl;
 		cout << "    create-month-file <month-number>     creates the file of the given month" << endl;
 		cout << "    create-year-files                    creates all the files of the year" << endl;
 		cout << "    validate <month-number>              validates the file of the given month" << endl;
 		cout << "    validate                             validates all the files of the folder (all the year)" << endl;
+		cout << "    validate --topics                    validates the topics.xml file" << endl;
 	}
 }

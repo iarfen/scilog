@@ -37,4 +37,17 @@ namespace scilog_cli
 		validate_month_file("11");
 		validate_month_file("12");
 	}
+
+	void validate_topics_file(const string& x)
+	{
+		string result = scilog_cli::validate_topics_xml_file(x);
+		if (result != "")
+		{
+			cout << result;
+		}
+		else
+		{
+			cout << x << " is a valid file!" << endl;
+		}
+	}
 }
