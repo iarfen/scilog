@@ -3,6 +3,7 @@
 #include "core/topic.hpp"
 #include "core/categories.hpp"
 #include "core/xml_parser.hpp"
+#include "core/scilog_file.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -202,6 +203,7 @@ namespace scilog_cli
 		map<string,int> learn_sciences_count = map<string,int>();
 		map<string,int> project_sciences_count = map<string,int>();
 		bool learn_entry;
+		map<string,category> categories = get_all_categories_map();
 		for (const shared_ptr<entry>& log_entry : entries)
 		{
 			if (log_entry->get_type() == "learn")
@@ -235,7 +237,7 @@ namespace scilog_cli
 			}
 			if ((*actual_topic)->get_category() != "")
 			{
-				category& actual_category = default_categories[(*actual_topic)->get_category()];
+				category& actual_category = categories[(*actual_topic)->get_category()];
 				while (true)
 				{
 					if (actual_category.get_name() == "")
@@ -258,7 +260,7 @@ namespace scilog_cli
 						}
 						project_sciences_count[actual_category.get_name()]++;
 					}
-					actual_category = default_categories[actual_category.get_parent_category()];
+					actual_category = categories[actual_category.get_parent_category()];
 					if (actual_category.get_parent_category() == "")
 					{
 						break;

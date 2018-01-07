@@ -73,4 +73,21 @@ namespace scilog_cli
 		}
 		return categories;
 	}
+
+	map<string,category> get_all_categories_map()
+	{
+		map<string,category> categories = default_categories;
+		if (boost::filesystem::exists("topics.xml"))
+		{
+			vector<category> topic_categories = create_categories_from_scilog_file("topics.xml");
+			if (topic_categories.size() > 0)
+			{
+				for (const category& x_category : topic_categories)
+				{
+					categories[x_category.get_name()] = x_category;
+				}
+			}
+		}
+		return categories;
+	}
 }
