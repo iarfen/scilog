@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 		}
 		else if (argc == 3)
 		{
-			scilog_cli::validate_month_file(string(argv[2]),"",true);
+			scilog_cli::validate_month_file(string(argv[2]),".",true);
 		}
 		else
 		{
@@ -125,11 +125,11 @@ int main(int argc, char* argv[])
 		scilog_cli::list_categories();
 		return 0;
 	}
-	else if (string(argv[2]) == "summary-month")
+	else if (string(argv[1]) == "summary-month")
 	{
 		if (argc == 3)
 		{
-			scilog_cli::command_summary_month(string(argv[1]),".");
+			scilog_cli::command_summary_month(string(argv[2]),".");
 		}
 		else
 		{
@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
 			}
 			if (topics)
 			{
-				scilog_cli::command_summary_month_by_topics(string(argv[1]));
+				scilog_cli::command_summary_month_by_topics(string(argv[2]));
 			}
 		}
 		return 0;

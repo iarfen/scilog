@@ -34,21 +34,21 @@ namespace scilog_cli
 		}
 	}
 
-	void validate_year_files(const string& x)
+	void validate_year_files(const string& directory_path)
 	{
-		validate_month_file("1",x,false);
-		validate_month_file("2",x,false);
-		validate_month_file("3",x,false);
-		validate_month_file("4",x,false);
-		validate_month_file("5",x,false);
-		validate_month_file("6",x,false);
-		validate_month_file("7",x,false);
-		validate_month_file("8",x,false);
-		validate_month_file("9",x,false);
-		validate_month_file("10",x,false);
-		validate_month_file("11",x,false);
-		validate_month_file("12",x,false);
-		validate_topics_file(x + "/" + "topics.xml");
+		validate_month_file("1",directory_path,false);
+		validate_month_file("2",directory_path,false);
+		validate_month_file("3",directory_path,false);
+		validate_month_file("4",directory_path,false);
+		validate_month_file("5",directory_path,false);
+		validate_month_file("6",directory_path,false);
+		validate_month_file("7",directory_path,false);
+		validate_month_file("8",directory_path,false);
+		validate_month_file("9",directory_path,false);
+		validate_month_file("10",directory_path,false);
+		validate_month_file("11",directory_path,false);
+		validate_month_file("12",directory_path,false);
+		validate_topics_file(directory_path + "/" + "topics.xml");
 	}
 
 	void validate_all_year_files()

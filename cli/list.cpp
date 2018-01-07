@@ -11,8 +11,9 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void list_command(const string& filename,list_type selected_type)
+	void list_command(const string& x,list_type selected_type)
 	{
+		string filename = scilog_cli::get_filename_from_month_number(x);
 		if (boost::filesystem::exists(filename))
 		{
 			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename);

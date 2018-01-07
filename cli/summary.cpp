@@ -17,8 +17,9 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void command_summary_month(const string& filename,const string& directory_path)
+	void command_summary_month(const string& x,const string& directory_path)
 	{
+		string filename = scilog_cli::get_filename_from_month_number(x);
 		if (!boost::filesystem::exists(filename))
 		{
 			cout << "The requested month doesn't has a file" << endl;
@@ -28,8 +29,9 @@ namespace scilog_cli
 		print_summary(entries);
 	}
 
-	void command_summary_month_by_topics(const string& filename)
+	void command_summary_month_by_topics(const string& x)
 	{
+		string filename = scilog_cli::get_filename_from_month_number(x);
 		if (!boost::filesystem::exists(filename))
 		{
 			cout << "The requested month doesn't has a file" << endl;
@@ -39,8 +41,9 @@ namespace scilog_cli
 		print_topics(entries);
 	}
 
-	void command_summary_month_by_sciences(const string& filename)
+	void command_summary_month_by_sciences(const string& x)
 	{
+		string filename = scilog_cli::get_filename_from_month_number(x);
 		if (!boost::filesystem::exists(filename))
 		{
 			cout << "The requested month doesn't has a file" << endl;
