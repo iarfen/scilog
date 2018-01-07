@@ -24,6 +24,75 @@ namespace scilog_cli
 			return;
 		}
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(directory_path + "/" + filename);
+		print_summary(entries);
+	}
+
+	void command_summary_month_by_topics(const string& filename)
+	{
+		if (!boost::filesystem::exists(filename))
+		{
+			cout << "The requested month doesn't has a file" << endl;
+			return;
+		}
+		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename);
+		print_topics(entries);
+	}
+
+	void command_summary_month_by_sciences(const string& filename)
+	{
+		if (!boost::filesystem::exists(filename))
+		{
+			cout << "The requested month doesn't has a file" << endl;
+			return;
+		}
+		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename);
+		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file("topics.xml");
+		print_sciences(entries,topics);
+	}
+
+	vector<shared_ptr<entry>> get_year_entries()
+	{
+		vector<shared_ptr<entry>> out_entries;
+		vector<string> filenames = {"01-january","02-february","03-march","04-april","05-may","06-june","07-july","08-august","09-september","10-october","11-november","12-december"};
+
+		for (const string& filename : filenames)
+		{
+			if (!boost::filesystem::exists(filename + ".xml"))
+			{
+				continue;
+			}
+			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename + ".xml");
+			out_entries.insert(out_entries.begin(),entries.begin(),entries.end());
+		}
+		return out_entries;
+	}
+
+	void command_summary_year(const string& x)
+	{
+		vector<shared_ptr<entry>> entries = get_year_entries();
+		print_summary(entries);
+	}
+
+	void command_summary_year_by_topics()
+	{
+		vector<shared_ptr<entry>> entries = get_year_entries();
+		print_topics(entries);
+	}
+
+	/*void summary_all_year_files()
+	{
+		boost::filesystem::directory_iterator end_itr;
+		for (boost::filesystem::directory_iterator itr("."); itr != end_itr; ++itr)
+		{
+			if (is_directory(itr->status()))
+			{
+				command_summary_year(itr->path().generic_string());
+			}
+		}
+	}*/
+
+	void print_summary(const vector<shared_ptr<entry>>& entries)
+	{
 		int total_learn_entries = 0;
 		int total_project_entries = 0;
 
@@ -90,14 +159,8 @@ namespace scilog_cli
 		cout << "project planification entries: " << total_project_planification_entries << "    " << (100 * total_project_planification_entries / total_project_entries) << " %" << endl << endl;
 	}
 
-	void command_summary_month_by_topics(const string& filename)
+	void print_topics(const vector<shared_ptr<entry>>& entries)
 	{
-		if (!boost::filesystem::exists(filename))
-		{
-			cout << "The requested month doesn't has a file" << endl;
-			return;
-		}
-		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename);
 		map<string,int> learn_topics_count = map<string,int>();
 		map<string,int> project_topics_count = map<string,int>();
 		for (const shared_ptr<entry>& entry : entries)
@@ -134,15 +197,8 @@ namespace scilog_cli
 		}
 	}
 
-	void command_summary_month_by_sciences(const string& filename)
+	void print_sciences(const vector<shared_ptr<entry>>& entries,vector<shared_ptr<topic>>& topics)
 	{
-		if (!boost::filesystem::exists(filename))
-		{
-			cout << "The requested month doesn't has a file" << endl;
-			return;
-		}
-		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename);
-		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file("topics.xml");
 		map<string,int> learn_sciences_count = map<string,int>();
 		map<string,int> project_sciences_count = map<string,int>();
 		bool learn_entry;
@@ -222,148 +278,4 @@ namespace scilog_cli
 			cout << "project " << project_science_count.first << ": " << project_science_count.second << endl;
 		}
 	}
-
-	void command_summary_year(const string& x)
-	{
-		int total_entries = 0;
-
-		int total_learn_entries = 0;
-		int total_project_entries = 0;
-
-		int total_learn_book_entries = 0;
-		int total_learn_documentation_entries = 0;
-		int total_learn_planification_entries = 0;
-
-		int total_project_theory_entries = 0;
-		int total_project_design_entries = 0;
-		int total_project_programming_entries = 0;
-		int total_project_planification_entries = 0;
-
-		vector<string> filenames = {/*"01-january","02-february","03-march","04-april","05-may","06-june","07-july","08-august","09-september","10-october",*/"11-november","12-december"};
-
-		for (const string& filename : filenames)
-		{
-			if (!boost::filesystem::exists(filename + ".xml"))
-			{
-				continue;
-			}
-			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename + ".xml");
-			total_entries += entries.size();
-			for (const shared_ptr<entry>& entry : entries)
-			{
-				if (entry->get_type() == "learn")
-				{
-					total_learn_entries++;
-					if (entry->get_subtype() == "book")
-					{
-						total_learn_book_entries++;
-					}
-					else if (entry->get_subtype() == "documentation")
-					{
-						total_learn_documentation_entries++;
-					}
-					else if (entry->get_subtype() == "planification")
-					{
-						total_learn_planification_entries++;
-					}
-				}
-				else if (entry->get_type() == "project")
-				{
-					total_project_entries++;
-					if (entry->get_subtype() == "theory")
-					{
-						total_project_theory_entries++;
-					}
-					else if (entry->get_subtype() == "design")
-					{
-						total_project_design_entries++;
-					}
-					else if (entry->get_subtype() == "programming")
-					{
-						total_project_programming_entries++;
-					}
-					else if (entry->get_subtype() == "planification")
-					{
-						total_project_planification_entries++;
-					}
-				}
-			}
-		}
-		cout << "total entries: " << total_entries << endl;
-
-		cout << "total learn entries: " << total_learn_entries << "    " << (100 * total_learn_entries / total_entries) << " %" << endl;
-		cout << "total project entries: " << total_project_entries << "    " << (100 * total_project_entries / total_entries) << " %" << endl << endl;
-
-		cout << "learn book entries: " << total_learn_book_entries << "    " << (100 * total_learn_book_entries / total_learn_entries) << " %" << endl;
-		cout << "learn documentation entries: " << total_learn_documentation_entries << "    " << (100 * total_learn_documentation_entries / total_learn_entries) << " %" << endl;
-		cout << "learn planification entries: " << total_learn_planification_entries << "    " << (100 * total_learn_planification_entries / total_learn_entries) << " %" << endl << endl;
-
-		cout << "project theory entries: " << total_project_theory_entries << "    " << (100 * total_project_theory_entries / total_project_entries) << " %" << endl;
-		cout << "project design entries: " << total_project_design_entries << "    " << (100 * total_project_design_entries / total_project_entries) << " %" << endl;
-		cout << "project programming entries: " << total_project_programming_entries << "    " << (100 * total_project_programming_entries / total_project_entries) << " %" << endl;
-		cout << "project planification entries: " << total_project_planification_entries << "    " << (100 * total_project_planification_entries / total_project_entries) << " %" << endl << endl;
-	}
-
-	void command_summary_year_by_topics()
-	{
-		vector<string> filenames = {/*"01-january","02-february","03-march","04-april","05-may","06-june","07-july","08-august","09-september","10-october",*/"11-november","12-december"};
-
-		int total_entries = 0;
-		map<string,int> learn_topics_count = map<string,int>();
-		map<string,int> project_topics_count = map<string,int>();
-
-		for (const string& filename : filenames)
-		{
-			if (!boost::filesystem::exists(filename + ".xml"))
-			{
-				continue;
-			}
-			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename + ".xml");
-			total_entries += entries.size();
-			for (const shared_ptr<entry>& entry : entries)
-			{
-				if (entry->get_topic() != "")
-				{
-					if (entry->get_type() == "learn")
-					{
-						if (learn_topics_count.count(entry->get_topic()) == 0)
-						{
-							learn_topics_count[entry->get_topic()] = 0;
-						}
-						learn_topics_count[entry->get_topic()]++;
-					}
-					else if (entry->get_type() == "project")
-					{
-						if (project_topics_count.count(entry->get_topic()) == 0)
-						{
-							project_topics_count[entry->get_topic()] = 0;
-						}
-						project_topics_count[entry->get_topic()]++;
-					}
-				}
-			}
-		}
-		cout << "total topics: " << total_entries << endl << endl;
-		for (auto learn_topic_count : learn_topics_count)
-		{
-			cout << "learn " << learn_topic_count.first << ": " << learn_topic_count.second << endl;
-		}
-		cout << endl;
-		for (auto project_topic_count : project_topics_count)
-		{
-			cout << "project " << project_topic_count.first << ": " << project_topic_count.second << endl;
-		}
-	}
-
-	/*void summary_all_year_files()
-	{
-		boost::filesystem::directory_iterator end_itr;
-		for (boost::filesystem::directory_iterator itr("."); itr != end_itr; ++itr)
-		{
-			if (is_directory(itr->status()))
-			{
-				command_summary_year(itr->path().generic_string());
-			}
-		}
-	}*/
 }
