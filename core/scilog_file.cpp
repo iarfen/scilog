@@ -1,4 +1,8 @@
 #include "scilog_file.hpp"
+#include "categories.hpp"
+#include "xml_parser.hpp"
+
+#include "boost/filesystem.hpp"
 
 using namespace std;
 
@@ -54,5 +58,19 @@ namespace scilog_cli
 		{
 			return "12-december.xml";
 		}
+	}
+
+	vector<category> get_all_categories()
+	{
+		vector<category> categories;
+		if (boost::filesystem::exists("topics.xml"))
+		{
+			categories = create_categories_from_scilog_file("topics.xml");
+		}
+		for (const auto& default_category : default_categories)
+		{
+			categories.push_back(default_category.second);
+		}
+		return categories;
 	}
 }

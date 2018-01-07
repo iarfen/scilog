@@ -74,6 +74,29 @@ namespace scilog_cli
 		return topics;
 	}
 
+	vector<category> create_categories_from_scilog_file(const string& filename)
+	{
+		rapidxml::file<> file(filename.c_str());
+		rapidxml::xml_document<> xml_file;
+		xml_file.parse<0>(file.data());
+		rapidxml::xml_node<>* root_node;
+		root_node = xml_file.first_node("scilog");
+		vector<category> categories = vector<category>();
+		bool learn_topic;
+		for (rapidxml::xml_node<>* category_node = root_node->first_node(); category_node; category_node = category_node->next_sibling())
+		{
+			if (string(category_node->name()) != "category")
+			{
+				continue;
+			}
+			string name = category_node->first_attribute("name") ? category_node->first_attribute("name")->value() : "";
+			string parent_category = category_node->first_attribute("parent_category") ? category_node->first_attribute("parent_category")->value() : "";
+			category new_category(name,parent_category);
+			categories.push_back(new_category);
+		}
+		return categories;
+	}
+
 	string create_scilog_file_from_entries(const vector<shared_ptr<entry>>& entries)
 	{
 		ostringstream out;

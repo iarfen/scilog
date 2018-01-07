@@ -120,6 +120,11 @@ int main(int argc, char* argv[])
 	{
 		scilog_cli::create_year_files();
 	}
+	else if (string(argv[1]) == "show-categories")
+	{
+		scilog_cli::list_categories();
+		return 0;
+	}
 	else if (string(argv[2]) == "summary-month")
 	{
 		if (argc == 3)

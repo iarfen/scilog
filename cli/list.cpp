@@ -1,4 +1,5 @@
 #include "list.hpp"
+#include "core/scilog_file.hpp"
 
 #include "core/xml_parser.hpp"
 
@@ -36,6 +37,28 @@ namespace scilog_cli
 		else
 		{
 			cout << "The requested month doesn't exist" << endl;
+		}
+	}
+
+	void list_categories()
+	{
+		vector<category> categories = get_all_categories();
+		print_child_categories(categories,categories.front(),"",1);
+	}
+
+	void print_child_categories(const vector<category>& categories,const category& x_category,const string& actual_parent_category,int number)
+	{
+		for (const category& x_category : categories)
+		{
+			if (x_category.get_parent_category() == actual_parent_category)
+			{
+				for (int i = 1; i < number; i++)
+				{
+					cout << "-";
+				}
+				cout << x_category.get_name() << endl;
+				print_child_categories(categories,x_category,x_category.get_name(),number + 1);
+			}
 		}
 	}
 }

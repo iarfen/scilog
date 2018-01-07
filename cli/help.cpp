@@ -31,5 +31,6 @@ namespace scilog_cli
 		cout << "    validate <month-number>              validates the file of the given month" << endl;
 		cout << "    validate                             validates all the files of the folder (all the year)" << endl;
 		cout << "    validate --topics                    validates the topics.xml file" << endl;
+		cout << "    show-categories                      list all the categories and subcategories" << endl;
 	}
 }

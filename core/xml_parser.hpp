@@ -1,6 +1,7 @@
 #ifndef SCILOG_CORE_XML_PARSER_HPP_INCLUDED
 #define SCILOG_CORE_XML_PARSER_HPP_INCLUDED
 
+#include "category.hpp"
 #include "entry.hpp"
 #include "topic.hpp"
 
@@ -14,6 +15,7 @@ namespace scilog_cli
 {
 	vector<shared_ptr<entry>> create_entries_from_scilog_file(const string&);
 	vector<shared_ptr<topic>> create_topics_from_scilog_file(const string&);
+	vector<category> create_categories_from_scilog_file(const string&);
 
 	string create_scilog_file_from_entries(const vector<shared_ptr<entry>>&);
 
