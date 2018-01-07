@@ -7,8 +7,9 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void validate_month_file(const string&);
-	void validate_year_files();
+	void validate_month_file(const string&,const string&,bool);
+	void validate_year_files(const string&);
+	void validate_all_year_files();
 	void validate_topics_file(const string&);
 }
 

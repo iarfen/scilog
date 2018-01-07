@@ -35,24 +35,33 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 		bool topics = false;
+		bool all_years = false;
 		for (unsigned int i = 2; i < argc; i++)
 		{
 			if (string(argv[i]) == "--topics")
 			{
 				topics = true;
 			}
+			else if (string(argv[i]) == "--all-years")
+			{
+				all_years = true;
+			}
 		}
 		if (topics)
 		{
 			scilog_cli::validate_topics_file("topics.xml");
 		}
+		else if (all_years)
+		{
+			scilog_cli::validate_all_year_files();
+		}
 		else if (argc == 3)
 		{
-			scilog_cli::validate_month_file(string(argv[2]));
+			scilog_cli::validate_month_file(string(argv[2]),"",true);
 		}
 		else
 		{
-			scilog_cli::validate_year_files();
+			scilog_cli::validate_year_files("");
 		}
 		return 0;
 	}
@@ -84,7 +93,7 @@ int main(int argc, char* argv[])
 		}
 		if (argc == 2)
 		{
-			scilog_cli::command_summary_year();
+			scilog_cli::command_summary_year(".");
 		}
 		else
 		{
@@ -115,7 +124,7 @@ int main(int argc, char* argv[])
 	{
 		if (argc == 3)
 		{
-			scilog_cli::command_summary_month(string(argv[1]));
+			scilog_cli::command_summary_month(string(argv[1]),".");
 		}
 		else
 		{
@@ -131,6 +140,22 @@ int main(int argc, char* argv[])
 			{
 				scilog_cli::command_summary_month_by_topics(string(argv[1]));
 			}
+		}
+		return 0;
+	}
+	else if (string(argv[2]) == "summary")
+	{
+		bool sciences = false;
+		for (unsigned int i = 3; i < argc; i++)
+		{
+			if (string(argv[i]) == "--sciences")
+			{
+				sciences = true;
+			}
+		}
+		if (sciences)
+		{
+			scilog_cli::command_summary_month_by_sciences(string(argv[1]));
 		}
 		return 0;
 	}

@@ -1,6 +1,8 @@
 #include "summary.hpp"
 #include "core/entry.hpp"
+#include "core/topic.hpp"
 #include "core/categories.hpp"
+#include "core/xml_parser.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -8,15 +10,20 @@
 #include <memory>
 #include <vector>
 
-#include "core/xml_parser.hpp"
+#include "boost/filesystem.hpp"
 
 using namespace std;
 
 namespace scilog_cli
 {
-	void command_summary_month(const string& filename)
+	void command_summary_month(const string& filename,const string& directory_path)
 	{
-		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename);
+		if (!boost::filesystem::exists(filename))
+		{
+			cout << "The requested month doesn't has a file" << endl;
+			return;
+		}
+		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(directory_path + "/" + filename);
 		int total_learn_entries = 0;
 		int total_project_entries = 0;
 
@@ -85,6 +92,11 @@ namespace scilog_cli
 
 	void command_summary_month_by_topics(const string& filename)
 	{
+		if (!boost::filesystem::exists(filename))
+		{
+			cout << "The requested month doesn't has a file" << endl;
+			return;
+		}
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename);
 		map<string,int> learn_topics_count = map<string,int>();
 		map<string,int> project_topics_count = map<string,int>();
@@ -124,8 +136,13 @@ namespace scilog_cli
 
 	void command_summary_month_by_sciences(const string& filename)
 	{
+		if (!boost::filesystem::exists(filename))
+		{
+			cout << "The requested month doesn't has a file" << endl;
+			return;
+		}
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename);
-		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(filename);
+		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file("topics.xml");
 		map<string,int> learn_sciences_count = map<string,int>();
 		map<string,int> project_sciences_count = map<string,int>();
 		bool learn_entry;
@@ -139,28 +156,36 @@ namespace scilog_cli
 			{
 				learn_entry = false;
 			}
-			const shared_ptr<topic>& actual_topic = *(find_if(topics.begin(),topics.end(),[log_entry](const shared_ptr<topic>& x) -> bool { return x->get_name() == log_entry->get_topic(); }));
+			vector<shared_ptr<topic>>::iterator actual_topic = find_if(topics.begin(),topics.end(),[log_entry](const shared_ptr<topic>& x) -> bool { return x->get_name() == log_entry->get_topic(); });
+			if (actual_topic == topics.end())
+			{
+				continue;
+			}
 			if (learn_entry)
 			{
-				if (learn_sciences_count[actual_topic->get_category()] == 0)
+				if (learn_sciences_count[(*actual_topic)->get_category()] == 0)
 				{
-					learn_sciences_count[actual_topic->get_category()] = 0;
+					learn_sciences_count[(*actual_topic)->get_category()] = 0;
 				}
-				learn_sciences_count[actual_topic->get_category()]++;
+				learn_sciences_count[(*actual_topic)->get_category()]++;
 			}
 			else
 			{
-				if (project_sciences_count[actual_topic->get_category()] == 0)
+				if (project_sciences_count[(*actual_topic)->get_category()] == 0)
 				{
-					project_sciences_count[actual_topic->get_category()] = 0;
+					project_sciences_count[(*actual_topic)->get_category()] = 0;
 				}
-				project_sciences_count[actual_topic->get_category()]++;
+				project_sciences_count[(*actual_topic)->get_category()]++;
 			}
-			if (actual_topic->get_parent_category() != "")
+			if ((*actual_topic)->get_category() != "")
 			{
-				category& actual_category = default_categories[actual_topic->get_parent_category()];
+				category& actual_category = default_categories[(*actual_topic)->get_category()];
 				while (true)
 				{
+					if (actual_category.get_name() == "")
+					{
+						break;
+					}
 					if (learn_entry)
 					{
 						if (learn_sciences_count[actual_category.get_name()] == 0)
@@ -178,27 +203,27 @@ namespace scilog_cli
 						project_sciences_count[actual_category.get_name()]++;
 					}
 					actual_category = default_categories[actual_category.get_parent_category()];
-					if (actual_category.get_parent_category() != "")
+					if (actual_category.get_parent_category() == "")
 					{
 						break;
 					}
 				}
 			}
 		}
-		cout << "total of learn entries: " << learn_sciences_count.size() << endl << endl;
+		cout << "total of topics to learn: " << learn_sciences_count.size() << endl;
 		for (const auto& learn_science_count : learn_sciences_count)
 		{
 			cout << "learn " << learn_science_count.first << ": " << learn_science_count.second << endl;
 		}
-		cout << endl << endl;
-		cout << "total of project entries: " << project_sciences_count.size() << endl << endl;
+		cout << endl;
+		cout << "total of projects: " << project_sciences_count.size() << endl;
 		for (const auto& project_science_count : project_sciences_count)
 		{
 			cout << "project " << project_science_count.first << ": " << project_science_count.second << endl;
 		}
 	}
 
-	void command_summary_year()
+	void command_summary_year(const string& x)
 	{
 		int total_entries = 0;
 
@@ -218,6 +243,10 @@ namespace scilog_cli
 
 		for (const string& filename : filenames)
 		{
+			if (!boost::filesystem::exists(filename + ".xml"))
+			{
+				continue;
+			}
 			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename + ".xml");
 			total_entries += entries.size();
 			for (const shared_ptr<entry>& entry : entries)
@@ -285,6 +314,10 @@ namespace scilog_cli
 
 		for (const string& filename : filenames)
 		{
+			if (!boost::filesystem::exists(filename + ".xml"))
+			{
+				continue;
+			}
 			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename + ".xml");
 			total_entries += entries.size();
 			for (const shared_ptr<entry>& entry : entries)
@@ -321,4 +354,16 @@ namespace scilog_cli
 			cout << "project " << project_topic_count.first << ": " << project_topic_count.second << endl;
 		}
 	}
+
+	/*void summary_all_year_files()
+	{
+		boost::filesystem::directory_iterator end_itr;
+		for (boost::filesystem::directory_iterator itr("."); itr != end_itr; ++itr)
+		{
+			if (is_directory(itr->status()))
+			{
+				command_summary_year(itr->path().generic_string());
+			}
+		}
+	}*/
 }

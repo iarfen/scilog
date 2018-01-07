@@ -41,17 +41,33 @@ namespace scilog_cli
 		rapidxml::xml_node<>* root_node;
 		root_node = xml_file.first_node("scilog");
 		vector<shared_ptr<topic>> topics = vector<shared_ptr<topic>>();
-		for (rapidxml::xml_node<>* topic_node = root_node->first_node(); topic_node; topic_node = topic_node->next_sibling())
+		bool learn_topic;
+		for (rapidxml::xml_node<>* category_node = root_node->first_node(); category_node; category_node = category_node->next_sibling())
 		{
-			if (string(topic_node->name()) == "topic")
+			if (string(category_node->name()) == "learn")
 			{
-				string type = topic_node->first_attribute("type") ? topic_node->first_attribute("type")->value() : "";
+				learn_topic = true;
+			}
+			else
+			{
+				learn_topic = false;
+			}
+			for (rapidxml::xml_node<>* topic_node = category_node->first_node(); topic_node; topic_node = topic_node->next_sibling())
+			{
+				string type;
+				if (learn_topic)
+				{
+					type = "learn";
+				}
+				else
+				{
+					type = "project";
+				}
 				string name = topic_node->first_attribute("name") ? topic_node->first_attribute("name")->value() : "";
 				string start_date = topic_node->first_attribute("start_date") ? topic_node->first_attribute("start_date")->value() : "";
 				string category = topic_node->first_attribute("category") ? topic_node->first_attribute("category")->value() : "";
-				string parent_category = topic_node->first_attribute("parent_category") ? topic_node->first_attribute("parent_category")->value() : "";
 				string description = topic_node->value() ? topic_node->value() : "";
-				shared_ptr<topic> new_topic(new topic(type,category,parent_category,name,start_date,description));
+				shared_ptr<topic> new_topic(new topic(type,category,name,start_date,description));
 				topics.push_back(new_topic);
 			}
 		}
@@ -89,119 +105,117 @@ namespace scilog_cli
 			if (string(entry_node->name()) != "entry")
 			{
 				out << "Invalid tag name '" << string(entry_node->name()) << "'. Only <entry> is allowed" << endl;
+				continue;
 			}
-			else
+			bool has_type = false;
+			bool repeated_type = false;
+			bool has_subtype = false;
+			bool repeated_subtype = false;
+			bool has_topic = false;
+			bool repeated_topic = false;
+			bool has_date = false;
+			bool repeated_date = false;
+			for (rapidxml::xml_attribute<>* node_attribute = entry_node->first_attribute(); node_attribute; node_attribute = node_attribute->next_attribute())
 			{
-				bool has_type = false;
-				bool repeated_type = false;
-				bool has_subtype = false;
-				bool repeated_subtype = false;
-				bool has_topic = false;
-				bool repeated_topic = false;
-				bool has_date = false;
-				bool repeated_date = false;
-				for (rapidxml::xml_attribute<>* node_attribute = entry_node->first_attribute(); node_attribute; node_attribute = node_attribute->next_attribute())
+				string attribute_name = string(node_attribute->name());
+				if (!(attribute_name == "type" or attribute_name == "subtype" or attribute_name == "topic" or attribute_name == "date"))
 				{
-					string attribute_name = string(node_attribute->name());
-					if (!(attribute_name == "type" or attribute_name == "subtype" or attribute_name == "topic" or attribute_name == "date"))
+					out << "Invalid attribute name '" << attribute_name << "'" << endl;
+				}
+				else if (attribute_name == "type")
+				{
+					if (has_type)
 					{
-						out << "Invalid attribute name '" << attribute_name << "'" << endl;
+						repeated_type = true;
 					}
-					else if (attribute_name == "type")
+					else
 					{
-						if (has_type)
-						{
-							repeated_type = true;
-						}
-						else
-						{
-							has_type = true;
-						}
+						has_type = true;
 					}
-					else if (attribute_name == "subtype")
+				}
+				else if (attribute_name == "subtype")
+				{
+					if (has_subtype)
 					{
-						if (has_subtype)
-						{
-							repeated_subtype = true;
-						}
-						else
-						{
-							has_subtype = true;
-						}
+						repeated_subtype = true;
 					}
-					else if (attribute_name == "topic")
+					else
 					{
-						if (has_topic)
-						{
-							repeated_topic = true;
-						}
-						else
-						{
-							has_topic = true;
-						}
+						has_subtype = true;
 					}
-					else if (attribute_name == "date")
+				}
+				else if (attribute_name == "topic")
+				{
+					if (has_topic)
 					{
-						if (has_date)
-						{
-							repeated_date = true;
-						}
-						else
-						{
-							has_date = true;
-						}
+						repeated_topic = true;
 					}
-					if (attribute_name == "subtype" and string(node_attribute->value()) == "planification")
+					else
 					{
 						has_topic = true;
 					}
 				}
-				string error_sentence;
-				if (has_topic)
+				else if (attribute_name == "date")
 				{
-					error_sentence = "The entry '" + string(entry_node->first_attribute("type")->value()) + "'";
+					if (has_date)
+					{
+						repeated_date = true;
+					}
+					else
+					{
+						has_date = true;
+					}
 				}
-				else
+				if (attribute_name == "subtype" and string(node_attribute->value()) == "planification")
 				{
-					error_sentence = "An anonymous entry";
+					has_topic = true;
 				}
-				if (!has_type)
-				{
-					out << error_sentence << " doesn't has type" << endl;
-				}
-				if (repeated_type)
-				{
-					out << error_sentence << "' has a type repeated" << endl;
-				}
-				if (!has_subtype)
-				{
-					out << error_sentence << " doesn't has subtype" << endl;
-				}
-				if (repeated_subtype)
-				{
-					out << error_sentence << "' has a subtype repeated" << endl;
-				}
-				if (!has_topic)
-				{
-					out << error_sentence << " doesn't has topic" << endl;
-				}
-				if (repeated_topic)
-				{
-					out << error_sentence << "' has a topic repeated" << endl;
-				}
-				if (!has_date)
-				{
-					out << error_sentence << " doesn't has date" << endl;
-				}
-				if (repeated_date)
-				{
-					out << error_sentence << "' has a date repeated" << endl;
-				}
-				string description = entry_node->value();
-				if (description == "")
-				{
-					out << error_sentence << " has an empty description" << endl;
-				}
+			}
+			string error_sentence;
+			if (has_topic)
+			{
+				error_sentence = "The entry '" + string(entry_node->first_attribute("type")->value()) + "'";
+			}
+			else
+			{
+				error_sentence = "An anonymous entry";
+			}
+			if (!has_type)
+			{
+				out << error_sentence << " doesn't has type" << endl;
+			}
+			if (repeated_type)
+			{
+				out << error_sentence << "' has a type repeated" << endl;
+			}
+			if (!has_subtype)
+			{
+				out << error_sentence << " doesn't has subtype" << endl;
+			}
+			if (repeated_subtype)
+			{
+				out << error_sentence << "' has a subtype repeated" << endl;
+			}
+			if (!has_topic)
+			{
+				out << error_sentence << " doesn't has topic" << endl;
+			}
+			if (repeated_topic)
+			{
+				out << error_sentence << "' has a topic repeated" << endl;
+			}
+			if (!has_date)
+			{
+				out << error_sentence << " doesn't has date" << endl;
+			}
+			if (repeated_date)
+			{
+				out << error_sentence << "' has a date repeated" << endl;
+			}
+			string description = entry_node->value();
+			if (description == "")
+			{
+				out << error_sentence << " has an empty description" << endl;
 			}
 		}
 		return out.str();
@@ -215,14 +229,20 @@ namespace scilog_cli
 		rapidxml::xml_node<> * root_node;
 		root_node = xml_file.first_node("scilog");
 		ostringstream out;
-		for (rapidxml::xml_node<>* entry_node = root_node->first_node(); entry_node; entry_node = entry_node->next_sibling())
+		for (rapidxml::xml_node<>* category_node = root_node->first_node(); category_node; category_node = category_node->next_sibling())
 		{
-			if (string(entry_node->name()) != "topic")
+			if (!(string(category_node->name()) == "learn" or string(category_node->name()) == "project"))
 			{
-				out << "Invalid tag name '" << string(entry_node->name()) << "'. Only <topic> is allowed" << endl;
+				out << "Invalid tag name '" << string(category_node->name()) << "'. Only <learn> and <project> is allowed" << endl;
+				continue;
 			}
-			else
+			for (rapidxml::xml_node<>* entry_node = category_node->first_node(); entry_node; entry_node = entry_node->next_sibling())
 			{
+				if (string(entry_node->name()) != "topic")
+				{
+					out << "Invalid tag name '" << string(category_node->name()) << "'. Only <topic> is allowed" << endl;
+					continue;
+				}
 				bool has_type = false;
 				bool repeated_type = false;
 				bool has_category = false;
@@ -299,7 +319,7 @@ namespace scilog_cli
 				string error_sentence;
 				if (has_name)
 				{
-					error_sentence = "The entry '" + string(entry_node->first_attribute("type")->value()) + "'";
+					error_sentence = "The entry '" + string(entry_node->first_attribute("name")->value()) + "'";
 				}
 				else
 				{

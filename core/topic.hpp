@@ -11,7 +11,7 @@ namespace scilog_cli
 	{
 		public:
 			topic();
-			topic(const string&,const string&,const string&,const string&,const string&,const string&);
+			topic(const string&,const string&,const string&,const string&,const string&);
 
 			inline string& get_type()
 			{
@@ -31,16 +31,6 @@ namespace scilog_cli
 			inline const string& get_category() const
 			{
 				return category;
-			}
-
-			inline string& get_parent_category()
-			{
-				return parent_category;
-			}
-
-			inline const string& get_parent_category() const
-			{
-				return parent_category;
 			}
 
 			inline string& get_name()
@@ -76,7 +66,6 @@ namespace scilog_cli
 		private:
 			string type;
 			string category;
-			string parent_category;
 			string name;
 			string start_date;
 			string description;
