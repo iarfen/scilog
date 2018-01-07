@@ -254,9 +254,73 @@ namespace scilog_cli
 		ostringstream out;
 		for (rapidxml::xml_node<>* category_node = root_node->first_node(); category_node; category_node = category_node->next_sibling())
 		{
-			if (!(string(category_node->name()) == "learn" or string(category_node->name()) == "project"))
+			string node_name = string(category_node->name());
+			if (!(node_name == "learn" or node_name == "project" or node_name == "category"))
 			{
 				out << "Invalid tag name '" << string(category_node->name()) << "'. Only <learn> and <project> is allowed" << endl;
+				continue;
+			}
+			if (node_name == "category")
+			{
+				bool has_name = false;
+				bool repeated_name = false;
+				bool has_parent_category = false;
+				bool repeated_parent_category = false;
+				for (rapidxml::xml_attribute<>* node_attribute = category_node->first_attribute(); node_attribute; node_attribute = node_attribute->next_attribute())
+				{
+					string attribute_name = string(node_attribute->name());
+					if (!(attribute_name == "name" or attribute_name == "parent_category"))
+					{
+						out << "Invalid attribute name '" << attribute_name << "'" << endl;
+					}
+					else if (attribute_name == "name")
+					{
+						if (has_name)
+						{
+							repeated_name = true;
+						}
+						else
+						{
+							has_name = true;
+						}
+					}
+					else if (attribute_name == "parent_category")
+					{
+						if (has_parent_category)
+						{
+							repeated_parent_category = true;
+						}
+						else
+						{
+							has_parent_category = true;
+						}
+					}
+				}
+				string error_sentence;
+				if (has_name)
+				{
+					error_sentence = "The category '" + string(category_node->first_attribute("name")->value()) + "'";
+				}
+				else
+				{
+					error_sentence = "An anonymous category";
+				}
+				if (!has_name)
+				{
+					out << error_sentence << " doesn't has name" << endl;
+				}
+				if (repeated_name)
+				{
+					out << error_sentence << "' has a name repeated" << endl;
+				}
+				if (!has_parent_category)
+				{
+					out << error_sentence << " doesn't has parent category" << endl;
+				}
+				if (repeated_parent_category)
+				{
+					out << error_sentence << "' has a parent category repeated" << endl;
+				}
 				continue;
 			}
 			for (rapidxml::xml_node<>* entry_node = category_node->first_node(); entry_node; entry_node = entry_node->next_sibling())
