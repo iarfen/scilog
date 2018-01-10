@@ -102,4 +102,24 @@ namespace scilog_cli
 		}
 		return categories;
 	}
+
+	bool is_year_directory(const string& directory_path)
+	{
+		vector<string> filenames = {"01-january","02-february","03-march","04-april","05-may","06-june","07-july","08-august","09-september","10-october","11-november","12-december"};
+		for (const string& filename : filenames)
+		{
+			if (boost::filesystem::exists(directory_path + "/" + filename + ".xml"))
+			{
+				return true;
+			}
+		}
+		if (boost::filesystem::exists(directory_path + "/" + "topics.xml"))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }

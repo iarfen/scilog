@@ -20,80 +20,144 @@ namespace scilog_cli
 	void command_summary_month(const string& x,const string& directory_path)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
-		if (!boost::filesystem::exists(filename))
+		string filepath = directory_path + "/" + filename;
+		if (!boost::filesystem::exists(filepath))
 		{
-			cout << "The requested month doesn't has a file" << endl;
+			cout << filepath << " doesn't exist" << endl;
 			return;
 		}
-		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(directory_path + "/" + filename);
+		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath);
 		print_summary(entries);
 	}
 
-	void command_summary_month_by_topics(const string& x)
+	void command_summary_month_by_topics(const string& x,const string& directory_path)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
-		if (!boost::filesystem::exists(filename))
+		string filepath = directory_path + "/" + filename;
+		if (!boost::filesystem::exists(filepath))
 		{
-			cout << "The requested month doesn't has a file" << endl;
+			cout << filepath << " doesn't exist" << endl;
 			return;
 		}
-		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename);
+		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath);
 		print_topics(entries);
 	}
 
-	void command_summary_month_by_sciences(const string& x)
+	void command_summary_month_by_sciences(const string& x,const string& directory_path)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
-		if (!boost::filesystem::exists(filename))
+		string filepath = directory_path + "/" + filename;
+		string topicspath = directory_path + "/topics.xml";
+		if (!boost::filesystem::exists(filepath))
 		{
-			cout << "The requested month doesn't has a file" << endl;
+			cout << filepath << " doesn't exist" << endl;
 			return;
 		}
-		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename);
-		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file("topics.xml");
+		if (!boost::filesystem::exists(topicspath))
+		{
+			cout << topicspath << " doesn't exist" << endl;
+			return;
+		}
+		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath);
+		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(topicspath);
 		print_sciences(entries,topics);
 	}
 
-	vector<shared_ptr<entry>> get_year_entries()
+	vector<shared_ptr<entry>> get_year_entries(const string& directory_path)
 	{
 		vector<shared_ptr<entry>> out_entries;
 		vector<string> filenames = {"01-january","02-february","03-march","04-april","05-may","06-june","07-july","08-august","09-september","10-october","11-november","12-december"};
 
 		for (const string& filename : filenames)
 		{
-			if (!boost::filesystem::exists(filename + ".xml"))
+			string filepath = directory_path + "/" + filename + ".xml";
+			if (!boost::filesystem::exists(filepath))
 			{
 				continue;
 			}
-			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filename + ".xml");
+			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath);
 			out_entries.insert(out_entries.begin(),entries.begin(),entries.end());
 		}
 		return out_entries;
 	}
 
-	void command_summary_year(const string& x)
+	vector<shared_ptr<entry>> get_all_years_entries(vector<string> year_paths)
 	{
-		vector<shared_ptr<entry>> entries = get_year_entries();
-		print_summary(entries);
+		vector<shared_ptr<entry>> out_entries;
+		for (const string& year_path : year_paths)
+		{
+			vector<shared_ptr<entry>> entries = get_year_entries(year_path);
+			out_entries.insert(out_entries.begin(),entries.begin(),entries.end());
+		}
+		return out_entries;
 	}
 
-	void command_summary_year_by_topics()
+	vector<string> get_years_path(const string& directory_path)
 	{
-		vector<shared_ptr<entry>> entries = get_year_entries();
-		print_topics(entries);
-	}
-
-	/*void summary_all_year_files()
-	{
+		vector<string> paths;
 		boost::filesystem::directory_iterator end_itr;
-		for (boost::filesystem::directory_iterator itr("."); itr != end_itr; ++itr)
+		for (boost::filesystem::directory_iterator itr(directory_path); itr != end_itr; ++itr)
 		{
 			if (is_directory(itr->status()))
 			{
-				command_summary_year(itr->path().generic_string());
+				paths.push_back(itr->path().generic_string());
 			}
 		}
-	}*/
+		return paths;
+	}
+
+	void command_summary_year(const string& directory_path)
+	{
+		vector<shared_ptr<entry>> entries = get_year_entries(directory_path);
+		print_summary(entries);
+	}
+
+	void command_summary_year_by_topics(const string& directory_path)
+	{
+		vector<shared_ptr<entry>> entries = get_year_entries(directory_path);
+		print_topics(entries);
+	}
+
+	void command_summary_year_by_sciences(const string& directory_path)
+	{
+		vector<shared_ptr<entry>> entries = get_year_entries(directory_path);
+		string topicspath = directory_path + "/topics.xml";
+		if (!boost::filesystem::exists(topicspath))
+		{
+			cout << topicspath << " doesn't exist" << endl;
+			return;
+		}
+		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(topicspath);
+		print_sciences(entries,topics);
+	}
+
+	void command_summary_all_years(const string& directory_path)
+	{
+		vector<string> paths = get_years_path(directory_path);
+		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
+		print_summary(entries);
+	}
+
+	void command_summary_all_years_by_topics(const string& directory_path)
+	{
+		vector<string> paths = get_years_path(directory_path);
+		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
+		print_topics(entries);
+	}
+
+	void command_summary_all_years_by_sciences(const string& directory_path)
+	{
+		vector<string> paths = get_years_path(directory_path);
+		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
+		string topicspath = directory_path + "/topics.xml";
+		if (!boost::filesystem::exists(topicspath))
+		{
+			cout << topicspath << " doesn't exist" << endl;
+			return;
+		}
+		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(topicspath);
+		print_sciences(entries,topics);
+	}
 
 	void print_summary(const vector<shared_ptr<entry>>& entries)
 	{
@@ -160,7 +224,7 @@ namespace scilog_cli
 		cout << "project theory entries: " << total_project_theory_entries << "    " << (100 * total_project_theory_entries / total_project_entries) << " %" << endl;
 		cout << "project design entries: " << total_project_design_entries << "    " << (100 * total_project_design_entries / total_project_entries) << " %" << endl;
 		cout << "project programming entries: " << total_project_programming_entries << "    " << (100 * total_project_programming_entries / total_project_entries) << " %" << endl;
-		cout << "project planification entries: " << total_project_planification_entries << "    " << (100 * total_project_planification_entries / total_project_entries) << " %" << endl << endl;
+		cout << "project planification entries: " << total_project_planification_entries << "    " << (100 * total_project_planification_entries / total_project_entries) << " %" << endl;
 	}
 
 	void print_topics(const vector<shared_ptr<entry>>& entries)

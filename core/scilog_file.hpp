@@ -15,6 +15,8 @@ namespace scilog_cli
 	string get_filename_from_month_number(const string&);
 	vector<category> get_all_categories();
 	map<string,category> get_all_categories_map();
+
+	bool is_year_directory(const string&);
 }
 
 #endif // SCILOG_CORE_SCILOG_FILE_HPP_INCLUDED

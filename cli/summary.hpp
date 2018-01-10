@@ -13,13 +13,20 @@ using namespace std;
 namespace scilog_cli
 {
 	void command_summary_month(const string&,const string&);
-	void command_summary_month_by_topics(const string&);
-	void command_summary_month_by_sciences(const string&);
+	void command_summary_month_by_topics(const string&,const string&);
+	void command_summary_month_by_sciences(const string&,const string&);
 
-	vector<shared_ptr<entry>> get_year_entries();
+	vector<shared_ptr<entry>> get_year_entries(const string&);
+	vector<shared_ptr<entry>> get_all_years_entries(const string&);
+	vector<string> get_years_path(const string&);
+
 	void command_summary_year(const string&);
-	void command_summary_year_by_topics();
-	//void summary_all_year_files();
+	void command_summary_year_by_topics(const string&);
+	void command_summary_year_by_sciences(const string&);
+
+	void command_summary_all_years(const string&);
+	void command_summary_all_years_by_topics(const string&);
+	void command_summary_all_years_by_sciences(const string&);
 
 	void print_summary(const vector<shared_ptr<entry>>&);
 	void print_topics(const vector<shared_ptr<entry>>&);
