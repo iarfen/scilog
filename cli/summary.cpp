@@ -3,7 +3,7 @@
 #include "core/topic.hpp"
 #include "core/categories.hpp"
 #include "core/xml_parser.hpp"
-#include "core/scilog_file.hpp"
+#include "core/filesystem.hpp"
 
 #include <algorithm>
 #include <iostream>

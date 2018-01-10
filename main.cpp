@@ -6,7 +6,7 @@
 #include "cli/summary.hpp"
 #include "cli/validate.hpp"
 #include "cli/version.hpp"
-#include "core/scilog_file.hpp"
+#include "core/filesystem.hpp"
 
 #include <cctype>
 #include <iostream>
