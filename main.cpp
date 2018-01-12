@@ -32,7 +32,105 @@ int main(int argc, char* argv[])
 	}
 	else if (string(argv[1]) == "validate")
 	{
+		bool is_year_dir = scilog_cli::is_year_directory(".");
 		if (argc == 2)
+		{
+			if (is_year_dir)
+			{
+				scilog_cli::validate_year_files(".");
+			}
+			else
+			{
+				scilog_cli::validate_all_year_files(".");
+			}
+		}
+		else
+		{
+			bool topics = false;
+			bool sciences = false;
+			string month_selection;
+			string year_selection;
+			string first_argument = string(argv[2]);
+			if (first_argument.substr(0,2) == "--")
+			{
+				month_selection = "none";
+				year_selection = "none";
+			}
+			else if (isdigit(first_argument[0]) && stoi(first_argument) > 12)
+			{
+				year_selection = first_argument;
+				month_selection = "none";
+			}
+			else
+			{
+				month_selection = first_argument;
+				string second_argument;
+				if (argc > 3)
+				{
+					second_argument = string(argv[3]);
+				}
+				if (isdigit(second_argument[0]) && stoi(second_argument) > 12)
+				{
+					if (is_year_dir)
+					{
+						year_selection = "../" + second_argument;
+					}
+					else
+					{
+						year_selection = second_argument;
+					}
+				}
+				else
+				{
+					year_selection = ".";
+				}
+			}
+			if (argc >= 3)
+			{
+				for (unsigned int i = 2; i < argc; i++)
+				{
+					string actual_argument = string(argv[i]);
+					if (actual_argument == "--topics")
+					{
+						topics = true;
+					}
+					else if (actual_argument == "--sciences")
+					{
+						sciences = true;
+					}
+				}
+			}
+			if (month_selection == "all" or (is_year_dir == false and month_selection == "none" and year_selection == "none"))
+			{
+				string directory_path;
+				if (is_year_dir)
+				{
+					directory_path = "..";
+				}
+				else
+				{
+					directory_path = ".";
+				}
+				scilog_cli::validate_all_year_files(directory_path);
+			}
+			else if (month_selection == "none" or month_selection == ".")
+			{
+				scilog_cli::validate_year_files(year_selection);
+			}
+			else
+			{
+				if (topics)
+				{
+					scilog_cli::validate_topics_file(month_selection,year_selection);
+				}
+				else
+				{
+					scilog_cli::validate_month_file(month_selection,year_selection,true);
+				}
+			}
+		}
+		return 0;
+		/*if (argc == 2)
 		{
 			if (scilog_cli::is_year_directory("."))
 			{
@@ -76,7 +174,7 @@ int main(int argc, char* argv[])
 		{
 			scilog_cli::validate_year_files(".");
 		}
-		return 0;
+		return 0;*/
 	}
 	else if (string(argv[1]) == "list")
 	{
