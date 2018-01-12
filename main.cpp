@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
 	{
 		scilog_cli::create_year_files();
 	}
-	else if (string(argv[1]) == "show-categories")
+	else if (string(argv[1]) == "list-categories")
 	{
 		scilog_cli::list_categories();
 		return 0;
