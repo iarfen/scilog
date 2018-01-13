@@ -5,7 +5,7 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void help_command();
+	void command_help();
 }
 
 #endif // SCILOG_HELP_HPP_INCLUDED

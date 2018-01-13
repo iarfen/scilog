@@ -6,7 +6,7 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void help_command()
+	void command_help()
 	{
 		cout << "scilog is a command-line utility that tracks the science activity that the user has done during the day, in order to be able to have a summary of the week, of the month, and of the year, among any other useful information." << endl << endl;
 		cout << "    scilog <command> <file>" << endl << endl;

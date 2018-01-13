@@ -5,7 +5,7 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void version_command();
+	void command_version();
 }
 
 #endif // SCILOG_VERSION_HPP_INCLUDED

@@ -57,7 +57,7 @@ namespace scilog_cli
 		}
 	}
 
-	void list_categories()
+	void command_list_categories()
 	{
 		vector<category> categories = get_all_categories();
 		print_child_categories(categories,categories.front(),"",1);

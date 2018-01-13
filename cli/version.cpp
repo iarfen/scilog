@@ -8,7 +8,7 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void version_command()
+	void command_version()
 	{
 		cout << PACKAGE_NAME << " " << PACKAGE_VERSION << endl;
 	}

@@ -7,10 +7,10 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void validate_month_file(const string&,const string&,bool);
-	void validate_year_files(const string&);
-	void validate_all_year_files(const string&);
-	void validate_topics_file(const string&,const string&);
+	void command_validate_month(const string&,const string&,bool);
+	void command_validate_year(const string&);
+	void command_validate_all_years(const string&);
+	void command_validate_topics(const string&,const string&);
 }
 
 #endif // SCILOG_CLI_VALIDATE_HPP_INCLUDED

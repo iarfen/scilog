@@ -22,12 +22,12 @@ int main(int argc, char* argv[])
 	}
 	if (string(argv[1]) == "--help" or string(argv[1]) == "-h")
 	{
-		scilog_cli::help_command();
+		scilog_cli::command_help();
 		return 0;
 	}
 	else if (string(argv[1]) == "--version" or string(argv[1]) == "-v")
 	{
-		scilog_cli::version_command();
+		scilog_cli::command_version();
 		return 0;
 	}
 	else if (string(argv[1]) == "validate")
@@ -37,11 +37,11 @@ int main(int argc, char* argv[])
 		{
 			if (is_year_dir)
 			{
-				scilog_cli::validate_year_files(".");
+				scilog_cli::command_validate_year(".");
 			}
 			else
 			{
-				scilog_cli::validate_all_year_files(".");
+				scilog_cli::command_validate_all_years(".");
 			}
 		}
 		else
@@ -106,21 +106,21 @@ int main(int argc, char* argv[])
 				{
 					directory_path = ".";
 				}
-				scilog_cli::validate_all_year_files(directory_path);
+				scilog_cli::command_validate_all_years(directory_path);
 			}
 			else if (month_selection == "none" or month_selection == ".")
 			{
-				scilog_cli::validate_year_files(year_selection);
+				scilog_cli::command_validate_year(year_selection);
 			}
 			else
 			{
 				if (topics)
 				{
-					scilog_cli::validate_topics_file(month_selection,year_selection);
+					scilog_cli::command_validate_topics(month_selection,year_selection);
 				}
 				else
 				{
-					scilog_cli::validate_month_file(month_selection,year_selection,true);
+					scilog_cli::command_validate_month(month_selection,year_selection,true);
 				}
 			}
 		}
@@ -220,15 +220,15 @@ int main(int argc, char* argv[])
 	}
 	else if (string(argv[1]) == "create-month-file")
 	{
-		scilog_cli::create_month_file(string(argv[2]));
+		scilog_cli::command_create_month_file(string(argv[2]));
 	}
 	else if (string(argv[1]) == "create-year-files")
 	{
-		scilog_cli::create_year_files();
+		scilog_cli::command_create_year_files();
 	}
 	else if (string(argv[1]) == "list-categories")
 	{
-		scilog_cli::list_categories();
+		scilog_cli::command_list_categories();
 		return 0;
 	}
 	else if (string(argv[1]) == "summary")
