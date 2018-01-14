@@ -323,6 +323,14 @@ namespace scilog_cli
 				}
 				continue;
 			}
+			if (node_name == "learn" or node_name == "project")
+			{
+				for (rapidxml::xml_attribute<>* node_attribute = category_node->first_attribute(); node_attribute; node_attribute = node_attribute->next_attribute())
+				{
+					string attribute_name = string(node_attribute->name());
+					out << "Invalid attribute name '" << attribute_name << "'" << endl;
+				}
+			}
 			for (rapidxml::xml_node<>* entry_node = category_node->first_node(); entry_node; entry_node = entry_node->next_sibling())
 			{
 				if (string(entry_node->name()) != "topic")
