@@ -157,7 +157,7 @@ namespace scilog_cli
 		vector<shared_ptr<topic>> out_topics;
 		for (const string& year_path : year_paths)
 		{
-			vector<shared_ptr<topic>> topics = get_year_entries(year_path);
+			vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(year_path);
 			out_topics.insert(out_topics.begin(),topics.begin(),topics.end());
 		}
 		return out_topics;

@@ -1,7 +1,9 @@
 #ifndef SCILOG_CORE_SCILOG_FILE_HPP_INCLUDED
 #define SCILOG_CORE_SCILOG_FILE_HPP_INCLUDED
 
-#include "category.hpp"
+#include "core/category.hpp"
+#include "core/entry.hpp"
+#include "core/topic.hpp"
 
 #include <map>
 #include <memory>
