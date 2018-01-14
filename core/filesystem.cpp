@@ -122,4 +122,58 @@ namespace scilog_cli
 			return false;
 		}
 	}
+
+	vector<shared_ptr<entry>> get_year_entries(const string& directory_path)
+	{
+		vector<shared_ptr<entry>> out_entries;
+		vector<string> filenames = {"01-january","02-february","03-march","04-april","05-may","06-june","07-july","08-august","09-september","10-october","11-november","12-december"};
+
+		for (const string& filename : filenames)
+		{
+			string filepath = directory_path + "/" + filename + ".xml";
+			if (!boost::filesystem::exists(filepath))
+			{
+				continue;
+			}
+			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath);
+			out_entries.insert(out_entries.begin(),entries.begin(),entries.end());
+		}
+		return out_entries;
+	}
+
+	vector<shared_ptr<entry>> get_all_years_entries(vector<string> year_paths)
+	{
+		vector<shared_ptr<entry>> out_entries;
+		for (const string& year_path : year_paths)
+		{
+			vector<shared_ptr<entry>> entries = get_year_entries(year_path);
+			out_entries.insert(out_entries.begin(),entries.begin(),entries.end());
+		}
+		return out_entries;
+	}
+
+	vector<shared_ptr<topic>> get_all_years_topics(vector<string> year_paths)
+	{
+		vector<shared_ptr<topic>> out_topics;
+		for (const string& year_path : year_paths)
+		{
+			vector<shared_ptr<topic>> topics = get_year_entries(year_path);
+			out_topics.insert(out_topics.begin(),topics.begin(),topics.end());
+		}
+		return out_topics;
+	}
+
+	vector<string> get_years_path(const string& directory_path)
+	{
+		vector<string> paths;
+		boost::filesystem::directory_iterator end_itr;
+		for (boost::filesystem::directory_iterator itr(directory_path); itr != end_itr; ++itr)
+		{
+			if (is_directory(itr->status()))
+			{
+				paths.push_back(itr->path().generic_string());
+			}
+		}
+		return paths;
+	}
 }
