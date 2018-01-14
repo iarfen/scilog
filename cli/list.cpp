@@ -1,6 +1,5 @@
 #include "list.hpp"
 #include "core/filesystem.hpp"
-
 #include "core/xml_parser.hpp"
 
 #include <iostream>
@@ -24,7 +23,7 @@ namespace scilog_cli
 		{
 			if (print_exist_message)
 			{
-				cout << "The requested month doesn't exist" << endl;
+				cout << filepath << " doesn't exist" << endl;
 			}
 		}
 	}

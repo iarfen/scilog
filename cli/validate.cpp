@@ -31,7 +31,7 @@ namespace scilog_cli
 		{
 			if (print_exist_message)
 			{
-				cout << filepath << " file doesn't exist" << endl;
+				cout << filepath << " doesn't exist" << endl;
 			}
 		}
 	}
@@ -83,7 +83,7 @@ namespace scilog_cli
 		}
 		else
 		{
-			cout << filepath << " file doesn't exist" << endl;
+			cout << filepath << " doesn't exist" << endl;
 		}
 	}
 }
