@@ -240,6 +240,19 @@ namespace scilog_cli
 			{
 				out << error_sentence << " has an empty description" << endl;
 			}
+			bool entry_has_child_nodes = false;
+			for (rapidxml::xml_node<>* child_node = entry_node->first_node(); child_node; child_node = child_node->next_sibling())
+			{
+				string node_name = string(child_node->name());
+				if (node_name != "")
+				{
+					entry_has_child_nodes = true;
+				}
+			}
+			if (entry_has_child_nodes)
+			{
+				out << string(entry_node->name()) << " cannot have child nodes" << endl;
+			}
 		}
 		return out.str();
 	}
@@ -257,7 +270,7 @@ namespace scilog_cli
 			string node_name = string(category_node->name());
 			if (!(node_name == "learn" or node_name == "project" or node_name == "category"))
 			{
-				out << "Invalid tag name '" << string(category_node->name()) << "'. Only <learn> and <project> is allowed" << endl;
+				out << "Invalid tag name '" << node_name << "'. Only <learn> and <project> is allowed" << endl;
 				continue;
 			}
 			if (node_name == "category")
@@ -320,6 +333,19 @@ namespace scilog_cli
 				if (repeated_parent_category)
 				{
 					out << error_sentence << "' has a parent category repeated" << endl;
+				}
+				bool entry_has_child_nodes = false;
+				for (rapidxml::xml_node<>* child_node = category_node->first_node(); child_node; child_node = child_node->next_sibling())
+				{
+					string node_name = string(child_node->name());
+					if (node_name != "")
+					{
+						entry_has_child_nodes = true;
+					}
+				}
+				if (entry_has_child_nodes)
+				{
+					out << node_name << " cannot have child nodes" << endl;
 				}
 				continue;
 			}
