@@ -1,4 +1,5 @@
 #include "summary.hpp"
+#include "cli/cli.hpp"
 #include "core/entry.hpp"
 #include "core/topic.hpp"
 #include "core/categories.hpp"
@@ -23,7 +24,7 @@ namespace scilog_cli
 		string filepath = directory_path + "/" + filename;
 		if (!boost::filesystem::exists(filepath))
 		{
-			cout << filepath << " doesn't exist" << endl;
+			print_non_exist_message(filepath);
 			return;
 		}
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath);
@@ -36,7 +37,7 @@ namespace scilog_cli
 		string filepath = directory_path + "/" + filename;
 		if (!boost::filesystem::exists(filepath))
 		{
-			cout << filepath << " doesn't exist" << endl;
+			print_non_exist_message(filepath);
 			return;
 		}
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath);
@@ -50,12 +51,12 @@ namespace scilog_cli
 		string topicspath = directory_path + "/topics.xml";
 		if (!boost::filesystem::exists(filepath))
 		{
-			cout << filepath << " doesn't exist" << endl;
+			print_non_exist_message(filepath);
 			return;
 		}
 		if (!boost::filesystem::exists(topicspath))
 		{
-			cout << topicspath << " doesn't exist" << endl;
+			print_non_exist_message(topicspath);
 			return;
 		}
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath);
@@ -81,7 +82,7 @@ namespace scilog_cli
 		string topicspath = directory_path + "/topics.xml";
 		if (!boost::filesystem::exists(topicspath))
 		{
-			cout << topicspath << " doesn't exist" << endl;
+			print_non_exist_message(topicspath);
 			return;
 		}
 		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(topicspath);
@@ -109,7 +110,7 @@ namespace scilog_cli
 		string topicspath = directory_path + "/topics.xml";
 		if (!boost::filesystem::exists(topicspath))
 		{
-			cout << topicspath << " doesn't exist" << endl;
+			print_non_exist_message(topicspath);
 			return;
 		}
 		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(topicspath);
@@ -169,19 +170,19 @@ namespace scilog_cli
 				}
 			}
 		}
-		cout << "total entries: " << entries.size() << endl;
+		cout << scilog_cli::white_text << "total entries: " << scilog_cli::green_text << entries.size() << endl;
 
-		cout << "total learn entries: " << total_learn_entries << "    " << (100 * total_learn_entries / entries.size()) << " %" << endl;
-		cout << "total project entries: " << total_project_entries << "    " << (100 * total_project_entries / entries.size()) << " %" << endl << endl;
+		cout << scilog_cli::white_text << "total learn entries: " << scilog_cli::green_text << total_learn_entries << "    " << (100 * total_learn_entries / entries.size()) << " %" << endl;
+		cout << scilog_cli::white_text << "total project entries: " << scilog_cli::green_text << total_project_entries << "    " << (100 * total_project_entries / entries.size()) << " %" << endl << endl;
 
-		cout << "learn book entries: " << total_learn_book_entries << "    " << (100 * total_learn_book_entries / total_learn_entries) << " %" << endl;
-		cout << "learn documentation entries: " << total_learn_documentation_entries << "    " << (100 * total_learn_documentation_entries / total_learn_entries) << " %" << endl;
-		cout << "learn planification entries: " << total_learn_planification_entries << "    " << (100 * total_learn_planification_entries / total_learn_entries) << " %" << endl << endl;
+		cout << scilog_cli::white_text << "learn book entries: " << scilog_cli::green_text << total_learn_book_entries << "    " << (100 * total_learn_book_entries / total_learn_entries) << " %" << endl;
+		cout << scilog_cli::white_text << "learn documentation entries: " << scilog_cli::green_text << total_learn_documentation_entries << "    " << (100 * total_learn_documentation_entries / total_learn_entries) << " %" << endl;
+		cout << scilog_cli::white_text << "learn planification entries: " << scilog_cli::green_text << total_learn_planification_entries << "    " << (100 * total_learn_planification_entries / total_learn_entries) << " %" << endl << endl;
 
-		cout << "project theory entries: " << total_project_theory_entries << "    " << (100 * total_project_theory_entries / total_project_entries) << " %" << endl;
-		cout << "project design entries: " << total_project_design_entries << "    " << (100 * total_project_design_entries / total_project_entries) << " %" << endl;
-		cout << "project programming entries: " << total_project_programming_entries << "    " << (100 * total_project_programming_entries / total_project_entries) << " %" << endl;
-		cout << "project planification entries: " << total_project_planification_entries << "    " << (100 * total_project_planification_entries / total_project_entries) << " %" << endl;
+		cout << scilog_cli::white_text << "project theory entries: " << scilog_cli::green_text << total_project_theory_entries << "    " << (100 * total_project_theory_entries / total_project_entries) << " %" << endl;
+		cout << scilog_cli::white_text << "project design entries: " << scilog_cli::green_text << total_project_design_entries << "    " << (100 * total_project_design_entries / total_project_entries) << " %" << endl;
+		cout << scilog_cli::white_text << "project programming entries: " << scilog_cli::green_text << total_project_programming_entries << "    " << (100 * total_project_programming_entries / total_project_entries) << " %" << endl;
+		cout << scilog_cli::white_text << "project planification entries: " << scilog_cli::green_text << total_project_planification_entries << "    " << (100 * total_project_planification_entries / total_project_entries) << " %" << endl;
 	}
 
 	void print_topics(const vector<shared_ptr<entry>>& entries)
@@ -210,15 +211,15 @@ namespace scilog_cli
 				}
 			}
 		}
-		cout << "total entries: " << entries.size() << endl << endl;
+		cout << scilog_cli::white_text << "total entries: " << scilog_cli::green_text << entries.size() << endl << endl;
 		for (auto learn_topic_count : learn_topics_count)
 		{
-			cout << "learn " << learn_topic_count.first << ": " << learn_topic_count.second << endl;
+			cout << scilog_cli::white_text << "learn " << scilog_cli::green_text << learn_topic_count.first << ": " << learn_topic_count.second << endl;
 		}
 		cout << endl;
 		for (auto project_topic_count : project_topics_count)
 		{
-			cout << "project " << project_topic_count.first << ": " << project_topic_count.second << endl;
+			cout << scilog_cli::white_text << "project " << scilog_cli::green_text << project_topic_count.first << ": " << project_topic_count.second << endl;
 		}
 	}
 
@@ -292,16 +293,16 @@ namespace scilog_cli
 				}
 			}
 		}
-		cout << "total of topics to learn: " << learn_sciences_count.size() << endl;
+		cout << scilog_cli::white_text << "total of topics to learn: " << scilog_cli::green_text << learn_sciences_count.size() << endl;
 		for (const auto& learn_science_count : learn_sciences_count)
 		{
-			cout << "learn " << learn_science_count.first << ": " << learn_science_count.second << endl;
+			cout << scilog_cli::white_text << "learn " << learn_science_count.first << ": " << scilog_cli::green_text << learn_science_count.second << endl;
 		}
 		cout << endl;
-		cout << "total of projects: " << project_sciences_count.size() << endl;
+		cout << scilog_cli::white_text << "total of projects: " << scilog_cli::green_text << project_sciences_count.size() << endl;
 		for (const auto& project_science_count : project_sciences_count)
 		{
-			cout << "project " << project_science_count.first << ": " << project_science_count.second << endl;
+			cout << scilog_cli::white_text << "project " << project_science_count.first << ": " << scilog_cli::green_text << project_science_count.second << endl;
 		}
 	}
 }

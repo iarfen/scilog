@@ -1,8 +1,10 @@
 #include "filesystem.hpp"
 #include "categories.hpp"
 #include "xml_parser.hpp"
+#include "cli/cli.hpp"
 
 #include <chrono>
+#include <iostream>
 
 #include "boost/filesystem.hpp"
 
@@ -175,5 +177,10 @@ namespace scilog_cli
 			}
 		}
 		return paths;
+	}
+
+	void print_non_exist_message(const string& filepath)
+	{
+		cout << scilog_cli::green_text << filepath << scilog_cli::white_text << " doesn't exist" << endl;
 	}
 }

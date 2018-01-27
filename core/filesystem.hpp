@@ -26,6 +26,8 @@ namespace scilog_cli
 	vector<shared_ptr<topic>> get_all_years_topics(vector<string>);
 
 	vector<string> get_years_path(const string&);
+
+	void print_non_exist_message(const string&);
 }
 
 #endif // SCILOG_CORE_SCILOG_FILE_HPP_INCLUDED

@@ -1,4 +1,5 @@
 #include "validate.hpp"
+#include "cli/cli.hpp"
 #include "core/filesystem.hpp"
 #include "core/xml_parser.hpp"
 
@@ -19,19 +20,19 @@ namespace scilog_cli
 			string result = scilog_cli::validate_scilog_file(filepath);
 			if (result != "")
 			{
-				cout << filepath << " is an invalid file" << endl;
+				cout << scilog_cli::green_text << filepath << scilog_cli::white_text << " is an invalid file" << endl;
 				cout << result;
 			}
 			else
 			{
-				cout << filepath << " is a valid file" << endl;
+				cout << scilog_cli::green_text << filepath << scilog_cli::white_text << " is a valid file" << endl;
 			}
 		}
 		else
 		{
 			if (print_exist_message)
 			{
-				cout << filepath << " doesn't exist" << endl;
+				print_non_exist_message(filepath);
 			}
 		}
 	}
@@ -73,17 +74,17 @@ namespace scilog_cli
 			string result = scilog_cli::validate_topics_xml_file(filepath);
 			if (result != "")
 			{
-				cout << filepath << " is an invalid file" << endl;
+				cout << scilog_cli::green_text << filepath << scilog_cli::white_text << " is an invalid file" << endl;
 				cout << result;
 			}
 			else
 			{
-				cout << filepath << " is a valid file!" << endl;
+				cout << scilog_cli::green_text << filepath << scilog_cli::white_text << " is a valid file" << endl;
 			}
 		}
 		else
 		{
-			cout << filepath << " doesn't exist" << endl;
+			print_non_exist_message(filepath);
 		}
 	}
 }

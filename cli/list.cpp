@@ -1,6 +1,7 @@
 #include "list.hpp"
 #include "core/filesystem.hpp"
 #include "core/xml_parser.hpp"
+#include "cli/cli.hpp"
 
 #include <iostream>
 
@@ -23,7 +24,7 @@ namespace scilog_cli
 		{
 			if (print_exist_message)
 			{
-				cout << filepath << " doesn't exist" << endl;
+				print_non_exist_message(filepath);
 			}
 		}
 	}
@@ -74,12 +75,12 @@ namespace scilog_cli
 			{
 				continue;
 			}
-			cout << "(" << entry->get_date() << ") ";
+			cout << scilog_cli::white_text << "(" << entry->get_date() << ") ";
 			if (entry->get_topic() != "")
 			{
-				cout << entry->get_topic() << ": ";
+				cout << scilog_cli::green_text << entry->get_topic() << ": ";
 			}
-			cout << entry->get_description() << endl;
+			cout << scilog_cli::white_text << entry->get_description() << endl;
 		}
 	}
 
@@ -89,11 +90,12 @@ namespace scilog_cli
 		{
 			if (x_category.get_parent_category() == actual_parent_category)
 			{
+				cout << scilog_cli::green_text;
 				for (int i = 1; i < number; i++)
 				{
 					cout << "-";
 				}
-				cout << x_category.get_name() << endl;
+				cout << scilog_cli::white_text << x_category.get_name() << endl;
 				print_child_categories(categories,x_category,x_category.get_name(),number + 1);
 			}
 		}

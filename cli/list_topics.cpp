@@ -1,4 +1,5 @@
 #include "list_topics.hpp"
+#include "core/filesystem.hpp"
 #include "core/xml_parser.hpp"
 
 #include <iostream>
@@ -19,7 +20,7 @@ namespace scilog_cli
 		}
 		else
 		{
-			cout << filepath << " file doesn't exist" << endl;
+			print_non_exist_message(filepath);
 		}
 	}
 
