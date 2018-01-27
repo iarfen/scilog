@@ -300,6 +300,94 @@ int main(int argc, char* argv[])
 	{
 		scilog_cli::command_create_year_files();
 	}
+	else if (string(argv[1]) == "create-sql-dump")
+	{
+		bool is_year_dir = scilog_cli::is_year_directory(".");
+		if (argc == 2)
+		{
+			if (is_year_dir)
+			{
+				scilog_cli::command_create_sql_dump_year(".","");
+			}
+			else
+			{
+				scilog_cli::command_create_sql_dump_all_years(".","");
+			}
+		}
+		else
+		{
+			string table_prefix = "";
+			string month_selection;
+			string year_selection;
+			string first_argument = string(argv[2]);
+			if (first_argument.substr(0,2) == "--")
+			{
+				month_selection = "none";
+				year_selection = "none";
+			}
+			else if (isdigit(first_argument[0]) && stoi(first_argument) > 12)
+			{
+				year_selection = first_argument;
+				month_selection = "none";
+			}
+			else
+			{
+				month_selection = first_argument;
+				string second_argument;
+				if (argc > 3)
+				{
+					second_argument = string(argv[3]);
+				}
+				if (isdigit(second_argument[0]) && stoi(second_argument) > 12)
+				{
+					if (is_year_dir)
+					{
+						year_selection = "../" + second_argument;
+					}
+					else
+					{
+						year_selection = second_argument;
+					}
+				}
+				else
+				{
+					year_selection = ".";
+				}
+			}
+			if (argc >= 3)
+			{
+				for (unsigned int i = 2; i < argc; i++)
+				{
+					string actual_argument = string(argv[i]);
+					if (actual_argument.substr(0,8) == "--prefix")
+					{
+						table_prefix = actual_argument.substr(9);
+					}
+				}
+			}
+			if (month_selection == "all" or (is_year_dir == false and month_selection == "none" and year_selection == "none"))
+			{
+				string directory_path;
+				if (is_year_dir)
+				{
+					directory_path = "..";
+				}
+				else
+				{
+					directory_path = ".";
+				}
+				scilog_cli::command_create_sql_dump_all_years(directory_path,table_prefix);
+			}
+			else if (month_selection == "none" or month_selection == ".")
+			{
+				scilog_cli::command_create_sql_dump_year(year_selection,table_prefix);
+			}
+			else
+			{
+				scilog_cli::command_create_sql_dump_month(month_selection,year_selection,table_prefix);
+			}
+		}
+	}
 	else if (string(argv[1]) == "list-categories")
 	{
 		scilog_cli::command_list_categories();
@@ -430,7 +518,6 @@ int main(int argc, char* argv[])
 				}
 			}
 		}
-		return 0;
 	}
 	return 0;
 }
