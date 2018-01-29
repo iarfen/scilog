@@ -48,7 +48,7 @@ namespace scilog_cli
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
 		string filepath = directory_path + "/" + filename;
-		string topicspath = directory_path + "/topics.xml";
+		string topicspath = directory_path + "/topics.scilog_topics";
 		if (!boost::filesystem::exists(filepath))
 		{
 			print_non_exist_message(filepath);
@@ -79,7 +79,7 @@ namespace scilog_cli
 	void command_summary_year_by_sciences(const string& directory_path)
 	{
 		vector<shared_ptr<entry>> entries = get_year_entries(directory_path);
-		string topicspath = directory_path + "/topics.xml";
+		string topicspath = directory_path + "/topics.scilog_topics";
 		if (!boost::filesystem::exists(topicspath))
 		{
 			print_non_exist_message(topicspath);
@@ -107,7 +107,7 @@ namespace scilog_cli
 	{
 		vector<string> paths = get_years_path(directory_path);
 		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
-		string topicspath = directory_path + "/topics.xml";
+		string topicspath = directory_path + "/topics.scilog_topics";
 		if (!boost::filesystem::exists(topicspath))
 		{
 			print_non_exist_message(topicspath);

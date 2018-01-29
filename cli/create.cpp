@@ -48,7 +48,7 @@ namespace scilog_cli
 		if (boost::filesystem::exists(filepath))
 		{
 			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath);
-			vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(directory_path + "/topics.xml");
+			vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(directory_path + "/topics.scilog_topics");
 			print_sql_dump(entries,topics,table_prefix);
 		}
 		else
@@ -60,7 +60,7 @@ namespace scilog_cli
 	void command_create_sql_dump_year(const string& directory_path,const string& table_prefix)
 	{
 		vector<shared_ptr<entry>> entries = get_year_entries(directory_path);
-		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(directory_path + "/topics.xml");
+		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(directory_path + "/topics.scilog_topics");
 		print_sql_dump(entries,topics,table_prefix);
 	}
 

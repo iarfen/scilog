@@ -51,7 +51,7 @@ namespace scilog_cli
 		command_validate_month("10",directory_path,false);
 		command_validate_month("11",directory_path,false);
 		command_validate_month("12",directory_path,false);
-		command_validate_topics("topics.xml",directory_path);
+		command_validate_topics("topics.scilog_topics",directory_path);
 	}
 
 	void command_validate_all_years(const string& directory_path)

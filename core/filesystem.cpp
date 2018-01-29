@@ -16,51 +16,51 @@ namespace scilog_cli
 	{
 		if (x == "1" or x == "01" or x == "january")
 		{
-			return "01-january.xml";
+			return "01-january.scilog";
 		}
 		else if (x == "2" or x == "02" or x == "february")
 		{
-			return "02-february.xml";
+			return "02-february.scilog";
 		}
 		else if (x == "3" or x == "03" or x == "march")
 		{
-			return "03-march.xml";
+			return "03-march.scilog";
 		}
 		else if (x == "4" or x == "04" or x == "april")
 		{
-			return "04-april.xml";
+			return "04-april.scilog";
 		}
 		else if (x == "5" or x == "05" or x == "may")
 		{
-			return "05-may.xml";
+			return "05-may.scilog";
 		}
 		else if (x == "6" or x == "06" or x == "june")
 		{
-			return "06-june.xml";
+			return "06-june.scilog";
 		}
 		else if (x == "7" or x == "07" or x == "july")
 		{
-			return "07-july.xml";
+			return "07-july.scilog";
 		}
 		else if (x == "8" or x == "08" or x == "august")
 		{
-			return "08-august.xml";
+			return "08-august.scilog";
 		}
 		else if (x == "9" or x == "09" or x == "september")
 		{
-			return "09-september.xml";
+			return "09-september.scilog";
 		}
 		else if (x == "10" or x == "october")
 		{
-			return "10-october.xml";
+			return "10-october.scilog";
 		}
 		else if (x == "11" or x == "november")
 		{
-			return "11-november.xml";
+			return "11-november.scilog";
 		}
 		else if (x == "12" or x == "december")
 		{
-			return "12-december.xml";
+			return "12-december.scilog";
 		}
 		else if (x == "now")
 		{
@@ -77,9 +77,9 @@ namespace scilog_cli
 	vector<category> get_all_categories()
 	{
 		vector<category> categories;
-		if (boost::filesystem::exists("topics.xml"))
+		if (boost::filesystem::exists("topics.scilog_topics"))
 		{
-			categories = create_categories_from_scilog_file("topics.xml");
+			categories = create_categories_from_scilog_file("topics.scilog_topics");
 		}
 		for (const auto& default_category : default_categories)
 		{
@@ -91,9 +91,9 @@ namespace scilog_cli
 	map<string,category> get_all_categories_map()
 	{
 		map<string,category> categories = default_categories;
-		if (boost::filesystem::exists("topics.xml"))
+		if (boost::filesystem::exists("topics.scilog_topics"))
 		{
-			vector<category> topic_categories = create_categories_from_scilog_file("topics.xml");
+			vector<category> topic_categories = create_categories_from_scilog_file("topics.scilog_topics");
 			if (topic_categories.size() > 0)
 			{
 				for (const category& x_category : topic_categories)
@@ -110,12 +110,12 @@ namespace scilog_cli
 		vector<string> filenames = {"01-january","02-february","03-march","04-april","05-may","06-june","07-july","08-august","09-september","10-october","11-november","12-december"};
 		for (const string& filename : filenames)
 		{
-			if (boost::filesystem::exists(directory_path + "/" + filename + ".xml"))
+			if (boost::filesystem::exists(directory_path + "/" + filename + ".scilog"))
 			{
 				return true;
 			}
 		}
-		if (boost::filesystem::exists(directory_path + "/" + "topics.xml"))
+		if (boost::filesystem::exists(directory_path + "/" + "topics.scilog_topics"))
 		{
 			return true;
 		}
@@ -132,7 +132,7 @@ namespace scilog_cli
 
 		for (const string& filename : filenames)
 		{
-			string filepath = directory_path + "/" + filename + ".xml";
+			string filepath = directory_path + "/" + filename + ".scilog";
 			if (!boost::filesystem::exists(filepath))
 			{
 				continue;

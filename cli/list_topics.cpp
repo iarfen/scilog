@@ -12,7 +12,7 @@ namespace scilog_cli
 {
 	void command_list_topics_year(const string& directory_path)
 	{
-		string filepath = directory_path + "/topics.xml";
+		string filepath = directory_path + "/topics.scilog_topics";
 		if (boost::filesystem::exists(filepath))
 		{
 			vector<shared_ptr<topic>> topics = scilog_cli::create_topics_from_scilog_file(filepath);
