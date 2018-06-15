@@ -134,16 +134,16 @@ int main(int argc, char* argv[])
 		{
 			if (is_year_dir)
 			{
-				scilog_cli::command_list_year(".",scilog_cli::list_type::all);
+				scilog_cli::command_list_year(".",scilog_cli::entry_kind::all);
 			}
 			else
 			{
-				scilog_cli::command_list_all_years(".",scilog_cli::list_type::all);
+				scilog_cli::command_list_all_years(".",scilog_cli::entry_kind::all);
 			}
 		}
 		else
 		{
-			scilog_cli::list_type selected_type = scilog_cli::list_type::all;
+			scilog_cli::entry_kind selected_type = scilog_cli::entry_kind::all;
 			string month_selection;
 			string year_selection;
 			string first_argument = string(argv[2]);
@@ -185,13 +185,13 @@ int main(int argc, char* argv[])
 			{
 				for (unsigned int i = 2; i < argc; i++)
 				{
-					if (string(argv[i]) == "--type=learn")
+					if (string(argv[i]) == "--kind=learn")
 					{
-						selected_type = scilog_cli::list_type::learn;
+						selected_type = scilog_cli::entry_kind::learn;
 					}
-					else if (string(argv[i]) == "--type=project")
+					else if (string(argv[i]) == "--kind=project")
 					{
-						selected_type = scilog_cli::list_type::project;
+						selected_type = scilog_cli::entry_kind::project;
 					}
 				}
 			}

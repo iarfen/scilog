@@ -20,12 +20,12 @@ namespace scilog_cli
 			string result = scilog_cli::validate_scilog_file(filepath);
 			if (result != "")
 			{
-				cout << scilog_cli::green_text << filepath << scilog_cli::white_text << " is an invalid file" << endl;
+				cout << scilog_cli::green_text << filepath << scilog_cli::normal_text << " is an invalid file" << endl;
 				cout << result;
 			}
 			else
 			{
-				cout << scilog_cli::green_text << filepath << scilog_cli::white_text << " is a valid file" << endl;
+				cout << scilog_cli::green_text << filepath << scilog_cli::normal_text << " is a valid file" << endl;
 			}
 		}
 		else
@@ -74,12 +74,12 @@ namespace scilog_cli
 			string result = scilog_cli::validate_topics_xml_file(filepath);
 			if (result != "")
 			{
-				cout << scilog_cli::green_text << filepath << scilog_cli::white_text << " is an invalid file" << endl;
+				cout << scilog_cli::green_text << filepath << scilog_cli::normal_text << " is an invalid file" << endl;
 				cout << result;
 			}
 			else
 			{
-				cout << scilog_cli::green_text << filepath << scilog_cli::white_text << " is a valid file" << endl;
+				cout << scilog_cli::green_text << filepath << scilog_cli::normal_text << " is a valid file" << endl;
 			}
 		}
 		else

@@ -14,13 +14,13 @@ namespace scilog_cli
 		cout << "    --help,-h                            display this help message" << endl;
 		cout << "    --version,-v                         display the version of sci-log" << endl << endl;
 		cout << "    list <file>                          list all the entries of a scilog file" << endl;
-		cout << "    list <file> --type=learn|project     list only entries of the selected type" << endl;
-		cout << "    list <file> --type=learn" << endl
-			 << "      --subtype=<value>                  list only entries of the selected subtype for learn entries:" << endl << endl;
-		cout << "      for learn type: subtype=book|documentation|planification" << endl;
-		cout << "    list <file> --type=project" << endl
-			 << "      --subtype=<value>                  list only entries of the selected subtype for project entries:" << endl << endl;
-		cout << "      for project type: subtype=programming|design|theory|planification" << endl;
+		cout << "    list <file> --kind=learn|project     list only entries of the selected kind" << endl;
+		cout << "    list <file> --kind=learn" << endl
+			 << "      --type=<value>                  list only entries of the selected type for learn entries:" << endl << endl;
+		cout << "      for learn type: type=book|documentation|planification" << endl;
+		cout << "    list <file> --kind=project" << endl
+			 << "      --type=<value>                  list only entries of the selected type for project entries:" << endl << endl;
+		cout << "      for project type: type=programming|design|theory|planification" << endl;
 		cout << "    list <file> --order_by=date|topic    list entries ordered by the value given" << endl;
 		cout << "    summary-month <file>                 summarizes the work of the month" << endl;
 		cout << "    summary-month <file> --topics        summarizes the topics worked and learned" << endl;

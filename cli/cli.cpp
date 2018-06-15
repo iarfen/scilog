@@ -11,4 +11,5 @@ namespace scilog_cli
 	string magenta_text = "\033[1;35m";
 	string cyan_text = "\033[1;36m";
 	string white_text = "\033[1;37m";
+	string normal_text = "\033[1;39m";
 }

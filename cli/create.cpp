@@ -47,7 +47,7 @@ namespace scilog_cli
 		string filepath = directory_path + "/" + filename;
 		if (boost::filesystem::exists(filepath))
 		{
-			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath);
+			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x);
 			vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(directory_path + "/topics.scilog_topics");
 			print_sql_dump(entries,topics,table_prefix);
 		}

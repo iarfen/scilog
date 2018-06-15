@@ -11,7 +11,7 @@ namespace scilog_cli
 	{
 		public:
 			topic();
-			topic(const string&,const string&,const string&,const string&,const string&);
+			topic(const string&,const string&,const string&,const string&,const string&,const string&);
 
 			inline string& get_type()
 			{
@@ -53,6 +53,16 @@ namespace scilog_cli
 				return start_date;
 			}
 
+			inline string& get_end_date()
+			{
+				return end_date;
+			}
+
+			inline const string& get_end_date() const
+			{
+				return end_date;
+			}
+
 			inline string& get_description()
 			{
 				return description;
@@ -68,6 +78,7 @@ namespace scilog_cli
 			string category;
 			string name;
 			string start_date;
+			string end_date;
 			string description;
 	};
 }

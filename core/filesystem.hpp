@@ -15,6 +15,7 @@ using namespace std;
 namespace scilog_cli
 {
 	string get_filename_from_month_number(const string&);
+	string get_month_number_from_filename(const string&);
 	vector<category> get_all_categories();
 	map<string,category> get_all_categories_map();
 

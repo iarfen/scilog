@@ -11,13 +11,13 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void command_list_month(const string& x,const string& directory_path,list_type selected_type,bool print_exist_message)
+	void command_list_month(const string& x,const string& directory_path,entry_kind selected_type,bool print_exist_message)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
 		string filepath = directory_path + "/" + filename;
 		if (boost::filesystem::exists(filepath))
 		{
-			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath);
+			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x);
 			print_list(entries,selected_type);
 		}
 		else
@@ -29,7 +29,7 @@ namespace scilog_cli
 		}
 	}
 
-	void command_list_year(const string& directory_path,list_type selected_type)
+	void command_list_year(const string& directory_path,entry_kind selected_type)
 	{
 		command_list_month("1",directory_path,selected_type,false);
 		command_list_month("2",directory_path,selected_type,false);
@@ -45,7 +45,7 @@ namespace scilog_cli
 		command_list_month("12",directory_path,selected_type,false);
 	}
 
-	void command_list_all_years(const string& directory_path,list_type selected_type)
+	void command_list_all_years(const string& directory_path,entry_kind selected_type)
 	{
 		boost::filesystem::directory_iterator end_itr;
 		for (boost::filesystem::directory_iterator itr(directory_path); itr != end_itr; ++itr)
@@ -63,24 +63,24 @@ namespace scilog_cli
 		print_child_categories(categories,categories.front(),"",1);
 	}
 
-	void print_list(const vector<shared_ptr<entry>>& entries,list_type selected_type)
+	void print_list(const vector<shared_ptr<entry>>& entries,entry_kind selected_type)
 	{
 		for (const shared_ptr<entry>& entry : entries)
 		{
-			if (selected_type == list_type::learn and entry->get_type() != "learn")
+			if (selected_type == entry_kind::learn and entry->get_kind() != "learn")
 			{
 				continue;
 			}
-			if (selected_type == list_type::project and entry->get_type() != "project")
+			if (selected_type == entry_kind::project and entry->get_kind() != "project")
 			{
 				continue;
 			}
-			cout << scilog_cli::white_text << "(" << entry->get_date() << ") ";
+			cout << scilog_cli::normal_text << "(" << entry->get_date() << ") ";
 			if (entry->get_topic() != "")
 			{
 				cout << scilog_cli::green_text << entry->get_topic() << ": ";
 			}
-			cout << scilog_cli::white_text << entry->get_description() << endl;
+			cout << scilog_cli::normal_text << entry->get_description() << endl;
 		}
 	}
 
@@ -95,7 +95,7 @@ namespace scilog_cli
 				{
 					cout << "-";
 				}
-				cout << scilog_cli::white_text << x_category.get_name() << endl;
+				cout << scilog_cli::normal_text << x_category.get_name() << endl;
 				print_child_categories(categories,x_category,x_category.get_name(),number + 1);
 			}
 		}

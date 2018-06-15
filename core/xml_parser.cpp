@@ -9,7 +9,7 @@ using namespace std;
 
 namespace scilog_cli
 {
-	vector<shared_ptr<entry>> create_entries_from_scilog_file(const string& filename)
+	vector<shared_ptr<entry>> create_entries_from_scilog_file(const string& filename,const string& month)
 	{
 		rapidxml::file<> file(filename.c_str());
 		rapidxml::xml_document<> xml_file;
@@ -19,14 +19,14 @@ namespace scilog_cli
 		vector<shared_ptr<entry>> entries = vector<shared_ptr<entry>>();
 		for (rapidxml::xml_node<>* entry_node = root_node->first_node(); entry_node; entry_node = entry_node->next_sibling())
 		{
-			if (string(entry_node->name()) == "entry")
+			string node_name = string(entry_node->name());
+			if (node_name == "project" or node_name == "learn")
 			{
 				string type = entry_node->first_attribute("type") ? entry_node->first_attribute("type")->value() : "";
-				string subtype = entry_node->first_attribute("subtype") ? entry_node->first_attribute("subtype")->value() : "";
 				string topic = entry_node->first_attribute("topic") ? entry_node->first_attribute("topic")->value() : "";
-				string date = entry_node->first_attribute("date") ? entry_node->first_attribute("date")->value() : "";
+				string day = entry_node->first_attribute("day") ? entry_node->first_attribute("day")->value() : "";
 				string description = entry_node->value() ? entry_node->value() : "";
-				shared_ptr<entry> new_entry(new entry(type,subtype,topic,date,description));
+				shared_ptr<entry> new_entry(new entry(node_name,type,topic,day+"-"+month,description));
 				entries.push_back(new_entry);
 			}
 		}
@@ -54,20 +54,20 @@ namespace scilog_cli
 			}
 			for (rapidxml::xml_node<>* topic_node = category_node->first_node(); topic_node; topic_node = topic_node->next_sibling())
 			{
-				string type;
+				string kind;
 				if (learn_topic)
 				{
-					type = "learn";
+					kind = "learn";
 				}
 				else
 				{
-					type = "project";
+					kind = "project";
 				}
 				string name = topic_node->first_attribute("name") ? topic_node->first_attribute("name")->value() : "";
 				string start_date = topic_node->first_attribute("start_date") ? topic_node->first_attribute("start_date")->value() : "";
 				string category = topic_node->first_attribute("category") ? topic_node->first_attribute("category")->value() : "";
 				string description = topic_node->value() ? topic_node->value() : "";
-				shared_ptr<topic> new_topic(new topic(type,category,name,start_date,description));
+				shared_ptr<topic> new_topic(new topic(kind,category,name,start_date,"",description));
 				topics.push_back(new_topic);
 			}
 		}
@@ -104,12 +104,13 @@ namespace scilog_cli
 		out << "<scilog>" << endl;
 		for (const shared_ptr<entry>& entry : entries)
 		{
-			out << "<entry type='" << entry->get_type() << "' subtype='" << entry->get_subtype() << "'";
+			out << "<" << entry->get_kind() << " type='" << entry->get_type() << "'";
 			if (entry->get_topic() != "")
 			{
 				out << " topic='" << entry->get_topic() << "'";
 			}
-			out << "' date='" << entry->get_date() << "'>" << entry->get_description() << "</entry>";
+			string entry_date = entry->get_date();
+			out << "' day='" << entry_date.substr(0,entry_date.find_first_of("-")) << "'>" << entry->get_description() << "</entry>";
 		}
 		out << "</scilog>" << endl;
 		return out.str();
@@ -125,23 +126,26 @@ namespace scilog_cli
 		ostringstream out;
 		for (rapidxml::xml_node<>* entry_node = root_node->first_node(); entry_node; entry_node = entry_node->next_sibling())
 		{
-			if (string(entry_node->name()) != "entry")
+			string node_name = string(entry_node->name());
+			if (node_name != "learn" and node_name != "project")
 			{
-				out << "Invalid tag name '" << string(entry_node->name()) << "'. Only <entry> is allowed" << endl;
+				out << "Invalid tag name '" << string(entry_node->name()) << "'. Only <learn> and <project> is allowed" << endl;
 				continue;
 			}
 			bool has_type = false;
 			bool repeated_type = false;
-			bool has_subtype = false;
-			bool repeated_subtype = false;
 			bool has_topic = false;
 			bool repeated_topic = false;
-			bool has_date = false;
-			bool repeated_date = false;
+			bool unespecific_topic = false;
+			bool has_day = false;
+			bool repeated_day = false;
+			bool invalid_page_point = false;
+			bool has_page_point = false;
+			bool repeated_page_point = false;
 			for (rapidxml::xml_attribute<>* node_attribute = entry_node->first_attribute(); node_attribute; node_attribute = node_attribute->next_attribute())
 			{
 				string attribute_name = string(node_attribute->name());
-				if (!(attribute_name == "type" or attribute_name == "subtype" or attribute_name == "topic" or attribute_name == "date"))
+				if (!(attribute_name == "type" or attribute_name == "topic" or attribute_name == "day" or attribute_name == "page_point"))
 				{
 					out << "Invalid attribute name '" << attribute_name << "'" << endl;
 				}
@@ -156,17 +160,6 @@ namespace scilog_cli
 						has_type = true;
 					}
 				}
-				else if (attribute_name == "subtype")
-				{
-					if (has_subtype)
-					{
-						repeated_subtype = true;
-					}
-					else
-					{
-						has_subtype = true;
-					}
-				}
 				else if (attribute_name == "topic")
 				{
 					if (has_topic)
@@ -178,26 +171,42 @@ namespace scilog_cli
 						has_topic = true;
 					}
 				}
-				else if (attribute_name == "date")
+				else if (attribute_name == "day")
 				{
-					if (has_date)
+					if (has_day)
 					{
-						repeated_date = true;
+						repeated_day = true;
 					}
 					else
 					{
-						has_date = true;
+						has_day = true;
 					}
 				}
-				if (attribute_name == "subtype" and string(node_attribute->value()) == "planification")
+				else if (attribute_name == "page_point")
+				{
+					if (node_name == "project")
+					{
+						invalid_page_point = true;
+					}
+					if (has_page_point)
+					{
+						repeated_page_point = true;
+					}
+					else
+					{
+						has_page_point = true;
+					}
+				}
+				if (attribute_name == "type" and string(node_attribute->value()) == "planification")
 				{
 					has_topic = true;
+					unespecific_topic = true;
 				}
 			}
 			string error_sentence;
-			if (has_topic)
+			if (has_topic and !unespecific_topic)
 			{
-				error_sentence = "The entry '" + string(entry_node->first_attribute("type")->value()) + "'";
+				error_sentence = "The entry '" + string(entry_node->first_attribute("topic")->value()) + "'";
 			}
 			else
 			{
@@ -209,15 +218,7 @@ namespace scilog_cli
 			}
 			if (repeated_type)
 			{
-				out << error_sentence << "' has a type repeated" << endl;
-			}
-			if (!has_subtype)
-			{
-				out << error_sentence << " doesn't has subtype" << endl;
-			}
-			if (repeated_subtype)
-			{
-				out << error_sentence << "' has a subtype repeated" << endl;
+				out << error_sentence << " has a type repeated" << endl;
 			}
 			if (!has_topic)
 			{
@@ -225,15 +226,23 @@ namespace scilog_cli
 			}
 			if (repeated_topic)
 			{
-				out << error_sentence << "' has a topic repeated" << endl;
+				out << error_sentence << " has a topic repeated" << endl;
 			}
-			if (!has_date)
+			if (!has_day)
 			{
-				out << error_sentence << " doesn't has date" << endl;
+				out << error_sentence << " doesn't has day" << endl;
 			}
-			if (repeated_date)
+			if (repeated_day)
 			{
-				out << error_sentence << "' has a date repeated" << endl;
+				out << error_sentence << " has a day repeated" << endl;
+			}
+			if (invalid_page_point)
+			{
+				out << error_sentence << " has a <project> entry with a page_point attribute" << endl;
+			}
+			if (repeated_page_point)
+			{
+				out << error_sentence << " has a page_point repeated" << endl;
 			}
 			string description = entry_node->value();
 			if (description == "")

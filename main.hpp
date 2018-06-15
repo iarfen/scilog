@@ -5,7 +5,7 @@ using namespace std;
 
 namespace scilog_cli
 {
-	enum class list_type {all,learn,project};
+	enum class entry_kind {all,learn,project};
 }
 
 #endif // SCILOG_MAIN_HPP_INCLUDED

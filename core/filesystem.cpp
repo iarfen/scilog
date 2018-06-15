@@ -74,6 +74,58 @@ namespace scilog_cli
 		}
 	}
 
+	string get_month_number_from_filename(const string& x)
+	{
+		if (x == "01-january.scilog")
+		{
+			return "1";
+		}
+		else if (x == "02-february.scilog")
+		{
+			return "2";
+		}
+		else if (x == "03-march.scilog")
+		{
+			return "3";
+		}
+		else if (x == "04-april.scilog")
+		{
+			return "4";
+		}
+		else if (x == "05-may.scilog")
+		{
+			return "5";
+		}
+		else if (x == "06-june.scilog")
+		{
+			return "6";
+		}
+		else if (x == "07-july.scilog")
+		{
+			return "7";
+		}
+		else if (x == "08-august.scilog")
+		{
+			return "8";
+		}
+		else if (x == "09-september.scilog")
+		{
+			return "9";
+		}
+		else if (x == "10-october.scilog")
+		{
+			return "10";
+		}
+		else if (x == "11-november.scilog")
+		{
+			return "11";
+		}
+		else if (x == "12-december.scilog")
+		{
+			return "12";
+		}
+	}
+
 	vector<category> get_all_categories()
 	{
 		vector<category> categories;
@@ -137,7 +189,8 @@ namespace scilog_cli
 			{
 				continue;
 			}
-			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath);
+			string month_number = get_month_number_from_filename(filename + ".scilog");
+			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,month_number);
 			out_entries.insert(out_entries.begin(),entries.begin(),entries.end());
 		}
 		return out_entries;
@@ -181,6 +234,6 @@ namespace scilog_cli
 
 	void print_non_exist_message(const string& filepath)
 	{
-		cout << scilog_cli::green_text << filepath << scilog_cli::white_text << " doesn't exist" << endl;
+		cout << scilog_cli::green_text << filepath << scilog_cli::normal_text << " doesn't exist" << endl;
 	}
 }

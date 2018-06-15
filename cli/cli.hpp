@@ -14,6 +14,7 @@ namespace scilog_cli
 	extern string magenta_text;
 	extern string cyan_text;
 	extern string white_text;
+	extern string normal_text;
 }
 
 #endif // CLI_HPP_INCLUDED

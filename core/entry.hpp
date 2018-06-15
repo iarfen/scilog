@@ -13,6 +13,16 @@ namespace scilog_cli
 		entry();
 		entry(const string&, const string&, const string&, const string&, const string&);
 
+		inline string& get_kind()
+		{
+			return kind;
+		}
+
+		inline const string& get_kind() const
+		{
+			return kind;
+		}
+
 		inline string& get_topic()
 		{
 			return topic;
@@ -31,16 +41,6 @@ namespace scilog_cli
 		inline const string& get_type() const
 		{
 			return type;
-		}
-
-		inline string& get_subtype()
-		{
-			return subtype;
-		}
-
-		inline const string& get_subtype() const
-		{
-			return subtype;
 		}
 
 		inline string& get_date()
@@ -64,8 +64,8 @@ namespace scilog_cli
 		}
 
 		private:
+		string kind;
 		string type;
-		string subtype;
 		string topic;
 		string date;
 		string description;
