@@ -31,361 +31,138 @@ int main(int argc, char* argv[])
 		scilog_cli::command_version();
 		return 0;
 	}
+	else if (string(argv[1]) == "fs")
+	{
+		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
+		return 0;
+	}
 	else if (string(argv[1]) == "validate")
 	{
-		bool is_year_dir = scilog_cli::is_year_directory(".");
-		if (argc == 2)
+		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
+		bool topics = false;
+		if (argc >= 3)
 		{
-			if (is_year_dir)
+			for (unsigned int i = 2; i < argc; i++)
 			{
-				scilog_cli::command_validate_year(".");
+				string actual_argument = string(argv[i]);
+				if (actual_argument == "--topics")
+				{
+					topics = true;
+				}
 			}
-			else
-			{
-				scilog_cli::command_validate_all_years(".");
-			}
+		}
+		if (values.mode == scilog_cli::fs_mode::all)
+		{
+			scilog_cli::command_validate_all_years(values.directory_path);
+			return 0;
+		}
+		else if (values.mode == scilog_cli::fs_mode::year)
+		{
+			scilog_cli::command_validate_year(values.directory_path);
+			return 0;
 		}
 		else
 		{
-			bool topics = false;
-			string month_selection;
-			string year_selection;
-			string first_argument = string(argv[2]);
-			if (first_argument.substr(0,2) == "--")
+			if (topics)
 			{
-				month_selection = "none";
-				year_selection = "none";
-			}
-			else if (isdigit(first_argument[0]) && stoi(first_argument) > 12)
-			{
-				year_selection = first_argument;
-				month_selection = "none";
+				scilog_cli::command_validate_topics(values.month_selection,values.directory_path);
+				return 0;
 			}
 			else
 			{
-				month_selection = first_argument;
-				string second_argument;
-				if (argc > 3)
-				{
-					second_argument = string(argv[3]);
-				}
-				if (isdigit(second_argument[0]) && stoi(second_argument) > 12)
-				{
-					if (is_year_dir)
-					{
-						year_selection = "../" + second_argument;
-					}
-					else
-					{
-						year_selection = second_argument;
-					}
-				}
-				else
-				{
-					year_selection = ".";
-				}
-			}
-			if (argc >= 3)
-			{
-				for (unsigned int i = 2; i < argc; i++)
-				{
-					string actual_argument = string(argv[i]);
-					if (actual_argument == "--topics")
-					{
-						topics = true;
-					}
-				}
-			}
-			if (month_selection == "all" or (is_year_dir == false and month_selection == "none" and year_selection == "none"))
-			{
-				string directory_path;
-				if (is_year_dir)
-				{
-					directory_path = "..";
-				}
-				else
-				{
-					directory_path = ".";
-				}
-				scilog_cli::command_validate_all_years(directory_path);
-			}
-			else if (month_selection == "none" or month_selection == ".")
-			{
-				scilog_cli::command_validate_year(year_selection);
-			}
-			else
-			{
-				if (topics)
-				{
-					scilog_cli::command_validate_topics(month_selection,year_selection);
-				}
-				else
-				{
-					scilog_cli::command_validate_month(month_selection,year_selection,true);
-				}
+				scilog_cli::command_validate_month(values.month_selection,values.directory_path,true);
+				return 0;
 			}
 		}
-		return 0;
 	}
 	else if (string(argv[1]) == "list")
 	{
-		bool is_year_dir = scilog_cli::is_year_directory(".");
-		if (argc == 2)
+		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
+		scilog_cli::entry_kind selected_type = scilog_cli::entry_kind::all;
+		if (argc >= 3)
 		{
-			if (is_year_dir)
+			for (unsigned int i = 2; i < argc; i++)
 			{
-				scilog_cli::command_list_year(".",scilog_cli::entry_kind::all);
+				string actual_argument = string(argv[i]);
+				if (actual_argument == "--kind=learn")
+				{
+					selected_type = scilog_cli::entry_kind::learn;
+				}
+				else if (actual_argument == "--kind=project")
+				{
+					selected_type = scilog_cli::entry_kind::project;
+				}
 			}
-			else
-			{
-				scilog_cli::command_list_all_years(".",scilog_cli::entry_kind::all);
-			}
+		}
+		if (values.mode == scilog_cli::fs_mode::all)
+		{
+			scilog_cli::command_list_all_years(values.directory_path,selected_type);
+			return 0;
+		}
+		else if (values.mode == scilog_cli::fs_mode::year)
+		{
+			scilog_cli::command_list_year(values.directory_path,selected_type);
+			return 0;
 		}
 		else
 		{
-			scilog_cli::entry_kind selected_type = scilog_cli::entry_kind::all;
-			string month_selection;
-			string year_selection;
-			string first_argument = string(argv[2]);
-			if (first_argument.substr(0,2) == "--")
-			{
-				month_selection = "none";
-				year_selection = "none";
-			}
-			else if (isdigit(first_argument[0]) && stoi(first_argument) > 12)
-			{
-				year_selection = first_argument;
-				month_selection = "none";
-			}
-			else
-			{
-				month_selection = first_argument;
-				string second_argument;
-				if (argc > 3)
-				{
-					second_argument = string(argv[3]);
-				}
-				if (isdigit(second_argument[0]) && stoi(second_argument) > 12)
-				{
-					if (is_year_dir)
-					{
-						year_selection = "../" + second_argument;
-					}
-					else
-					{
-						year_selection = second_argument;
-					}
-				}
-				else
-				{
-					year_selection = ".";
-				}
-			}
-			if (argc >= 3)
-			{
-				for (unsigned int i = 2; i < argc; i++)
-				{
-					if (string(argv[i]) == "--kind=learn")
-					{
-						selected_type = scilog_cli::entry_kind::learn;
-					}
-					else if (string(argv[i]) == "--kind=project")
-					{
-						selected_type = scilog_cli::entry_kind::project;
-					}
-				}
-			}
-			if (month_selection == "all" or (is_year_dir == false and month_selection == "none" and year_selection == "none"))
-			{
-				string directory_path;
-				if (is_year_dir)
-				{
-					directory_path = "..";
-				}
-				else
-				{
-					directory_path = ".";
-				}
-				scilog_cli::command_list_all_years(directory_path,selected_type);
-			}
-			else if (month_selection == "none" or month_selection == ".")
-			{
-				scilog_cli::command_list_year(year_selection,selected_type);
-			}
-			else
-			{
-				scilog_cli::command_list_month(month_selection,year_selection,selected_type,true);
-			}
+			scilog_cli::command_list_month(values.month_selection,values.directory_path,selected_type,true);
+			return 0;
 		}
-		return 0;
 	}
 	else if (string(argv[1]) == "list-topics")
 	{
-		bool is_year_dir = scilog_cli::is_year_directory(".");
-		if (argc == 2)
+		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
+		if (values.mode == scilog_cli::fs_mode::all)
 		{
-			if (is_year_dir)
-			{
-				scilog_cli::command_list_topics_year(".");
-			}
-			else
-			{
-				scilog_cli::command_list_topics_all_years(".");
-			}
+			scilog_cli::command_list_topics_all_years(values.directory_path);
+			return 0;
 		}
-		else
+		else if (values.mode == scilog_cli::fs_mode::year)
 		{
-			string month_selection;
-			string year_selection;
-			string first_argument = string(argv[2]);
-			if (first_argument.substr(0,2) == "--")
-			{
-				month_selection = "none";
-				year_selection = "none";
-			}
-			else if (isdigit(first_argument[0]) && stoi(first_argument) > 12)
-			{
-				year_selection = first_argument;
-				month_selection = "none";
-			}
-			else
-			{
-				month_selection = first_argument;
-				string second_argument;
-				if (argc > 3)
-				{
-					second_argument = string(argv[3]);
-				}
-				if (isdigit(second_argument[0]) && stoi(second_argument) > 12)
-				{
-					if (is_year_dir)
-					{
-						year_selection = "../" + second_argument;
-					}
-					else
-					{
-						year_selection = second_argument;
-					}
-				}
-				else
-				{
-					year_selection = ".";
-				}
-			}
-			if (month_selection == "all" or (is_year_dir == false and month_selection == "none" and year_selection == "none"))
-			{
-				string directory_path;
-				if (is_year_dir)
-				{
-					directory_path = "..";
-				}
-				else
-				{
-					directory_path = ".";
-				}
-				scilog_cli::command_list_topics_all_years(directory_path);
-			}
-			else if (month_selection == "none" or month_selection == ".")
-			{
-				scilog_cli::command_list_topics_year(year_selection);
-			}
+			scilog_cli::command_list_topics_year(values.directory_path);
+			return 0;
 		}
-		return 0;
 	}
 	else if (string(argv[1]) == "create-month-file")
 	{
 		scilog_cli::command_create_month_file(string(argv[2]));
+		return 0;
 	}
 	else if (string(argv[1]) == "create-year-files")
 	{
 		scilog_cli::command_create_year_files();
+		return 0;
 	}
 	else if (string(argv[1]) == "create-sql-dump")
 	{
-		bool is_year_dir = scilog_cli::is_year_directory(".");
-		if (argc == 2)
+		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
+		string table_prefix = "";
+		if (argc >= 3)
 		{
-			if (is_year_dir)
+			for (unsigned int i = 2; i < argc; i++)
 			{
-				scilog_cli::command_create_sql_dump_year(".","");
+				string actual_argument = string(argv[i]);
+				if (actual_argument.substr(0,8) == "--prefix")
+				{
+					table_prefix = actual_argument.substr(9);
+				}
 			}
-			else
-			{
-				scilog_cli::command_create_sql_dump_all_years(".","");
-			}
+		}
+		if (values.mode == scilog_cli::fs_mode::all)
+		{
+			scilog_cli::command_create_sql_dump_all_years(values.directory_path,table_prefix);
+			return 0;
+		}
+		else if (values.mode == scilog_cli::fs_mode::year)
+		{
+			scilog_cli::command_create_sql_dump_year(values.directory_path,table_prefix);
+			return 0;
 		}
 		else
 		{
-			string table_prefix = "";
-			string month_selection;
-			string year_selection;
-			string first_argument = string(argv[2]);
-			if (first_argument.substr(0,2) == "--")
-			{
-				month_selection = "none";
-				year_selection = "none";
-			}
-			else if (isdigit(first_argument[0]) && stoi(first_argument) > 12)
-			{
-				year_selection = first_argument;
-				month_selection = "none";
-			}
-			else
-			{
-				month_selection = first_argument;
-				string second_argument;
-				if (argc > 3)
-				{
-					second_argument = string(argv[3]);
-				}
-				if (isdigit(second_argument[0]) && stoi(second_argument) > 12)
-				{
-					if (is_year_dir)
-					{
-						year_selection = "../" + second_argument;
-					}
-					else
-					{
-						year_selection = second_argument;
-					}
-				}
-				else
-				{
-					year_selection = ".";
-				}
-			}
-			if (argc >= 3)
-			{
-				for (unsigned int i = 2; i < argc; i++)
-				{
-					string actual_argument = string(argv[i]);
-					if (actual_argument.substr(0,8) == "--prefix")
-					{
-						table_prefix = actual_argument.substr(9);
-					}
-				}
-			}
-			if (month_selection == "all" or (is_year_dir == false and month_selection == "none" and year_selection == "none"))
-			{
-				string directory_path;
-				if (is_year_dir)
-				{
-					directory_path = "..";
-				}
-				else
-				{
-					directory_path = ".";
-				}
-				scilog_cli::command_create_sql_dump_all_years(directory_path,table_prefix);
-			}
-			else if (month_selection == "none" or month_selection == ".")
-			{
-				scilog_cli::command_create_sql_dump_year(year_selection,table_prefix);
-			}
-			else
-			{
-				scilog_cli::command_create_sql_dump_month(month_selection,year_selection,table_prefix);
-			}
+			scilog_cli::command_create_sql_dump_month(values.month_selection,values.directory_path,table_prefix);
+			return 0;
 		}
 	}
 	else if (string(argv[1]) == "list-categories")
@@ -395,129 +172,160 @@ int main(int argc, char* argv[])
 	}
 	else if (string(argv[1]) == "summary")
 	{
-		bool is_year_dir = scilog_cli::is_year_directory(".");
-		if (argc == 2)
+		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
+		bool topics = false;
+		bool sciences = false;
+		if (argc >= 3)
 		{
-			if (is_year_dir)
+			for (unsigned int i = 2; i < argc; i++)
 			{
-				scilog_cli::command_summary_year(".");
+				string actual_argument = string(argv[i]);
+				if (actual_argument == "--topics")
+				{
+					topics = true;
+				}
+				else if (actual_argument == "--sciences")
+				{
+					sciences = true;
+				}
+			}
+		}
+		if (values.mode == scilog_cli::fs_mode::all)
+		{
+			if (topics)
+			{
+				scilog_cli::command_summary_all_years_by_topics(values.directory_path);
+			}
+			else if (sciences)
+			{
+				scilog_cli::command_summary_all_years_by_sciences(values.directory_path);
 			}
 			else
 			{
-				scilog_cli::command_summary_all_years(".");
+				scilog_cli::command_summary_all_years(values.directory_path);
 			}
+			return 0;
+		}
+		else if (values.mode == scilog_cli::fs_mode::year)
+		{
+			if (topics)
+			{
+				scilog_cli::command_summary_year_by_topics(values.directory_path);
+			}
+			else if (sciences)
+			{
+				scilog_cli::command_summary_year_by_sciences(values.directory_path);
+			}
+			else
+			{
+				scilog_cli::command_summary_year(values.directory_path);
+			}
+			return 0;
 		}
 		else
 		{
-			bool topics = false;
-			bool sciences = false;
-			string month_selection;
-			string year_selection;
-			string first_argument = string(argv[2]);
-			if (first_argument.substr(0,2) == "--")
+			if (topics)
 			{
-				month_selection = "none";
-				year_selection = "none";
+				scilog_cli::command_summary_month_by_topics(values.month_selection,values.directory_path);
 			}
-			else if (isdigit(first_argument[0]) && stoi(first_argument) > 12)
+			else if (sciences)
 			{
-				year_selection = first_argument;
-				month_selection = "none";
+				scilog_cli::command_summary_month_by_sciences(values.month_selection,values.directory_path);
 			}
 			else
 			{
-				month_selection = first_argument;
-				string second_argument;
-				if (argc > 3)
-				{
-					second_argument = string(argv[3]);
-				}
-				if (isdigit(second_argument[0]) && stoi(second_argument) > 12)
-				{
-					if (is_year_dir)
-					{
-						year_selection = "../" + second_argument;
-					}
-					else
-					{
-						year_selection = second_argument;
-					}
-				}
-				else
-				{
-					year_selection = ".";
-				}
+				scilog_cli::command_summary_month(values.month_selection,values.directory_path);
 			}
-			if (argc >= 3)
-			{
-				for (unsigned int i = 2; i < argc; i++)
-				{
-					string actual_argument = string(argv[i]);
-					if (actual_argument == "--topics")
-					{
-						topics = true;
-					}
-					else if (actual_argument == "--sciences")
-					{
-						sciences = true;
-					}
-				}
-			}
-			if (month_selection == "all" or (is_year_dir == false and month_selection == "none" and year_selection == "none"))
-			{
-				string directory_path;
-				if (is_year_dir)
-				{
-					directory_path = "..";
-				}
-				else
-				{
-					directory_path = ".";
-				}
-				if (topics)
-				{
-					scilog_cli::command_summary_all_years_by_topics(directory_path);
-				}
-				else if (sciences)
-				{
-					scilog_cli::command_summary_all_years_by_sciences(directory_path);
-				}
-				else
-				{
-					scilog_cli::command_summary_all_years(directory_path);
-				}
-			}
-			else if (month_selection == "none" or month_selection == ".")
-			{
-				if (topics)
-				{
-					scilog_cli::command_summary_year_by_topics(year_selection);
-				}
-				else if (sciences)
-				{
-					scilog_cli::command_summary_year_by_sciences(year_selection);
-				}
-				else
-				{
-					scilog_cli::command_summary_year(year_selection);
-				}
-			}
-			else
-			{
-				if (topics)
-				{
-					scilog_cli::command_summary_month_by_topics(month_selection,year_selection);
-				}
-				else if (sciences)
-				{
-					scilog_cli::command_summary_month_by_sciences(month_selection,year_selection);
-				}
-				else
-				{
-					scilog_cli::command_summary_month(month_selection,year_selection);
-				}
-			}
+			return 0;
 		}
 	}
 	return 0;
+}
+
+namespace scilog_cli
+{
+	fs_args fs_selection(int argc, char* argv[])
+	{
+		fs_args values;
+		values.is_year_dir = scilog_cli::is_year_directory(".");
+		if (argc == 2)
+		{
+			if (values.is_year_dir)
+			{
+				values.mode = fs_mode::year;
+			}
+			else
+			{
+				values.mode = fs_mode::all;
+			}
+			values.directory_path = ".";
+		}
+		else
+		{
+			string first_argument = string(argv[2]);
+			if (first_argument.substr(0,2) == "--")
+			{
+				values.month_selection = "none";
+				values.year_selection = "none";
+				values.directory_path = ".";
+			}
+			else if (isdigit(first_argument[0]) && stoi(first_argument) > 12)
+			{
+				values.year_selection = first_argument;
+				values.directory_path = first_argument;
+				values.month_selection = "none";
+			}
+			else
+			{
+				values.month_selection = first_argument;
+				if (argc > 3)
+				{
+					string second_argument = string(argv[3]);
+					if (isdigit(second_argument[0]) && stoi(second_argument) > 12)
+					{
+						values.year_selection = second_argument;
+						if (values.is_year_dir)
+						{
+							values.directory_path = "../" + second_argument;
+						}
+						else
+						{
+							values.directory_path = second_argument;
+						}
+					}
+					else
+					{
+						//values.year_selection = this directory;
+						values.directory_path = ".";
+					}
+				}
+				else
+				{
+					//values.year_selection = this directory;
+					values.directory_path = ".";
+				}
+			}
+			if (values.month_selection == "all" or (values.is_year_dir == false and values.month_selection == "none" and values.year_selection == "none"))
+			{
+				if (values.is_year_dir)
+				{
+					values.directory_path = "..";
+				}
+				else
+				{
+					values.directory_path = ".";
+				}
+				values.mode = fs_mode::all;
+			}
+			else if (values.month_selection == "none" or values.month_selection == ".")
+			{
+				values.mode = fs_mode::year;
+			}
+			else
+			{
+				values.mode = fs_mode::month;
+			}
+		}
+		return values;
+	}
 }
