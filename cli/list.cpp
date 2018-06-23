@@ -53,7 +53,7 @@ namespace scilog_cli
 			if (is_directory(itr->status()))
 			{
 				string cwd = itr->path().generic_string();
-				command_list_year(itr->path().generic_string(),cwd.substr(cwd.find_last_of("/") + 1),selected_type);
+				command_list_year(itr->path().generic_string(),get_directory(cwd),selected_type);
 			}
 		}
 	}

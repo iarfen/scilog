@@ -182,7 +182,7 @@ namespace scilog_cli
 		string cwd = boost::filesystem::current_path().generic_string();
 		if (is_year_directory(cwd))
 		{
-			return cwd.substr(cwd.find_last_of("/") + 1);
+			return get_directory(cwd);
 		}
 		else
 		{
@@ -191,6 +191,11 @@ namespace scilog_cli
 			tm* parts = localtime(&now_c);
 			return to_string(1900 + parts->tm_year);
 		}
+	}
+
+	string get_directory(const string& cwd)
+	{
+		return cwd.substr(cwd.find_last_of("/") + 1);
 	}
 
 	vector<shared_ptr<entry>> get_year_entries(const string& directory_path,const string& year)
