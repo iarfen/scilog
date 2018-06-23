@@ -11,14 +11,14 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void command_list_month(const string& x,const string& directory_path,const string& year,entry_kind selected_type,bool print_exist_message)
+	void command_list_month(const string& x,const string& directory_path,const string& year,entry_kind selected_type,const string& filtered_topic,bool print_exist_message)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
 		string filepath = directory_path + "/" + filename;
 		if (boost::filesystem::exists(filepath))
 		{
 			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
-			print_list(entries,selected_type);
+			print_list(entries,selected_type,filtered_topic);
 		}
 		else
 		{
@@ -29,23 +29,23 @@ namespace scilog_cli
 		}
 	}
 
-	void command_list_year(const string& directory_path,const string& year,entry_kind selected_type)
+	void command_list_year(const string& directory_path,const string& year,entry_kind selected_type,const string& filtered_topic)
 	{
-		command_list_month("1",directory_path,year,selected_type,false);
-		command_list_month("2",directory_path,year,selected_type,false);
-		command_list_month("3",directory_path,year,selected_type,false);
-		command_list_month("4",directory_path,year,selected_type,false);
-		command_list_month("5",directory_path,year,selected_type,false);
-		command_list_month("6",directory_path,year,selected_type,false);
-		command_list_month("7",directory_path,year,selected_type,false);
-		command_list_month("8",directory_path,year,selected_type,false);
-		command_list_month("9",directory_path,year,selected_type,false);
-		command_list_month("10",directory_path,year,selected_type,false);
-		command_list_month("11",directory_path,year,selected_type,false);
-		command_list_month("12",directory_path,year,selected_type,false);
+		command_list_month("1",directory_path,year,selected_type,filtered_topic,false);
+		command_list_month("2",directory_path,year,selected_type,filtered_topic,false);
+		command_list_month("3",directory_path,year,selected_type,filtered_topic,false);
+		command_list_month("4",directory_path,year,selected_type,filtered_topic,false);
+		command_list_month("5",directory_path,year,selected_type,filtered_topic,false);
+		command_list_month("6",directory_path,year,selected_type,filtered_topic,false);
+		command_list_month("7",directory_path,year,selected_type,filtered_topic,false);
+		command_list_month("8",directory_path,year,selected_type,filtered_topic,false);
+		command_list_month("9",directory_path,year,selected_type,filtered_topic,false);
+		command_list_month("10",directory_path,year,selected_type,filtered_topic,false);
+		command_list_month("11",directory_path,year,selected_type,filtered_topic,false);
+		command_list_month("12",directory_path,year,selected_type,filtered_topic,false);
 	}
 
-	void command_list_all_years(const string& directory_path,entry_kind selected_type)
+	void command_list_all_years(const string& directory_path,entry_kind selected_type,const string& filtered_topic)
 	{
 		boost::filesystem::directory_iterator end_itr;
 		for (boost::filesystem::directory_iterator itr(directory_path); itr != end_itr; ++itr)
@@ -53,7 +53,7 @@ namespace scilog_cli
 			if (is_directory(itr->status()))
 			{
 				string cwd = itr->path().generic_string();
-				command_list_year(itr->path().generic_string(),get_directory(cwd),selected_type);
+				command_list_year(itr->path().generic_string(),get_directory(cwd),selected_type,filtered_topic);
 			}
 		}
 	}
@@ -64,7 +64,7 @@ namespace scilog_cli
 		print_child_categories(categories,categories.front(),"",1);
 	}
 
-	void print_list(const vector<shared_ptr<entry>>& entries,entry_kind selected_type)
+	void print_list(const vector<shared_ptr<entry>>& entries,entry_kind selected_type,const string& filtered_topic)
 	{
 		for (const shared_ptr<entry>& entry : entries)
 		{
@@ -73,6 +73,10 @@ namespace scilog_cli
 				continue;
 			}
 			if (selected_type == entry_kind::project and entry->get_kind() != "project")
+			{
+				continue;
+			}
+			if (filtered_topic != "" and filtered_topic != entry->get_topic())
 			{
 				continue;
 			}
