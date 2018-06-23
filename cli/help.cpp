@@ -12,7 +12,7 @@ namespace scilog_cli
 		cout << "    scilog <command> <file>" << endl << endl;
 		cout << "commands:" << endl;
 		cout << "    --help,-h                            display this help message" << endl;
-		cout << "    --version,-v                         display the version of sci-log" << endl << endl;
+		cout << "    --version,-v                         display the version of scilog" << endl << endl;
 		cout << "    list <file>                          list all the entries of a scilog file" << endl;
 		cout << "    list <file> --kind=learn|project     list only entries of the selected kind" << endl;
 		cout << "    list <file> --kind=learn" << endl
