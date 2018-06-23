@@ -13,7 +13,7 @@ using namespace std;
 
 namespace scilog_cli
 {
-	vector<shared_ptr<entry>> create_entries_from_scilog_file(const string&,const string&);
+	vector<shared_ptr<entry>> create_entries_from_scilog_file(const string&,const string&,const string&);
 	vector<shared_ptr<topic>> create_topics_from_scilog_file(const string&);
 	vector<category> create_categories_from_scilog_file(const string&);
 

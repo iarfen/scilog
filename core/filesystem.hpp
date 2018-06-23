@@ -21,7 +21,9 @@ namespace scilog_cli
 
 	bool is_year_directory(const string&);
 
-	vector<shared_ptr<entry>> get_year_entries(const string&);
+	string get_current_directory_year();
+
+	vector<shared_ptr<entry>> get_year_entries(const string&,const string&);
 	vector<shared_ptr<entry>> get_all_years_entries(vector<string>);
 
 	vector<shared_ptr<topic>> get_all_years_topics(vector<string>);

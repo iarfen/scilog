@@ -13,6 +13,8 @@
 #include <iostream>
 #include <string>
 
+#include "boost/filesystem.hpp"
+
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -101,12 +103,12 @@ int main(int argc, char* argv[])
 		}
 		else if (values.mode == scilog_cli::fs_mode::year)
 		{
-			scilog_cli::command_list_year(values.directory_path,selected_type);
+			scilog_cli::command_list_year(values.directory_path,values.year_selection,selected_type);
 			return 0;
 		}
 		else
 		{
-			scilog_cli::command_list_month(values.month_selection,values.directory_path,selected_type,true);
+			scilog_cli::command_list_month(values.month_selection,values.directory_path,values.year_selection,selected_type,true);
 			return 0;
 		}
 	}
@@ -156,12 +158,12 @@ int main(int argc, char* argv[])
 		}
 		else if (values.mode == scilog_cli::fs_mode::year)
 		{
-			scilog_cli::command_create_sql_dump_year(values.directory_path,table_prefix);
+			scilog_cli::command_create_sql_dump_year(values.directory_path,values.year_selection,table_prefix);
 			return 0;
 		}
 		else
 		{
-			scilog_cli::command_create_sql_dump_month(values.month_selection,values.directory_path,table_prefix);
+			scilog_cli::command_create_sql_dump_month(values.month_selection,values.directory_path,values.year_selection,table_prefix);
 			return 0;
 		}
 	}
@@ -210,15 +212,15 @@ int main(int argc, char* argv[])
 		{
 			if (topics)
 			{
-				scilog_cli::command_summary_year_by_topics(values.directory_path);
+				scilog_cli::command_summary_year_by_topics(values.directory_path,values.year_selection);
 			}
 			else if (sciences)
 			{
-				scilog_cli::command_summary_year_by_sciences(values.directory_path);
+				scilog_cli::command_summary_year_by_sciences(values.directory_path,values.year_selection);
 			}
 			else
 			{
-				scilog_cli::command_summary_year(values.directory_path);
+				scilog_cli::command_summary_year(values.directory_path,values.year_selection);
 			}
 			return 0;
 		}
@@ -226,15 +228,15 @@ int main(int argc, char* argv[])
 		{
 			if (topics)
 			{
-				scilog_cli::command_summary_month_by_topics(values.month_selection,values.directory_path);
+				scilog_cli::command_summary_month_by_topics(values.month_selection,values.directory_path,values.year_selection);
 			}
 			else if (sciences)
 			{
-				scilog_cli::command_summary_month_by_sciences(values.month_selection,values.directory_path);
+				scilog_cli::command_summary_month_by_sciences(values.month_selection,values.directory_path,values.year_selection);
 			}
 			else
 			{
-				scilog_cli::command_summary_month(values.month_selection,values.directory_path);
+				scilog_cli::command_summary_month(values.month_selection,values.directory_path,values.year_selection);
 			}
 			return 0;
 		}
@@ -266,7 +268,7 @@ namespace scilog_cli
 			if (first_argument.substr(0,2) == "--")
 			{
 				values.month_selection = "none";
-				values.year_selection = "none";
+				values.year_selection = get_current_directory_year();
 				values.directory_path = ".";
 			}
 			else if (isdigit(first_argument[0]) && stoi(first_argument) > 12)
@@ -295,14 +297,30 @@ namespace scilog_cli
 					}
 					else
 					{
-						//values.year_selection = this directory;
-						values.directory_path = ".";
+						values.year_selection = get_current_directory_year();
+						string cwd = boost::filesystem::current_path().generic_string();
+						if (is_year_directory(cwd))
+						{
+							values.directory_path = ".";
+						}
+						else
+						{
+							values.directory_path = values.year_selection;
+						}
 					}
 				}
 				else
 				{
-					//values.year_selection = this directory;
-					values.directory_path = ".";
+					values.year_selection = get_current_directory_year();
+					string cwd = boost::filesystem::current_path().generic_string();
+					if (is_year_directory(cwd))
+					{
+						values.directory_path = ".";
+					}
+					else
+					{
+						values.directory_path = values.year_selection;
+					}
 				}
 			}
 			if (values.month_selection == "all" or (values.is_year_dir == false and values.month_selection == "none" and values.year_selection == "none"))

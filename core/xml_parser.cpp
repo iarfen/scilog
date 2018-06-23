@@ -9,7 +9,7 @@ using namespace std;
 
 namespace scilog_cli
 {
-	vector<shared_ptr<entry>> create_entries_from_scilog_file(const string& filename,const string& month)
+	vector<shared_ptr<entry>> create_entries_from_scilog_file(const string& filename,const string& month,const string& year)
 	{
 		rapidxml::file<> file(filename.c_str());
 		rapidxml::xml_document<> xml_file;
@@ -26,7 +26,7 @@ namespace scilog_cli
 				string topic = entry_node->first_attribute("topic") ? entry_node->first_attribute("topic")->value() : "";
 				string day = entry_node->first_attribute("day") ? entry_node->first_attribute("day")->value() : "";
 				string description = entry_node->value() ? entry_node->value() : "";
-				shared_ptr<entry> new_entry(new entry(node_name,type,topic,day+"-"+month,description));
+				shared_ptr<entry> new_entry(new entry(node_name,type,topic,day + "-" + month + "-" + year,description));
 				entries.push_back(new_entry);
 			}
 		}

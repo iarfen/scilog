@@ -11,13 +11,13 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void command_list_month(const string& x,const string& directory_path,entry_kind selected_type,bool print_exist_message)
+	void command_list_month(const string& x,const string& directory_path,const string& year,entry_kind selected_type,bool print_exist_message)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
 		string filepath = directory_path + "/" + filename;
 		if (boost::filesystem::exists(filepath))
 		{
-			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x);
+			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 			print_list(entries,selected_type);
 		}
 		else
@@ -29,20 +29,20 @@ namespace scilog_cli
 		}
 	}
 
-	void command_list_year(const string& directory_path,entry_kind selected_type)
+	void command_list_year(const string& directory_path,const string& year,entry_kind selected_type)
 	{
-		command_list_month("1",directory_path,selected_type,false);
-		command_list_month("2",directory_path,selected_type,false);
-		command_list_month("3",directory_path,selected_type,false);
-		command_list_month("4",directory_path,selected_type,false);
-		command_list_month("5",directory_path,selected_type,false);
-		command_list_month("6",directory_path,selected_type,false);
-		command_list_month("7",directory_path,selected_type,false);
-		command_list_month("8",directory_path,selected_type,false);
-		command_list_month("9",directory_path,selected_type,false);
-		command_list_month("10",directory_path,selected_type,false);
-		command_list_month("11",directory_path,selected_type,false);
-		command_list_month("12",directory_path,selected_type,false);
+		command_list_month("1",directory_path,year,selected_type,false);
+		command_list_month("2",directory_path,year,selected_type,false);
+		command_list_month("3",directory_path,year,selected_type,false);
+		command_list_month("4",directory_path,year,selected_type,false);
+		command_list_month("5",directory_path,year,selected_type,false);
+		command_list_month("6",directory_path,year,selected_type,false);
+		command_list_month("7",directory_path,year,selected_type,false);
+		command_list_month("8",directory_path,year,selected_type,false);
+		command_list_month("9",directory_path,year,selected_type,false);
+		command_list_month("10",directory_path,year,selected_type,false);
+		command_list_month("11",directory_path,year,selected_type,false);
+		command_list_month("12",directory_path,year,selected_type,false);
 	}
 
 	void command_list_all_years(const string& directory_path,entry_kind selected_type)
@@ -52,7 +52,8 @@ namespace scilog_cli
 		{
 			if (is_directory(itr->status()))
 			{
-				command_list_year(itr->path().generic_string(),selected_type);
+				string cwd = itr->path().generic_string();
+				command_list_year(itr->path().generic_string(),cwd.substr(cwd.find_last_of("/") + 1),selected_type);
 			}
 		}
 	}

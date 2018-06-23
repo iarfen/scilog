@@ -18,7 +18,7 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void command_summary_month(const string& x,const string& directory_path)
+	void command_summary_month(const string& x,const string& directory_path,const string& year)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
 		string filepath = directory_path + "/" + filename;
@@ -27,11 +27,11 @@ namespace scilog_cli
 			print_non_exist_message(filepath);
 			return;
 		}
-		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x);
+		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		print_summary(entries);
 	}
 
-	void command_summary_month_by_topics(const string& x,const string& directory_path)
+	void command_summary_month_by_topics(const string& x,const string& directory_path,const string& year)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
 		string filepath = directory_path + "/" + filename;
@@ -40,11 +40,11 @@ namespace scilog_cli
 			print_non_exist_message(filepath);
 			return;
 		}
-		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x);
+		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		print_topics(entries);
 	}
 
-	void command_summary_month_by_sciences(const string& x,const string& directory_path)
+	void command_summary_month_by_sciences(const string& x,const string& directory_path,const string& year)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
 		string filepath = directory_path + "/" + filename;
@@ -59,26 +59,26 @@ namespace scilog_cli
 			print_non_exist_message(topicspath);
 			return;
 		}
-		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x);
+		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(topicspath);
 		print_sciences(entries,topics);
 	}
 
-	void command_summary_year(const string& directory_path)
+	void command_summary_year(const string& directory_path,const string& year)
 	{
-		vector<shared_ptr<entry>> entries = get_year_entries(directory_path);
+		vector<shared_ptr<entry>> entries = get_year_entries(directory_path,year);
 		print_summary(entries);
 	}
 
-	void command_summary_year_by_topics(const string& directory_path)
+	void command_summary_year_by_topics(const string& directory_path,const string& year)
 	{
-		vector<shared_ptr<entry>> entries = get_year_entries(directory_path);
+		vector<shared_ptr<entry>> entries = get_year_entries(directory_path,year);
 		print_topics(entries);
 	}
 
-	void command_summary_year_by_sciences(const string& directory_path)
+	void command_summary_year_by_sciences(const string& directory_path,const string& year)
 	{
-		vector<shared_ptr<entry>> entries = get_year_entries(directory_path);
+		vector<shared_ptr<entry>> entries = get_year_entries(directory_path,year);
 		string topicspath = directory_path + "/topics.scilog_topics";
 		if (!boost::filesystem::exists(topicspath))
 		{
@@ -133,6 +133,7 @@ namespace scilog_cli
 
 		for (const shared_ptr<entry>& entry : entries)
 		{
+			cout << "date: " << entry->get_date() << endl;
 			if (entry->get_kind() == "learn")
 			{
 				total_learn_entries++;
@@ -191,6 +192,7 @@ namespace scilog_cli
 		map<string,int> project_topics_count = map<string,int>();
 		for (const shared_ptr<entry>& entry : entries)
 		{
+			cout << "date: " << entry->get_date() << endl;
 			if (entry->get_topic() != "")
 			{
 				if (entry->get_kind() == "learn")
@@ -231,6 +233,7 @@ namespace scilog_cli
 		map<string,category> categories = get_all_categories_map();
 		for (const shared_ptr<entry>& log_entry : entries)
 		{
+			cout << "date: " << log_entry->get_date() << endl;
 			if (log_entry->get_type() == "learn")
 			{
 				learn_entry = true;

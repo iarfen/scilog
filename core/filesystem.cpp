@@ -177,7 +177,23 @@ namespace scilog_cli
 		}
 	}
 
-	vector<shared_ptr<entry>> get_year_entries(const string& directory_path)
+	string get_current_directory_year()
+	{
+		string cwd = boost::filesystem::current_path().generic_string();
+		if (is_year_directory(cwd))
+		{
+			return cwd.substr(cwd.find_last_of("/") + 1);
+		}
+		else
+		{
+			auto x = chrono::system_clock::now();
+			time_t now_c = chrono::system_clock::to_time_t(x);
+			tm* parts = localtime(&now_c);
+			return to_string(1900 + parts->tm_year);
+		}
+	}
+
+	vector<shared_ptr<entry>> get_year_entries(const string& directory_path,const string& year)
 	{
 		vector<shared_ptr<entry>> out_entries;
 		vector<string> filenames = {"01-january","02-february","03-march","04-april","05-may","06-june","07-july","08-august","09-september","10-october","11-november","12-december"};
@@ -190,7 +206,7 @@ namespace scilog_cli
 				continue;
 			}
 			string month_number = get_month_number_from_filename(filename + ".scilog");
-			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,month_number);
+			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,month_number,year);
 			out_entries.insert(out_entries.begin(),entries.begin(),entries.end());
 		}
 		return out_entries;
@@ -201,7 +217,7 @@ namespace scilog_cli
 		vector<shared_ptr<entry>> out_entries;
 		for (const string& year_path : year_paths)
 		{
-			vector<shared_ptr<entry>> entries = get_year_entries(year_path);
+			vector<shared_ptr<entry>> entries = get_year_entries(year_path,year_path.substr(2));
 			out_entries.insert(out_entries.begin(),entries.begin(),entries.end());
 		}
 		return out_entries;

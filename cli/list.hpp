@@ -13,8 +13,8 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void command_list_month(const string&,const string&,entry_kind,bool);
-	void command_list_year(const string&,entry_kind);
+	void command_list_month(const string&,const string&,const string&,entry_kind,bool);
+	void command_list_year(const string&,const string&,entry_kind);
 	void command_list_all_years(const string&,entry_kind);
 	void command_list_categories();
 
