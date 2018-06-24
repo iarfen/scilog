@@ -157,6 +157,22 @@ namespace scilog_cli
 		return categories;
 	}
 
+	vector<shared_ptr<topic>> get_all_topics()
+	{
+		vector<shared_ptr<topic>> topics;
+		if (boost::filesystem::exists("topics.scilog_topics"))
+		{
+			topics = create_topics_from_scilog_file("topics.scilog_topics");
+		}
+		return topics;
+	}
+
+	map<string,shared_ptr<topic>> get_all_topics_map()
+	{
+		vector<shared_ptr<topic>> vector_topics = get_all_topics();
+		return create_topics_map(vector_topics);
+	}
+
 	bool is_year_directory(const string& directory_path)
 	{
 		vector<string> filenames = {"01-january","02-february","03-march","04-april","05-may","06-june","07-july","08-august","09-september","10-october","11-november","12-december"};
