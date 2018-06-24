@@ -11,6 +11,8 @@ using namespace std;
 namespace scilog_cli
 {
 	extern map<string,category> default_categories;
+
+	bool is_parent_category(const string&,const string&);
 }
 
 #endif // SCILOG_CORE_CATEGORIES_HPP_INCLUDED

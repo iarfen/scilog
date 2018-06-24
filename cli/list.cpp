@@ -2,6 +2,7 @@
 #include "core/filesystem.hpp"
 #include "core/xml_parser.hpp"
 #include "cli/cli.hpp"
+#include "core/categories.hpp"
 
 #include <iostream>
 
@@ -11,14 +12,19 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void command_list_month(const string& x,const string& directory_path,const string& year,entry_kind selected_type,const string& filtered_topic,bool print_exist_message)
+	void command_list_month(const string& x,const string& directory_path,const string& year,entry_kind selected_type,const string& filtered_topic,const string& filtered_category,bool print_exist_message)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
 		string filepath = directory_path + "/" + filename;
 		if (boost::filesystem::exists(filepath))
 		{
 			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
-			print_list(entries,selected_type,filtered_topic);
+			map<string,shared_ptr<topic>> topics;
+			if (filtered_category != "")
+			{
+				topics = create_topics_map(create_topics_from_scilog_file(directory_path + "/topics.scilog_topics"));
+			}
+			print_list(entries,selected_type,filtered_topic,filtered_category,topics);
 		}
 		else
 		{
@@ -29,23 +35,23 @@ namespace scilog_cli
 		}
 	}
 
-	void command_list_year(const string& directory_path,const string& year,entry_kind selected_type,const string& filtered_topic)
+	void command_list_year(const string& directory_path,const string& year,entry_kind selected_type,const string& filtered_topic,const string& filtered_category)
 	{
-		command_list_month("1",directory_path,year,selected_type,filtered_topic,false);
-		command_list_month("2",directory_path,year,selected_type,filtered_topic,false);
-		command_list_month("3",directory_path,year,selected_type,filtered_topic,false);
-		command_list_month("4",directory_path,year,selected_type,filtered_topic,false);
-		command_list_month("5",directory_path,year,selected_type,filtered_topic,false);
-		command_list_month("6",directory_path,year,selected_type,filtered_topic,false);
-		command_list_month("7",directory_path,year,selected_type,filtered_topic,false);
-		command_list_month("8",directory_path,year,selected_type,filtered_topic,false);
-		command_list_month("9",directory_path,year,selected_type,filtered_topic,false);
-		command_list_month("10",directory_path,year,selected_type,filtered_topic,false);
-		command_list_month("11",directory_path,year,selected_type,filtered_topic,false);
-		command_list_month("12",directory_path,year,selected_type,filtered_topic,false);
+		command_list_month("1",directory_path,year,selected_type,filtered_topic,filtered_category,false);
+		command_list_month("2",directory_path,year,selected_type,filtered_topic,filtered_category,false);
+		command_list_month("3",directory_path,year,selected_type,filtered_topic,filtered_category,false);
+		command_list_month("4",directory_path,year,selected_type,filtered_topic,filtered_category,false);
+		command_list_month("5",directory_path,year,selected_type,filtered_topic,filtered_category,false);
+		command_list_month("6",directory_path,year,selected_type,filtered_topic,filtered_category,false);
+		command_list_month("7",directory_path,year,selected_type,filtered_topic,filtered_category,false);
+		command_list_month("8",directory_path,year,selected_type,filtered_topic,filtered_category,false);
+		command_list_month("9",directory_path,year,selected_type,filtered_topic,filtered_category,false);
+		command_list_month("10",directory_path,year,selected_type,filtered_topic,filtered_category,false);
+		command_list_month("11",directory_path,year,selected_type,filtered_topic,filtered_category,false);
+		command_list_month("12",directory_path,year,selected_type,filtered_topic,filtered_category,false);
 	}
 
-	void command_list_all_years(const string& directory_path,entry_kind selected_type,const string& filtered_topic)
+	void command_list_all_years(const string& directory_path,entry_kind selected_type,const string& filtered_topic,const string& filtered_category)
 	{
 		boost::filesystem::directory_iterator end_itr;
 		for (boost::filesystem::directory_iterator itr(directory_path); itr != end_itr; ++itr)
@@ -53,7 +59,7 @@ namespace scilog_cli
 			if (is_directory(itr->status()))
 			{
 				string cwd = itr->path().generic_string();
-				command_list_year(itr->path().generic_string(),get_directory(cwd),selected_type,filtered_topic);
+				command_list_year(itr->path().generic_string(),get_directory(cwd),selected_type,filtered_topic,filtered_category);
 			}
 		}
 	}
@@ -64,7 +70,7 @@ namespace scilog_cli
 		print_child_categories(categories,categories.front(),"",1);
 	}
 
-	void print_list(const vector<shared_ptr<entry>>& entries,entry_kind selected_type,const string& filtered_topic)
+	void print_list(const vector<shared_ptr<entry>>& entries,entry_kind selected_type,const string& filtered_topic,const string& filtered_category,const map<string,shared_ptr<topic>>& topics)
 	{
 		for (const shared_ptr<entry>& entry : entries)
 		{
@@ -77,6 +83,14 @@ namespace scilog_cli
 				continue;
 			}
 			if (filtered_topic != "" and filtered_topic != entry->get_topic())
+			{
+				continue;
+			}
+			if (filtered_category != "" and topics.count(entry->get_topic()) == 0)
+			{
+				continue;
+			}
+			if (filtered_category != "" and topics.count(entry->get_topic()) > 0 and !is_parent_category(topics.at(entry->get_topic())->get_category(),filtered_category))
 			{
 				continue;
 			}

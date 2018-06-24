@@ -105,4 +105,20 @@ namespace scilog_cli
 		{"game-theory",category("game-theory","applied-mathematics")},
 		{"operations-research",category("operations-research","applied-mathematics")}
 	};
+
+	bool is_parent_category(const string& actual_category,const string& parent_category)
+	{
+		if (default_categories[actual_category].get_parent_category() == parent_category)
+		{
+			return true;
+		}
+		else if (default_categories[actual_category].get_parent_category() == "")
+		{
+			return false;
+		}
+		else
+		{
+			return is_parent_category(default_categories[actual_category].get_parent_category(),parent_category);
+		}
+	}
 }

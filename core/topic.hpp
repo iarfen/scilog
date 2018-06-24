@@ -1,7 +1,10 @@
 #ifndef SCILOG_CORE_TOPIC_HPP_INCLUDED
 #define SCILOG_CORE_TOPIC_HPP_INCLUDED
 
+#include <map>
+#include <memory>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -81,6 +84,8 @@ namespace scilog_cli
 			string end_date;
 			string description;
 	};
+
+	map<string,shared_ptr<topic>> create_topics_map(vector<shared_ptr<topic>>);
 }
 
 bool operator ==(const scilog_cli::topic&,const scilog_cli::topic&);

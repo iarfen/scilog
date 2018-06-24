@@ -82,6 +82,7 @@ int main(int argc, char* argv[])
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
 		scilog_cli::entry_kind selected_type = scilog_cli::entry_kind::all;
 		string filtered_topic = "";
+		string filtered_category = "";
 		if (argc >= 3)
 		{
 			for (unsigned int i = 2; i < argc; i++)
@@ -99,35 +100,51 @@ int main(int argc, char* argv[])
 				{
 					filtered_topic = actual_argument.substr(8);
 				}
+				else if (actual_argument.substr(0,11) == "--category=")
+				{
+					filtered_category = actual_argument.substr(11);
+				}
 			}
 		}
 		if (values.mode == scilog_cli::fs_mode::all)
 		{
-			scilog_cli::command_list_all_years(values.directory_path,selected_type,filtered_topic);
+			scilog_cli::command_list_all_years(values.directory_path,selected_type,filtered_topic,filtered_category);
 			return 0;
 		}
 		else if (values.mode == scilog_cli::fs_mode::year)
 		{
-			scilog_cli::command_list_year(values.directory_path,values.year_selection,selected_type,filtered_topic);
+			scilog_cli::command_list_year(values.directory_path,values.year_selection,selected_type,filtered_topic,filtered_category);
 			return 0;
 		}
 		else
 		{
-			scilog_cli::command_list_month(values.month_selection,values.directory_path,values.year_selection,selected_type,filtered_topic,true);
+			scilog_cli::command_list_month(values.month_selection,values.directory_path,values.year_selection,selected_type,filtered_topic,filtered_category,true);
 			return 0;
 		}
 	}
 	else if (string(argv[1]) == "list-topics")
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
+		string filtered_category = "";
+		if (argc >= 3)
+		{
+			for (unsigned int i = 2; i < argc; i++)
+			{
+				string actual_argument = string(argv[i]);
+				if (actual_argument.substr(0,11) == "--category=")
+				{
+					filtered_category = actual_argument.substr(11);
+				}
+			}
+		}
 		if (values.mode == scilog_cli::fs_mode::all)
 		{
-			scilog_cli::command_list_topics_all_years(values.directory_path);
+			scilog_cli::command_list_topics_all_years(values.directory_path,filtered_category);
 			return 0;
 		}
 		else if (values.mode == scilog_cli::fs_mode::year)
 		{
-			scilog_cli::command_list_topics_year(values.directory_path);
+			scilog_cli::command_list_topics_year(values.directory_path,filtered_category);
 			return 0;
 		}
 	}
@@ -328,7 +345,7 @@ namespace scilog_cli
 					}
 				}
 			}
-			if (values.month_selection == "all" or (values.is_year_dir == false and values.month_selection == "none" and values.year_selection == "none"))
+			if (values.month_selection == "all" or (values.is_year_dir == false and values.month_selection == "none" and first_argument.substr(0,2) == "--"))
 			{
 				if (values.is_year_dir)
 				{
