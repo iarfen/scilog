@@ -1,5 +1,8 @@
 #include "xml_parser.hpp"
 
+#include "cli/cli.hpp"
+#include "core/filesystem.hpp"
+
 #include <sstream>
 
 #include "rapidxml/rapidxml.hpp"
@@ -124,6 +127,8 @@ namespace scilog_cli
 		rapidxml::xml_node<> * root_node;
 		root_node = xml_file.first_node("scilog");
 		ostringstream out;
+		map<string,shared_ptr<topic>> topics = get_all_topics_map();
+		vector<string> printed_topics = vector<string>();
 		for (rapidxml::xml_node<>* entry_node = root_node->first_node(); entry_node; entry_node = entry_node->next_sibling())
 		{
 			string node_name = string(entry_node->name());
@@ -137,6 +142,8 @@ namespace scilog_cli
 			bool has_topic = false;
 			bool repeated_topic = false;
 			bool unespecific_topic = false;
+			bool exists_topic = false;
+			bool already_printed_topic = false;
 			bool has_day = false;
 			bool repeated_day = false;
 			bool invalid_page_point = false;
@@ -169,6 +176,11 @@ namespace scilog_cli
 					else
 					{
 						has_topic = true;
+					}
+					string attribute_value = string(node_attribute->value());
+					if (topics.count(attribute_value) > 0)
+					{
+						exists_topic = true;
 					}
 				}
 				else if (attribute_name == "day")
@@ -227,6 +239,24 @@ namespace scilog_cli
 			if (repeated_topic)
 			{
 				out << error_sentence << " has a topic repeated" << endl;
+			}
+			if (!exists_topic and !unespecific_topic)
+			{
+				if (printed_topics.size() > 0)
+				{
+					for (const string& printed_topic : printed_topics)
+					{
+						if (printed_topic == string(entry_node->first_attribute("topic")->value()))
+						{
+							already_printed_topic = true;
+						}
+					}
+				}
+				if (!already_printed_topic)
+				{
+					out << "The topic " << scilog_cli::green_text << string(entry_node->first_attribute("topic")->value()) << scilog_cli::normal_text << " doesn't exists" << endl;
+					printed_topics.push_back(string(entry_node->first_attribute("topic")->value()));
+				}
 			}
 			if (!has_day)
 			{
