@@ -60,19 +60,19 @@ int main(int argc, char* argv[])
 		}
 		else if (values.mode == scilog_cli::fs_mode::year)
 		{
-			scilog_cli::command_validate_year(values.directory_path);
+			scilog_cli::command_validate_year(values.directory_path,values.year_selection);
 			return 0;
 		}
 		else
 		{
 			if (topics)
 			{
-				scilog_cli::command_validate_topics(values.month_selection,values.directory_path);
+				scilog_cli::command_validate_topics(values.month_selection,values.directory_path,values.year_selection);
 				return 0;
 			}
 			else
 			{
-				scilog_cli::command_validate_month(values.month_selection,values.directory_path,true);
+				scilog_cli::command_validate_month(values.month_selection,values.directory_path,values.year_selection,true);
 				return 0;
 			}
 		}
@@ -271,6 +271,9 @@ namespace scilog_cli
 	fs_args fs_selection(int argc, char* argv[])
 	{
 		fs_args values;
+		values.month_selection = "";
+		values.year_selection = "";
+		values.directory_path = "";
 		values.is_year_dir = scilog_cli::is_year_directory(".");
 		if (argc == 2)
 		{
@@ -286,84 +289,67 @@ namespace scilog_cli
 		}
 		else
 		{
-			string first_argument = string(argv[2]);
-			if (first_argument.substr(0,2) == "--")
+			for (unsigned int i = 2; i < argc; i++)
 			{
-				values.month_selection = "none";
-				values.year_selection = get_current_directory_year();
-				values.directory_path = ".";
-			}
-			else if (isdigit(first_argument[0]) && stoi(first_argument) > 12)
-			{
-				values.year_selection = first_argument;
-				values.directory_path = first_argument;
-				values.month_selection = "none";
-			}
-			else
-			{
-				values.month_selection = first_argument;
-				if (argc > 3)
+				string actual_argument = string(argv[i]);
+				if (actual_argument.substr(0,2) == "--")
 				{
-					string second_argument = string(argv[3]);
-					if (isdigit(second_argument[0]) && stoi(second_argument) > 12)
+					continue;
+				}
+				else if (isdigit(actual_argument[0]))
+				{
+					int arg_number = stoi(actual_argument);
+					if (arg_number > 12)
 					{
-						values.year_selection = second_argument;
-						if (values.is_year_dir)
-						{
-							values.directory_path = "../" + second_argument;
-						}
-						else
-						{
-							values.directory_path = second_argument;
-						}
+						values.year_selection = actual_argument;
 					}
 					else
 					{
+						values.month_selection = actual_argument;
+					}
+				}
+			}
+			if (values.month_selection != "")
+			{
+				values.mode = fs_mode::month;
+				if (values.year_selection == "")
+				{
+					values.year_selection = get_current_directory_year();
+				}
+			}
+			else
+			{
+				if (values.year_selection == "")
+				{
+					if (values.is_year_dir)
+					{
+						values.mode = fs_mode::year;
 						values.year_selection = get_current_directory_year();
-						string cwd = boost::filesystem::current_path().generic_string();
-						if (is_year_directory(cwd))
-						{
-							values.directory_path = ".";
-						}
-						else
-						{
-							values.directory_path = values.year_selection;
-						}
+					}
+					else
+					{
+						values.mode = fs_mode::all;
 					}
 				}
 				else
 				{
-					values.year_selection = get_current_directory_year();
-					string cwd = boost::filesystem::current_path().generic_string();
-					if (is_year_directory(cwd))
-					{
-						values.directory_path = ".";
-					}
-					else
-					{
-						values.directory_path = values.year_selection;
-					}
+					values.mode = fs_mode::year;
 				}
 			}
-			if (values.month_selection == "all" or (values.is_year_dir == false and values.month_selection == "none" and first_argument.substr(0,2) == "--"))
+			if (values.mode != fs_mode::all)
 			{
 				if (values.is_year_dir)
 				{
-					values.directory_path = "..";
+					values.directory_path = "../" + values.year_selection;
 				}
 				else
 				{
-					values.directory_path = ".";
+					values.directory_path = values.year_selection;
 				}
-				values.mode = fs_mode::all;
-			}
-			else if (values.month_selection == "none" or values.month_selection == ".")
-			{
-				values.mode = fs_mode::year;
 			}
 			else
 			{
-				values.mode = fs_mode::month;
+				values.directory_path = ".";
 			}
 		}
 		return values;
