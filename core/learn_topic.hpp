@@ -3,6 +3,8 @@
 
 #include "core/topic.hpp"
 
+#include <string>
+
 using namespace std;
 
 namespace scilog_cli
@@ -12,6 +14,16 @@ namespace scilog_cli
 		public:
 			learn_topic();
 			learn_topic(const string&,const string&,const string&,const string&,const string&,const string&,const int&);
+
+			inline string& get_type()
+			{
+				return type;
+			}
+
+			inline const string& get_type() const
+			{
+				return type;
+			}
 
 			inline int& get_pages()
 			{
@@ -26,6 +38,7 @@ namespace scilog_cli
 			virtual topic_kind get_kind() const;
 
 		private:
+			string type;
 			int pages;
 	};
 }

@@ -47,7 +47,7 @@ namespace scilog_cli
 		{
 			out << "SELECT id INTO @id_category_value FROM " << table_prefix << "categories WHERE name = '" << x_topic->get_category() << "';" << endl;
 			out << "INSERT INTO " << table_prefix << "topics (type,id_category,start_date,end_date,description) VALUES ('"
-				<< x_topic->get_type() << "',@id_category_value,UNIX_TIMESTAMP(STR_TO_DATE('" << x_topic->get_start_date() << "', '%d-%m-%Y')),UNIX_TIMESTAMP(STR_TO_DATE('" << x_topic->get_end_date() << "', '%d-%m-%Y')),'" << x_topic->get_description() << "');" << endl;
+				<< ""/*x_topic->get_type()*/ << "',@id_category_value,UNIX_TIMESTAMP(STR_TO_DATE('" << x_topic->get_start_date() << "', '%d-%m-%Y')),UNIX_TIMESTAMP(STR_TO_DATE('" << x_topic->get_end_date() << "', '%d-%m-%Y')),'" << x_topic->get_description() << "');" << endl;
 		}
 		for (const shared_ptr<entry>& x_entry : entries)
 		{

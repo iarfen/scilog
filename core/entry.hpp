@@ -64,11 +64,11 @@ namespace scilog_cli
 		}
 
 		private:
-		string kind;
-		string type;
-		string topic;
-		string date;
-		string description;
+			string kind;
+			string type;
+			string topic;
+			string date;
+			string description;
 	};
 }
 

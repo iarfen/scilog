@@ -3,6 +3,10 @@
 #include "cli/cli.hpp"
 #include "core/filesystem.hpp"
 
+#include "core/learn_topic.hpp"
+#include "core/project_topic.hpp"
+
+#include <iostream>
 #include <sstream>
 
 #include "rapidxml/rapidxml.hpp"
@@ -44,33 +48,44 @@ namespace scilog_cli
 		rapidxml::xml_node<>* root_node;
 		root_node = xml_file.first_node("scilog");
 		vector<shared_ptr<topic>> topics = vector<shared_ptr<topic>>();
-		bool learn_topic;
+		bool is_learn_topic;
 		for (rapidxml::xml_node<>* category_node = root_node->first_node(); category_node; category_node = category_node->next_sibling())
 		{
 			if (string(category_node->name()) == "learn")
 			{
-				learn_topic = true;
+				is_learn_topic = true;
 			}
 			else
 			{
-				learn_topic = false;
+				is_learn_topic = false;
 			}
 			for (rapidxml::xml_node<>* topic_node = category_node->first_node(); topic_node; topic_node = topic_node->next_sibling())
 			{
-				string kind;
-				if (learn_topic)
+				string name = topic_node->first_attribute("name") ? topic_node->first_attribute("name")->value() : "";
+				string start_date = topic_node->first_attribute("start_date") ? topic_node->first_attribute("start_date")->value() : "";
+				string end_date = topic_node->first_attribute("end_date") ? topic_node->first_attribute("end_date")->value() : "";
+				string category = topic_node->first_attribute("category") ? topic_node->first_attribute("category")->value() : "";
+				string description = topic_node->value() ? topic_node->value() : "";
+				shared_ptr<topic> new_topic;
+				if (is_learn_topic)
 				{
-					kind = "learn";
+					string type = topic_node->first_attribute("type") ? topic_node->first_attribute("type")->value() : "";
+					string pages = topic_node->first_attribute("pages") ? topic_node->first_attribute("pages")->value() : "";
+					int number_of_pages;
+					if (pages != "")
+					{
+						number_of_pages = stoi(pages);
+					}
+					else
+					{
+						number_of_pages = 0;
+					}
+					new_topic = make_shared<learn_topic>(type,category,name,start_date,end_date,description,number_of_pages);
 				}
 				else
 				{
-					kind = "project";
+					new_topic = make_shared<project_topic>(category,name,start_date,end_date,description);
 				}
-				string name = topic_node->first_attribute("name") ? topic_node->first_attribute("name")->value() : "";
-				string start_date = topic_node->first_attribute("start_date") ? topic_node->first_attribute("start_date")->value() : "";
-				string category = topic_node->first_attribute("category") ? topic_node->first_attribute("category")->value() : "";
-				string description = topic_node->value() ? topic_node->value() : "";
-				shared_ptr<topic> new_topic(new topic(kind,category,name,start_date,"",description));
 				topics.push_back(new_topic);
 			}
 		}

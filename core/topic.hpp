@@ -16,17 +16,7 @@ namespace scilog_cli
 	{
 		public:
 			topic();
-			topic(const string&,const string&,const string&,const string&,const string&,const string&);
-
-			inline string& get_type()
-			{
-				return type;
-			}
-
-			inline const string& get_type() const
-			{
-				return type;
-			}
+			topic(const string&,const string&,const string&,const string&,const string&);
 
 			inline string& get_category()
 			{
@@ -81,7 +71,6 @@ namespace scilog_cli
 			virtual topic_kind get_kind() const;
 
 		private:
-			string type;
 			string category;
 			string name;
 			string start_date;

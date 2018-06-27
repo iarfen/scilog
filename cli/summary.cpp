@@ -2,6 +2,8 @@
 #include "cli/cli.hpp"
 #include "core/entry.hpp"
 #include "core/topic.hpp"
+#include "core/learn_topic.hpp"
+#include "core/project_topic.hpp"
 #include "core/categories.hpp"
 #include "core/xml_parser.hpp"
 #include "core/filesystem.hpp"
@@ -127,27 +129,32 @@ namespace scilog_cli
 		int total_learn_planification_entries = 0;
 
 		int total_project_theory_entries = 0;
-		int total_project_design_entries = 0;
+		int total_project_software_design_entries = 0;
 		int total_project_programming_entries = 0;
 		int total_project_planification_entries = 0;
 
+		map<string,shared_ptr<topic>> topics = get_all_topics_map();
+
 		for (const shared_ptr<entry>& entry : entries)
 		{
-			cout << "date: " << entry->get_date() << endl;
 			if (entry->get_kind() == "learn")
 			{
 				total_learn_entries++;
-				if (entry->get_type() == "book")
+				if (topics.count(entry->get_topic()) > 0)
 				{
-					total_learn_book_entries++;
-				}
-				else if (entry->get_type() == "documentation")
-				{
-					total_learn_documentation_entries++;
-				}
-				else if (entry->get_type() == "planification")
-				{
-					total_learn_planification_entries++;
+					const shared_ptr<learn_topic>& actual_topic = dynamic_pointer_cast<learn_topic>(topics.at(entry->get_topic()));
+					if (actual_topic->get_type() == "book")
+					{
+						total_learn_book_entries++;
+					}
+					else if (actual_topic->get_type() == "documentation")
+					{
+						total_learn_documentation_entries++;
+					}
+					else if (actual_topic->get_type() == "planification")
+					{
+						total_learn_planification_entries++;
+					}
 				}
 			}
 			else if (entry->get_kind() == "project")
@@ -157,9 +164,9 @@ namespace scilog_cli
 				{
 					total_project_theory_entries++;
 				}
-				else if (entry->get_type() == "design")
+				else if (entry->get_type() == "software_design")
 				{
-					total_project_design_entries++;
+					total_project_software_design_entries++;
 				}
 				else if (entry->get_type() == "programming")
 				{
@@ -181,7 +188,7 @@ namespace scilog_cli
 		cout << scilog_cli::normal_text << "learn planification entries: " << scilog_cli::green_text << total_learn_planification_entries << "    " << (100 * total_learn_planification_entries / total_learn_entries) << " %" << endl << endl;
 
 		cout << scilog_cli::normal_text << "project theory entries: " << scilog_cli::green_text << total_project_theory_entries << "    " << (100 * total_project_theory_entries / total_project_entries) << " %" << endl;
-		cout << scilog_cli::normal_text << "project design entries: " << scilog_cli::green_text << total_project_design_entries << "    " << (100 * total_project_design_entries / total_project_entries) << " %" << endl;
+		cout << scilog_cli::normal_text << "project software design entries: " << scilog_cli::green_text << total_project_software_design_entries << "    " << (100 * total_project_software_design_entries / total_project_entries) << " %" << endl;
 		cout << scilog_cli::normal_text << "project programming entries: " << scilog_cli::green_text << total_project_programming_entries << "    " << (100 * total_project_programming_entries / total_project_entries) << " %" << endl;
 		cout << scilog_cli::normal_text << "project planification entries: " << scilog_cli::green_text << total_project_planification_entries << "    " << (100 * total_project_planification_entries / total_project_entries) << " %" << endl;
 	}
@@ -233,7 +240,6 @@ namespace scilog_cli
 		map<string,category> categories = get_all_categories_map();
 		for (const shared_ptr<entry>& log_entry : entries)
 		{
-			cout << "date: " << log_entry->get_date() << endl;
 			if (log_entry->get_type() == "learn")
 			{
 				learn_entry = true;
