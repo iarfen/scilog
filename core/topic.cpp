@@ -12,6 +12,11 @@ namespace scilog_cli
 	{
 	}
 
+	topic_kind topic::get_kind() const
+	{
+		return topic_kind::project;
+	}
+
 	map<string,shared_ptr<topic>> create_topics_map(vector<shared_ptr<topic>> topics_vector)
 	{
 		map<string,shared_ptr<topic>> topics_map;

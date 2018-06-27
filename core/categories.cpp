@@ -103,7 +103,8 @@ namespace scilog_cli
 		{"information-theory",category("information-theory","applied-mathematics")},
 		{"probability-and-statistics",category("probability-and-statistics","applied-mathematics")},
 		{"game-theory",category("game-theory","applied-mathematics")},
-		{"operations-research",category("operations-research","applied-mathematics")}
+		{"operations-research",category("operations-research","applied-mathematics")},
+		{"language",category("language","")}
 	};
 
 	bool is_parent_category(const string& actual_category,const string& parent_category)

@@ -10,6 +10,8 @@ using namespace std;
 
 namespace scilog_cli
 {
+	enum class topic_kind {learn,project};
+
 	class topic
 	{
 		public:
@@ -75,6 +77,8 @@ namespace scilog_cli
 			{
 				return description;
 			}
+
+			virtual topic_kind get_kind() const;
 
 		private:
 			string type;

@@ -32,7 +32,7 @@ namespace scilog_cli
 		{
 			if (print_exist_message)
 			{
-				print_non_exist_message(filepath);
+				print_non_exist_message(year + "/" + filename);
 			}
 		}
 	}
@@ -51,7 +51,7 @@ namespace scilog_cli
 		command_validate_month("10",directory_path,year,false);
 		command_validate_month("11",directory_path,year,false);
 		command_validate_month("12",directory_path,year,false);
-		command_validate_topics("topics.scilog_topics",directory_path,year);
+		command_validate_topics(directory_path,year);
 	}
 
 	void command_validate_all_years(const string& directory_path)
@@ -66,9 +66,9 @@ namespace scilog_cli
 		}
 	}
 
-	void command_validate_topics(const string& filename,const string& directory_path,const string& year)
+	void command_validate_topics(const string& directory_path,const string& year)
 	{
-		string filepath = directory_path + "/" + filename;
+		string filepath = directory_path + "/topics.scilog_topics";
 		if (boost::filesystem::exists(filepath))
 		{
 			string result = scilog_cli::validate_topics_xml_file(filepath);
@@ -79,12 +79,12 @@ namespace scilog_cli
 			}
 			else
 			{
-				cout << scilog_cli::green_text << filepath << scilog_cli::normal_text << " is a valid file" << endl;
+				cout << scilog_cli::green_text << year << "/topics.scilog_topics" << scilog_cli::normal_text << " is a valid file" << endl;
 			}
 		}
 		else
 		{
-			print_non_exist_message(filepath);
+			print_non_exist_message(year + "/topics.scilog_topics");
 		}
 	}
 }

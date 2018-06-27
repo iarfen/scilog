@@ -53,6 +53,11 @@ int main(int argc, char* argv[])
 				}
 			}
 		}
+		if (topics)
+		{
+			scilog_cli::command_validate_topics(values.directory_path,values.year_selection);
+			return 0;
+		}
 		if (values.mode == scilog_cli::fs_mode::all)
 		{
 			scilog_cli::command_validate_all_years(values.directory_path);
@@ -65,16 +70,8 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			if (topics)
-			{
-				scilog_cli::command_validate_topics(values.month_selection,values.directory_path,values.year_selection);
-				return 0;
-			}
-			else
-			{
-				scilog_cli::command_validate_month(values.month_selection,values.directory_path,values.year_selection,true);
-				return 0;
-			}
+			scilog_cli::command_validate_month(values.month_selection,values.directory_path,values.year_selection,true);
+			return 0;
 		}
 	}
 	else if (string(argv[1]) == "list")

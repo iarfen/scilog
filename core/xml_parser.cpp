@@ -134,7 +134,7 @@ namespace scilog_cli
 			string node_name = string(entry_node->name());
 			if (node_name != "learn" and node_name != "project")
 			{
-				out << "Invalid tag name '" << string(entry_node->name()) << "'. Only <learn> and <project> is allowed" << endl;
+				out << "Invalid tag name '" << string(entry_node->name()) << "'. Only <learn> and <project> are allowed" << endl;
 				continue;
 			}
 			bool has_type = false;
@@ -304,12 +304,14 @@ namespace scilog_cli
 		rapidxml::xml_node<> * root_node;
 		root_node = xml_file.first_node("scilog");
 		ostringstream out;
+		map<string,category> categories = get_all_categories_map();
+		vector<string> printed_categories = vector<string>();
 		for (rapidxml::xml_node<>* category_node = root_node->first_node(); category_node; category_node = category_node->next_sibling())
 		{
 			string node_name = string(category_node->name());
 			if (!(node_name == "learn" or node_name == "project" or node_name == "category"))
 			{
-				out << "Invalid tag name '" << node_name << "'. Only <learn> and <project> is allowed" << endl;
+				out << "Invalid tag name '" << node_name << "'. Only <learn>, <project> and <category> are allowed" << endl;
 				continue;
 			}
 			if (node_name == "category")
@@ -318,6 +320,8 @@ namespace scilog_cli
 				bool repeated_name = false;
 				bool has_parent_category = false;
 				bool repeated_parent_category = false;
+				bool exists_parent_category = false;
+				bool already_printed_parent_category = false;
 				for (rapidxml::xml_attribute<>* node_attribute = category_node->first_attribute(); node_attribute; node_attribute = node_attribute->next_attribute())
 				{
 					string attribute_name = string(node_attribute->name());
@@ -346,6 +350,11 @@ namespace scilog_cli
 						{
 							has_parent_category = true;
 						}
+						string attribute_value = string(node_attribute->value());
+						if (categories.count(attribute_value) > 0)
+						{
+							exists_parent_category = true;
+						}
 					}
 				}
 				string error_sentence;
@@ -373,11 +382,29 @@ namespace scilog_cli
 				{
 					out << error_sentence << "' has a parent category repeated" << endl;
 				}
+				if (!exists_parent_category)
+				{
+					if (printed_categories.size() > 0)
+					{
+						for (const string& printed_category : printed_categories)
+						{
+							if (printed_category == string(category_node->first_attribute("parent_category")->value()))
+							{
+								already_printed_parent_category = true;
+							}
+						}
+					}
+					if (!already_printed_parent_category)
+					{
+						out << error_sentence << " has the parent category " << scilog_cli::green_text << string(category_node->first_attribute("parent_category")->value()) << scilog_cli::normal_text << " that doesn't exists" << endl;
+						printed_categories.push_back(string(category_node->first_attribute("parent_category")->value()));
+					}
+				}
 				bool entry_has_child_nodes = false;
 				for (rapidxml::xml_node<>* child_node = category_node->first_node(); child_node; child_node = child_node->next_sibling())
 				{
-					string node_name = string(child_node->name());
-					if (node_name != "")
+					string node_child_name = string(child_node->name());
+					if (node_child_name != "")
 					{
 						entry_has_child_nodes = true;
 					}
@@ -398,29 +425,34 @@ namespace scilog_cli
 			}
 			for (rapidxml::xml_node<>* entry_node = category_node->first_node(); entry_node; entry_node = entry_node->next_sibling())
 			{
-				if (string(entry_node->name()) != "topic")
+				string topic_tag_name = string(entry_node->name());
+				if (topic_tag_name != "topic")
 				{
-					out << "Invalid tag name '" << string(category_node->name()) << "'. Only <topic> is allowed" << endl;
+					out << "Invalid tag name '" << topic_tag_name << "'. Only <topic> is allowed" << endl;
 					continue;
 				}
 				bool has_type = false;
 				bool repeated_type = false;
 				bool has_category = false;
 				bool repeated_category = false;
-				bool has_parent_category = false;
-				bool repeated_parent_category = false;
+				bool exists_category = false;
+				bool already_printed_category = false;
 				bool has_name = false;
 				bool repeated_name = false;
 				bool has_start_date = false;
 				bool repeated_start_date = false;
+				bool has_end_date = false;
+				bool repeated_end_date = false;
+				bool has_pages = false;
+				bool repeated_pages = false;
 				for (rapidxml::xml_attribute<>* node_attribute = entry_node->first_attribute(); node_attribute; node_attribute = node_attribute->next_attribute())
 				{
 					string attribute_name = string(node_attribute->name());
-					if (!(attribute_name == "type" or attribute_name == "category" or attribute_name == "parent_category" or attribute_name == "name" or attribute_name == "start_date"))
+					if (!(attribute_name == "type" or attribute_name == "category" or attribute_name == "name" or attribute_name == "start_date" or attribute_name == "end_date" or attribute_name == "pages"))
 					{
 						out << "Invalid attribute name '" << attribute_name << "'" << endl;
 					}
-					else if (attribute_name == "type")
+					else if (attribute_name == "type" and node_name == "learn")
 					{
 						if (has_type)
 						{
@@ -441,16 +473,10 @@ namespace scilog_cli
 						{
 							has_category = true;
 						}
-					}
-					else if (attribute_name == "parent_category")
-					{
-						if (has_parent_category)
+						string attribute_value = string(node_attribute->value());
+						if (categories.count(attribute_value) > 0)
 						{
-							repeated_parent_category = true;
-						}
-						else
-						{
-							has_parent_category = true;
+							exists_category = true;
 						}
 					}
 					else if (attribute_name == "name")
@@ -475,23 +501,45 @@ namespace scilog_cli
 							has_start_date = true;
 						}
 					}
+					else if (attribute_name == "end_date")
+					{
+						if (has_end_date)
+						{
+							repeated_end_date = true;
+						}
+						else
+						{
+							has_end_date = true;
+						}
+					}
+					else if (attribute_name == "pages")
+					{
+						if (has_pages)
+						{
+							repeated_pages = true;
+						}
+						else
+						{
+							has_pages = true;
+						}
+					}
 				}
 				string error_sentence;
 				if (has_name)
 				{
-					error_sentence = "The entry '" + string(entry_node->first_attribute("name")->value()) + "'";
+					error_sentence = "The topic '" + string(entry_node->first_attribute("name")->value()) + "'";
 				}
 				else
 				{
-					error_sentence = "An anonymous entry";
+					error_sentence = "An anonymous topic";
 				}
-				if (!has_type)
+				if (!has_type and node_name == "learn")
 				{
 					out << error_sentence << " doesn't has type" << endl;
 				}
-				if (repeated_type)
+				if (repeated_type and node_name == "learn")
 				{
-					out << error_sentence << "' has a type repeated" << endl;
+					out << error_sentence << " has a type repeated" << endl;
 				}
 				if (!has_category)
 				{
@@ -499,15 +547,25 @@ namespace scilog_cli
 				}
 				if (repeated_category)
 				{
-					out << error_sentence << "' has a category repeated" << endl;
+					out << error_sentence << " has a category repeated" << endl;
 				}
-				if (!has_parent_category)
+				if (!exists_category)
 				{
-					out << error_sentence << " doesn't has parent category" << endl;
-				}
-				if (repeated_parent_category)
-				{
-					out << error_sentence << "' has a parent category repeated" << endl;
+					if (printed_categories.size() > 0)
+					{
+						for (const string& printed_category : printed_categories)
+						{
+							if (printed_category == string(entry_node->first_attribute("category")->value()))
+							{
+								already_printed_category = true;
+							}
+						}
+					}
+					if (!already_printed_category)
+					{
+						out << error_sentence << " has the category " << scilog_cli::green_text << string(entry_node->first_attribute("category")->value()) << scilog_cli::normal_text << " that doesn't exists" << endl;
+						printed_categories.push_back(string(entry_node->first_attribute("category")->value()));
+					}
 				}
 				if (!has_name)
 				{
@@ -515,7 +573,7 @@ namespace scilog_cli
 				}
 				if (repeated_name)
 				{
-					out << error_sentence << "' has a name repeated" << endl;
+					out << error_sentence << " has a name repeated" << endl;
 				}
 				if (!has_start_date)
 				{
@@ -523,7 +581,27 @@ namespace scilog_cli
 				}
 				if (repeated_start_date)
 				{
-					out << error_sentence << "' has a start date repeated" << endl;
+					out << error_sentence << " has a start date repeated" << endl;
+				}
+				if (!has_end_date)
+				{
+					out << error_sentence << " doesn't has end date" << endl;
+				}
+				if (repeated_end_date)
+				{
+					out << error_sentence << " has a end date repeated" << endl;
+				}
+				if (has_type)
+				{
+					string type = string(entry_node->first_attribute("type")->value());
+					if (!has_pages and type == "book")
+					{
+						out << error_sentence << " doesn't has pages attribute" << endl;
+					}
+					if (repeated_pages)
+					{
+						out << error_sentence << " has a pages attribute repeated" << endl;
+					}
 				}
 			}
 		}
