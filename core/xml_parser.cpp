@@ -32,8 +32,17 @@ namespace scilog_cli
 				string type = entry_node->first_attribute("type") ? entry_node->first_attribute("type")->value() : "";
 				string topic = entry_node->first_attribute("topic") ? entry_node->first_attribute("topic")->value() : "";
 				string day = entry_node->first_attribute("day") ? entry_node->first_attribute("day")->value() : "";
+				if (stoi(day) < 10)
+				{
+					day = "0" + day;
+				}
+				string entry_month;
+				if (stoi(month) < 10)
+				{
+					entry_month = "0" + month;
+				}
 				string description = entry_node->value() ? entry_node->value() : "";
-				shared_ptr<entry> new_entry(new entry(node_name,type,topic,day + "-" + month + "-" + year,description));
+				shared_ptr<entry> new_entry(new entry(node_name,type,topic,day + "-" + entry_month + "-" + year,description));
 				entries.push_back(new_entry);
 			}
 		}

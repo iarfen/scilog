@@ -9,7 +9,10 @@
 #include "core/filesystem.hpp"
 
 #include <algorithm>
+#include <ctime>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <map>
 #include <memory>
 #include <vector>
@@ -121,6 +124,8 @@ namespace scilog_cli
 
 	void print_summary(const vector<shared_ptr<entry>>& entries)
 	{
+		int total_worked_days = 0;
+
 		int total_learn_entries = 0;
 		int total_project_entries = 0;
 
@@ -178,7 +183,25 @@ namespace scilog_cli
 				}
 			}
 		}
+
+		for (int i = 1; i <= 30; i++)
+		{
+			for (const shared_ptr<entry>& x_entry : entries)
+			{
+				tm entry_tm;
+				istringstream ss(x_entry->get_date());
+				ss >> get_time(&entry_tm, "%d-%m-%Y");
+				if (i == entry_tm.tm_mday)
+				{
+					total_worked_days++;
+					break;
+				}
+			}
+		}
+
 		cout << scilog_cli::normal_text << "total entries: " << scilog_cli::green_text << entries.size() << endl;
+
+		cout << scilog_cli::normal_text << "total worked days: " << scilog_cli::green_text << (100 * total_worked_days / 30) << " %" << endl;
 
 		cout << scilog_cli::normal_text << "total learn entries: " << scilog_cli::green_text << total_learn_entries << "    " << (100 * total_learn_entries / entries.size()) << " %" << endl;
 		cout << scilog_cli::normal_text << "total project entries: " << scilog_cli::green_text << total_project_entries << "    " << (100 * total_project_entries / entries.size()) << " %" << endl << endl;
