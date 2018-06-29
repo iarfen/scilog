@@ -27,4 +27,14 @@ namespace scilog_cli
 			system(command.c_str());
 		}
 	}
+
+	void command_open_directory(const string& directory_path)
+	{
+		string command;
+		if (WIN32)
+		{
+			command = "start " + directory_path;
+		}
+		system(command.c_str());
+	}
 }

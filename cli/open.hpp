@@ -8,6 +8,7 @@ using namespace std;
 namespace scilog_cli
 {
 	void command_open(const string&,const string&,const string&);
+	void command_open_directory(const string&);
 }
 
 #endif // SCILOG_CLI_EDIT_HPP_INCLUDED

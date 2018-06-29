@@ -70,6 +70,12 @@ int main(int argc, char* argv[])
 		}
 		return 0;
 	}
+	else if (string(argv[1]) == "open-dir")
+	{
+		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
+		scilog_cli::command_open_directory(values.directory_path);
+		return 0;
+	}
 	else if (string(argv[1]) == "validate")
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
