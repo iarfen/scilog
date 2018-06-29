@@ -1,10 +1,10 @@
 #include "main.hpp"
 
 #include "cli/create.hpp"
-#include "cli/edit.hpp"
 #include "cli/help.hpp"
 #include "cli/list.hpp"
 #include "cli/list_topics.hpp"
+#include "cli/open.hpp"
 #include "cli/summary.hpp"
 #include "cli/validate.hpp"
 #include "cli/version.hpp"
@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 	if (argc == 1)
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
-		scilog_cli::command_edit("now",values.directory_path,values.year_selection);
+		scilog_cli::command_open("now",values.directory_path,values.year_selection);
 		return 0;
 	}
 	if (string(argv[1]) == "--help" or string(argv[1]) == "-h")
@@ -41,14 +41,33 @@ int main(int argc, char* argv[])
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
 		return 0;
 	}
-	else if (string(argv[1]) == "edit")
+	else if (string(argv[1]) == "open")
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
+		bool topics = false;
+		if (argc >= 3)
+		{
+			for (unsigned int i = 2; i < argc; i++)
+			{
+				string actual_argument = string(argv[i]);
+				if (actual_argument == "--topics")
+				{
+					topics = true;
+				}
+			}
+		}
 		if (values.month_selection == "")
 		{
 			values.month_selection = "now";
 		}
-		scilog_cli::command_edit(values.month_selection,values.directory_path,values.year_selection);
+		if (topics)
+		{
+			scilog_cli::command_open("topics",values.directory_path,values.year_selection);
+		}
+		else
+		{
+			scilog_cli::command_open(values.month_selection,values.directory_path,values.year_selection);
+		}
 		return 0;
 	}
 	else if (string(argv[1]) == "validate")

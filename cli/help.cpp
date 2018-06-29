@@ -13,8 +13,6 @@ namespace scilog_cli
 		cout << "commands:" << endl;
 		cout << "    --help,-h                            display this help message" << endl;
 		cout << "    --version,-v                         display the version of scilog" << endl << endl;
-		cout << "    edit                                 opens the actual file" << endl;
-		cout << "    edit <month-number> [year]           opens the given file" << endl << endl;
 		cout << "    list <month-number> [year]           list all the entries of the selected month" << endl;
 		cout << "    list --kind=learn|project            list only entries of the selected kind" << endl;
 		cout << "    list --kind=learn" << endl
@@ -26,6 +24,10 @@ namespace scilog_cli
 		cout << "    list --order_by=date|topic           list entries ordered by the value given" << endl << endl;
 		cout << "    list-categories                      list all the categories that topics can have" << endl << endl;
 		cout << "    list-topics                          list the topics of the year" << endl << endl;
+		cout << "    open                                 opens the actual file" << endl;
+		cout << "    open <month-number> [year]           opens the selected file" << endl;
+		cout << "    open --topics                        opens the file of topics" << endl;
+		cout << "    open [year] --topics                 opens the file of topics of the selected year" << endl << endl;
 		cout << "    summary                              summarizes the work of the year" << endl;
 		cout << "    summary <month-number> [year]        summarizes the work of the month" << endl;
 		cout << "    summary --topics                     summarizes the topics worked and learned" << endl << endl;
