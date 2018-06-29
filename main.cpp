@@ -196,6 +196,7 @@ int main(int argc, char* argv[])
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
 		bool topics = false;
 		bool sciences = false;
+		bool each = false;
 		if (argc >= 3)
 		{
 			for (unsigned int i = 2; i < argc; i++)
@@ -208,6 +209,10 @@ int main(int argc, char* argv[])
 				else if (actual_argument == "--sciences")
 				{
 					sciences = true;
+				}
+				else if (actual_argument == "--each")
+				{
+					each = true;
 				}
 			}
 		}
@@ -231,15 +236,15 @@ int main(int argc, char* argv[])
 		{
 			if (topics)
 			{
-				scilog_cli::command_summary_year_by_topics(values.directory_path,values.year_selection);
+				scilog_cli::command_summary_year_by_topics(values.directory_path,values.year_selection,each);
 			}
 			else if (sciences)
 			{
-				scilog_cli::command_summary_year_by_sciences(values.directory_path,values.year_selection);
+				scilog_cli::command_summary_year_by_sciences(values.directory_path,values.year_selection,each);
 			}
 			else
 			{
-				scilog_cli::command_summary_year(values.directory_path,values.year_selection);
+				scilog_cli::command_summary_year(values.directory_path,values.year_selection,each);
 			}
 			return 0;
 		}
@@ -247,15 +252,15 @@ int main(int argc, char* argv[])
 		{
 			if (topics)
 			{
-				scilog_cli::command_summary_month_by_topics(values.month_selection,values.directory_path,values.year_selection);
+				scilog_cli::command_summary_month_by_topics(values.month_selection,values.directory_path,values.year_selection,false);
 			}
 			else if (sciences)
 			{
-				scilog_cli::command_summary_month_by_sciences(values.month_selection,values.directory_path,values.year_selection);
+				scilog_cli::command_summary_month_by_sciences(values.month_selection,values.directory_path,values.year_selection,false);
 			}
 			else
 			{
-				scilog_cli::command_summary_month(values.month_selection,values.directory_path,values.year_selection);
+				scilog_cli::command_summary_month(values.month_selection,values.directory_path,values.year_selection,false);
 			}
 			return 0;
 		}
