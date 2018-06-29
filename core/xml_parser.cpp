@@ -6,6 +6,9 @@
 #include "core/learn_topic.hpp"
 #include "core/project_topic.hpp"
 
+#include "core/learn_entry.hpp"
+#include "core/project_entry.hpp"
+
 #include <iostream>
 #include <sstream>
 
@@ -41,8 +44,28 @@ namespace scilog_cli
 				{
 					entry_month = "0" + month;
 				}
+				string date = day + "-" + entry_month + "-" + year;
 				string description = entry_node->value() ? entry_node->value() : "";
-				shared_ptr<entry> new_entry(new entry(node_name,type,topic,day + "-" + entry_month + "-" + year,description));
+
+				shared_ptr<entry> new_entry;
+				if (node_name == "learn")
+				{
+					string string_page_point = entry_node->first_attribute("page_point") ? entry_node->first_attribute("page_point")->value() : "";
+					int page_point;
+					if (string_page_point != "")
+					{
+						page_point = stoi(string_page_point);
+					}
+					else
+					{
+						page_point = 0;
+					}
+					new_entry = make_shared<learn_entry>(type,topic,date,description,page_point);
+				}
+				else if (node_name == "project")
+				{
+					new_entry = make_shared<project_entry>(type,topic,date,description);
+				}
 				entries.push_back(new_entry);
 			}
 		}

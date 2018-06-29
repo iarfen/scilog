@@ -12,6 +12,7 @@ namespace scilog_cli
 		public:
 		entry();
 		entry(const string&, const string&, const string&, const string&, const string&);
+		virtual ~entry() {};
 
 		inline string& get_kind()
 		{
