@@ -1,5 +1,6 @@
 #include "list_topics.hpp"
 #include "core/filesystem.hpp"
+#include "core/learn_topic.hpp"
 #include "core/xml_parser.hpp"
 #include "cli/cli.hpp"
 #include "core/categories.hpp"
@@ -46,7 +47,16 @@ namespace scilog_cli
 			{
 				continue;
 			}
-			cout << scilog_cli::green_text << x_topic->get_name() << ": " << scilog_cli::normal_text << x_topic->get_description() << endl;
+			cout << scilog_cli::green_text << x_topic->get_name() << ": " << scilog_cli::normal_text << x_topic->get_description();
+			if (x_topic->get_kind() == topic_kind::learn)
+			{
+				const shared_ptr<learn_topic>& x_learn_topic = dynamic_pointer_cast<learn_topic>(x_topic);
+				if (x_learn_topic->get_pages() > 0)
+				{
+					cout << scilog_cli::green_text << " Pages: " << scilog_cli::normal_text << x_learn_topic->get_pages();
+				}
+			}
+			cout << endl;
 		}
 	}
 }
