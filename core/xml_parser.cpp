@@ -44,7 +44,7 @@ namespace scilog_cli
 				{
 					entry_month = "0" + month;
 				}
-				string date = day + "-" + entry_month + "-" + year;
+				string date = year + "-" + entry_month + "-" + day;
 				string description = entry_node->value() ? entry_node->value() : "";
 
 				shared_ptr<entry> new_entry;

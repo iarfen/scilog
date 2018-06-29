@@ -223,7 +223,7 @@ namespace scilog_cli
 			{
 				tm entry_tm;
 				istringstream ss(x_entry->get_date());
-				ss >> get_time(&entry_tm, "%d-%m-%Y");
+				ss >> get_time(&entry_tm, "%Y-%m-%d");
 				if (i == entry_tm.tm_mday)
 				{
 					total_worked_days++;
