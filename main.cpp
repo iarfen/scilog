@@ -1,6 +1,7 @@
 #include "main.hpp"
 
 #include "cli/create.hpp"
+#include "cli/edit.hpp"
 #include "cli/help.hpp"
 #include "cli/list.hpp"
 #include "cli/list_topics.hpp"
@@ -19,8 +20,10 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-	if (argc < 2)
+	if (argc == 1)
 	{
+		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
+		scilog_cli::command_edit("now",values.directory_path,values.year_selection);
 		return 0;
 	}
 	if (string(argv[1]) == "--help" or string(argv[1]) == "-h")
@@ -36,6 +39,16 @@ int main(int argc, char* argv[])
 	else if (string(argv[1]) == "fs")
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
+		return 0;
+	}
+	else if (string(argv[1]) == "edit")
+	{
+		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
+		if (values.month_selection == "")
+		{
+			values.month_selection = "now";
+		}
+		scilog_cli::command_edit(values.month_selection,values.directory_path,values.year_selection);
 		return 0;
 	}
 	else if (string(argv[1]) == "validate")
@@ -342,7 +355,14 @@ namespace scilog_cli
 			{
 				if (values.is_year_dir)
 				{
-					values.directory_path = "../" + values.year_selection;
+					if (WIN32)
+					{
+						values.directory_path = "..\\" + values.year_selection;
+					}
+					else
+					{
+						values.directory_path = "../" + values.year_selection;
+					}
 				}
 				else
 				{
