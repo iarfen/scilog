@@ -19,6 +19,7 @@
 #include <memory>
 #include <vector>
 
+#include "boost/date_time/gregorian/gregorian_types.hpp"
 #include "boost/filesystem.hpp"
 
 using namespace std;
@@ -283,7 +284,6 @@ namespace scilog_cli
 		map<string,int> project_topics_count = map<string,int>();
 		for (const shared_ptr<entry>& entry : entries)
 		{
-			cout << "date: " << entry->get_date() << endl;
 			if (entry->get_topic() != "")
 			{
 				if (entry->get_kind() == "learn")
