@@ -26,22 +26,18 @@ int main(int argc, char* argv[])
 		scilog_cli::command_open("now",values.directory_path,values.year_selection);
 		return 0;
 	}
-	if (string(argv[1]) == "--help" or string(argv[1]) == "-h")
+	string command = string(argv[1]);
+	if (command == "--help" or command == "-h")
 	{
 		scilog_cli::command_help();
 		return 0;
 	}
-	else if (string(argv[1]) == "--version" or string(argv[1]) == "-v")
+	else if (command == "--version" or command == "-v")
 	{
 		scilog_cli::command_version();
 		return 0;
 	}
-	else if (string(argv[1]) == "fs")
-	{
-		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
-		return 0;
-	}
-	else if (string(argv[1]) == "open")
+	else if (command == "open")
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
 		bool topics = false;
@@ -70,13 +66,13 @@ int main(int argc, char* argv[])
 		}
 		return 0;
 	}
-	else if (string(argv[1]) == "open-dir")
+	else if (command == "open-dir")
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
 		scilog_cli::command_open_directory(values.directory_path);
 		return 0;
 	}
-	else if (string(argv[1]) == "validate")
+	else if (command == "validate")
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
 		bool topics = false;
@@ -112,7 +108,7 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 	}
-	else if (string(argv[1]) == "list")
+	else if (command == "list")
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
 		scilog_cli::entry_kind selected_type = scilog_cli::entry_kind::all;
@@ -157,7 +153,7 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 	}
-	else if (string(argv[1]) == "list-topics")
+	else if (command == "list-topics")
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
 		string filtered_category = "";
@@ -183,17 +179,17 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 	}
-	else if (string(argv[1]) == "create-month-file")
+	else if (command == "create-month-file")
 	{
 		scilog_cli::command_create_month_file(string(argv[2]));
 		return 0;
 	}
-	else if (string(argv[1]) == "create-year-files")
+	else if (command == "create-year-files")
 	{
 		scilog_cli::command_create_year_files();
 		return 0;
 	}
-	else if (string(argv[1]) == "create-sql-dump")
+	else if (command == "create-sql-dump")
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
 		string table_prefix = "";
@@ -224,12 +220,12 @@ int main(int argc, char* argv[])
 			return 0;
 		}
 	}
-	else if (string(argv[1]) == "list-categories")
+	else if (command == "list-categories")
 	{
 		scilog_cli::command_list_categories();
 		return 0;
 	}
-	else if (string(argv[1]) == "summary")
+	else if (command == "summary")
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
 		bool topics = false;
