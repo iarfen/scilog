@@ -26,6 +26,6 @@ file(GLOB_RECURSE TARGET_SRC cli/*.cpp core/*.cpp)
 project(scilog)
 
 add_executable(scilog ${TARGET_SRC} main.cpp)
-target_link_libraries(scilog boost_system-mt boost_filesystem-mt)
+target_link_libraries(scilog boost_system-mt boost_date_time-mt boost_filesystem-mt)
 
 install(TARGETS scilog RUNTIME DESTINATION bin)

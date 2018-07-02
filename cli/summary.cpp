@@ -19,7 +19,7 @@
 #include <memory>
 #include <vector>
 
-#include "boost/date_time/gregorian/gregorian_types.hpp"
+#include "boost/date_time/gregorian/gregorian.hpp"
 #include "boost/filesystem.hpp"
 
 using namespace std;
@@ -218,18 +218,22 @@ namespace scilog_cli
 			}
 		}
 
-		for (int i = 1; i <= 30; i++)
+		map<int,map<int,map<int,bool>>> worked_days;
+		for (const shared_ptr<entry>& x_entry : entries)
 		{
-			for (const shared_ptr<entry>& x_entry : entries)
+			boost::gregorian::date x_date = boost::gregorian::from_string(x_entry->get_date());
+			worked_days[x_date.year()][x_date.year_month_day().month][x_date.day()] = true;
+		}
+
+		int total_of_days;
+		for (const auto& x_year : worked_days)
+		{
+			for (const auto& x_month : x_year.second)
 			{
-				tm entry_tm;
-				istringstream ss(x_entry->get_date());
-				ss >> get_time(&entry_tm, "%Y-%m-%d");
-				if (i == entry_tm.tm_mday)
-				{
-					total_worked_days++;
-					break;
-				}
+				boost::gregorian::date x_date = boost::gregorian::from_string(to_string(x_year.first)+"-"+to_string(x_month.first)+"-1");
+				boost::gregorian::date x_end_month = x_date.end_of_month();
+				total_of_days += x_end_month.day();
+				total_worked_days += x_month.second.size();
 			}
 		}
 
@@ -261,7 +265,7 @@ namespace scilog_cli
 
 		cout << scilog_cli::normal_text << "total entries: " << scilog_cli::green_text << entries.size() << endl;
 
-		cout << scilog_cli::normal_text << "total worked days: " << scilog_cli::green_text << (100 * total_worked_days / 30) << " %" << endl;
+		cout << scilog_cli::normal_text << "total worked days: " << scilog_cli::green_text << (100 * total_worked_days / total_of_days) << " %" << endl;
 
 		cout << scilog_cli::normal_text << "readed pages: " << scilog_cli::green_text << total_of_pages << endl;
 

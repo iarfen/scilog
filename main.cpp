@@ -341,6 +341,7 @@ namespace scilog_cli
 				values.mode = fs_mode::all;
 			}
 			values.directory_path = ".";
+			values.year_selection = get_current_directory_year();
 		}
 		else
 		{
