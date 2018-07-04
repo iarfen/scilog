@@ -44,6 +44,10 @@ namespace scilog_cli
 				{
 					entry_month = "0" + month;
 				}
+				else
+				{
+					entry_month = month;
+				}
 				string date = year + "-" + entry_month + "-" + day;
 				string description = entry_node->value() ? entry_node->value() : "";
 

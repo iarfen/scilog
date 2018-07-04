@@ -225,12 +225,12 @@ namespace scilog_cli
 			worked_days[x_date.year()][x_date.year_month_day().month][x_date.day()] = true;
 		}
 
-		int total_of_days;
+		int total_of_days = 0;
 		for (const auto& x_year : worked_days)
 		{
 			for (const auto& x_month : x_year.second)
 			{
-				boost::gregorian::date x_date = boost::gregorian::from_string(to_string(x_year.first)+"-"+to_string(x_month.first)+"-1");
+				boost::gregorian::date x_date = boost::gregorian::from_string(to_string(x_year.first)+"-"+to_string(x_month.first)+"-01");
 				boost::gregorian::date x_end_month = x_date.end_of_month();
 				total_of_days += x_end_month.day();
 				total_worked_days += x_month.second.size();

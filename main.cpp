@@ -329,7 +329,8 @@ namespace scilog_cli
 		values.month_selection = "";
 		values.year_selection = "";
 		values.directory_path = "";
-		values.is_year_dir = scilog_cli::is_year_directory(".");
+		string cwd = boost::filesystem::current_path().generic_string();
+		values.is_year_dir = scilog_cli::is_year_directory(cwd);
 		if (argc == 2)
 		{
 			if (values.is_year_dir)
@@ -365,6 +366,19 @@ namespace scilog_cli
 					}
 				}
 			}
+			if (values.month_selection == "" and values.year_selection == "")
+			{
+				if (values.is_year_dir)
+				{
+					values.mode = fs_mode::year;
+				}
+				else
+				{
+					values.mode = fs_mode::all;
+				}
+				values.directory_path = ".";
+				values.year_selection = get_current_directory_year();
+			}
 			if (values.month_selection != "")
 			{
 				values.mode = fs_mode::month;
@@ -375,21 +389,10 @@ namespace scilog_cli
 			}
 			else
 			{
+				values.mode = fs_mode::year;
 				if (values.year_selection == "")
 				{
-					if (values.is_year_dir)
-					{
-						values.mode = fs_mode::year;
-						values.year_selection = get_current_directory_year();
-					}
-					else
-					{
-						values.mode = fs_mode::all;
-					}
-				}
-				else
-				{
-					values.mode = fs_mode::year;
+					values.year_selection = get_current_directory_year();
 				}
 			}
 			if (values.mode != fs_mode::all)
