@@ -32,7 +32,6 @@ namespace scilog_cli
 		cout << "    open [year] --topics                   opens the file of topics of the selected year" << endl << endl;
 		cout << "    open-dir                               opens the directory of the actual year" << endl;
 		cout << "    open-dir [year]                        opens the directory of the selected year" << endl << endl;
-		cout << "    show-categories                        list all the categories and subcategories" << endl << endl;
 		cout << "    summary                                summarizes the work of the year" << endl;
 		cout << "    summary <month-number> [year]          summarizes the work of the month or year selected" << endl << endl;
 		cout << "    summary-topics                         summarizes the topics worked and learned" << endl;
