@@ -33,6 +33,10 @@ namespace scilog_cli
 			if (node_name == "project" or node_name == "learn")
 			{
 				string type = entry_node->first_attribute("type") ? entry_node->first_attribute("type")->value() : "";
+				if (type.find_first_of(",") != string::npos)
+				{
+					type = type.substr(0,type.find_first_of(","));
+				}
 				string topic = entry_node->first_attribute("topic") ? entry_node->first_attribute("topic")->value() : "";
 				string day = entry_node->first_attribute("day") ? entry_node->first_attribute("day")->value() : "";
 				if (stoi(day) < 10)

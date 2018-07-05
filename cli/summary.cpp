@@ -163,14 +163,12 @@ namespace scilog_cli
 		int total_learn_entries = 0;
 		int total_project_entries = 0;
 
+		map<string,int> learn_entries = map<string,int>();
 		int total_learn_book_entries = 0;
 		int total_learn_documentation_entries = 0;
 		int total_learn_planification_entries = 0;
 
-		int total_project_theory_entries = 0;
-		int total_project_software_design_entries = 0;
-		int total_project_programming_entries = 0;
-		int total_project_planification_entries = 0;
+		map<string,int> project_entries = map<string,int>();
 
 		map<string,shared_ptr<topic>> topics = get_all_topics_map();
 
@@ -185,36 +183,33 @@ namespace scilog_cli
 					if (actual_topic->get_type() == "book")
 					{
 						total_learn_book_entries++;
+						continue;
 					}
 					else if (actual_topic->get_type() == "documentation")
 					{
 						total_learn_documentation_entries++;
+						continue;
 					}
 					else if (actual_topic->get_type() == "planification")
 					{
 						total_learn_planification_entries++;
+						continue;
 					}
 				}
+				if (learn_entries.count(entry->get_type()) == 0)
+				{
+					learn_entries[entry->get_type()] = 0;
+				}
+				learn_entries[entry->get_type()]++;
 			}
 			else if (entry->get_kind() == "project")
 			{
 				total_project_entries++;
-				if (entry->get_type() == "theory")
+				if (project_entries.count(entry->get_type()) == 0)
 				{
-					total_project_theory_entries++;
+					project_entries[entry->get_type()] = 0;
 				}
-				else if (entry->get_type() == "software_design")
-				{
-					total_project_software_design_entries++;
-				}
-				else if (entry->get_type() == "programming")
-				{
-					total_project_programming_entries++;
-				}
-				else if (entry->get_type() == "planification")
-				{
-					total_project_planification_entries++;
-				}
+				project_entries[entry->get_type()]++;
 			}
 		}
 
@@ -274,12 +269,19 @@ namespace scilog_cli
 
 		cout << scilog_cli::normal_text << "learn book entries: " << scilog_cli::green_text << total_learn_book_entries << "    " << (100 * total_learn_book_entries / total_learn_entries) << " %" << endl;
 		cout << scilog_cli::normal_text << "learn documentation entries: " << scilog_cli::green_text << total_learn_documentation_entries << "    " << (100 * total_learn_documentation_entries / total_learn_entries) << " %" << endl;
-		cout << scilog_cli::normal_text << "learn planification entries: " << scilog_cli::green_text << total_learn_planification_entries << "    " << (100 * total_learn_planification_entries / total_learn_entries) << " %" << endl << endl;
+		cout << scilog_cli::normal_text << "learn planification entries: " << scilog_cli::green_text << total_learn_planification_entries << "    " << (100 * total_learn_planification_entries / total_learn_entries) << " %" << endl;
 
-		cout << scilog_cli::normal_text << "project theory entries: " << scilog_cli::green_text << total_project_theory_entries << "    " << (100 * total_project_theory_entries / total_project_entries) << " %" << endl;
-		cout << scilog_cli::normal_text << "project software design entries: " << scilog_cli::green_text << total_project_software_design_entries << "    " << (100 * total_project_software_design_entries / total_project_entries) << " %" << endl;
-		cout << scilog_cli::normal_text << "project programming entries: " << scilog_cli::green_text << total_project_programming_entries << "    " << (100 * total_project_programming_entries / total_project_entries) << " %" << endl;
-		cout << scilog_cli::normal_text << "project planification entries: " << scilog_cli::green_text << total_project_planification_entries << "    " << (100 * total_project_planification_entries / total_project_entries) << " %" << endl;
+		for (const auto& learn_entry : learn_entries)
+		{
+			cout << scilog_cli::normal_text << "learn " << learn_entry.first << " entries: " << scilog_cli::green_text << learn_entry.second << "    " << (100 * learn_entry.second / total_learn_entries) << " %" << endl;
+		}
+
+		cout << endl;
+
+		for (const auto& project_entry : project_entries)
+		{
+			cout << scilog_cli::normal_text << "project " << project_entry.first << " entries: " << scilog_cli::green_text << project_entry.second << "    " << (100 * project_entry.second / total_project_entries) << " %" << endl;
+		}
 	}
 
 	void print_topics(const vector<shared_ptr<entry>>& entries)
