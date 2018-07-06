@@ -288,15 +288,33 @@ namespace scilog_cli
 	{
 		map<string,int> learn_topics_count = map<string,int>();
 		map<string,int> project_topics_count = map<string,int>();
+		map<string,shared_ptr<topic>> topics = get_all_topics_map();
 		for (const shared_ptr<entry>& entry : entries)
 		{
 			if (entry->get_topic() != "")
 			{
+				string parent_topic;
+				if (topics.count(entry->get_topic()) > 0)
+				{
+					parent_topic = topics[entry->get_topic()]->get_parent_topic();
+				}
+				else
+				{
+					parent_topic = "";
+				}
 				if (entry->get_kind() == "learn")
 				{
 					if (learn_topics_count.count(entry->get_topic()) == 0)
 					{
 						learn_topics_count[entry->get_topic()] = 0;
+					}
+					if (parent_topic != "")
+					{
+						if (learn_topics_count.count(parent_topic) == 0)
+						{
+							learn_topics_count[parent_topic] = 0;
+						}
+						learn_topics_count[parent_topic]++;
 					}
 					learn_topics_count[entry->get_topic()]++;
 				}
@@ -306,6 +324,14 @@ namespace scilog_cli
 					{
 						project_topics_count[entry->get_topic()] = 0;
 					}
+					if (parent_topic != "")
+					{
+						if (project_topics_count.count(parent_topic) == 0)
+						{
+							project_topics_count[parent_topic] = 0;
+						}
+						project_topics_count[parent_topic]++;
+					}
 					project_topics_count[entry->get_topic()]++;
 				}
 			}
@@ -313,12 +339,34 @@ namespace scilog_cli
 		cout << scilog_cli::normal_text << "total entries: " << scilog_cli::green_text << entries.size() << endl << endl;
 		for (auto learn_topic_count : learn_topics_count)
 		{
+			if (topics.count(learn_topic_count.first) and topics[learn_topic_count.first]->get_parent_topic() != "")
+			{
+				continue;
+			}
 			cout << scilog_cli::normal_text << "learn " << scilog_cli::green_text << learn_topic_count.first << ": " << learn_topic_count.second << endl;
+			for (const auto& x_topic : topics)
+			{
+				if (x_topic.second->get_parent_topic() != "" and x_topic.second->get_parent_topic() == learn_topic_count.first)
+				{
+					cout << scilog_cli::normal_text << "--learn " << scilog_cli::green_text << x_topic.second->get_name() << ": " << learn_topics_count[x_topic.second->get_name()] << endl;
+				}
+			}
 		}
 		cout << endl;
-		for (auto project_topic_count : project_topics_count)
+		for (const auto& project_topic_count : project_topics_count)
 		{
+			if (topics.count(project_topic_count.first) and topics[project_topic_count.first]->get_parent_topic() != "")
+			{
+				continue;
+			}
 			cout << scilog_cli::normal_text << "project " << scilog_cli::green_text << project_topic_count.first << ": " << project_topic_count.second << endl;
+			for (const auto& x_topic : topics)
+			{
+				if (x_topic.second->get_parent_topic() != "" and x_topic.second->get_parent_topic() == project_topic_count.first)
+				{
+					cout << scilog_cli::normal_text << "--project " << scilog_cli::green_text << x_topic.second->get_name() << ": " << project_topics_count[x_topic.second->get_name()] << endl;
+				}
+			}
 		}
 	}
 

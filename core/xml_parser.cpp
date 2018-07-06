@@ -106,6 +106,7 @@ namespace scilog_cli
 				string end_date = topic_node->first_attribute("end_date") ? topic_node->first_attribute("end_date")->value() : "";
 				string category = topic_node->first_attribute("category") ? topic_node->first_attribute("category")->value() : "";
 				string description = topic_node->value() ? topic_node->value() : "";
+				string parent_topic = topic_node->first_attribute("parent") ? topic_node->first_attribute("parent")->value() : "";
 				shared_ptr<topic> new_topic;
 				if (is_learn_topic)
 				{
@@ -120,11 +121,11 @@ namespace scilog_cli
 					{
 						number_of_pages = 0;
 					}
-					new_topic = make_shared<learn_topic>(type,category,name,start_date,end_date,description,number_of_pages);
+					new_topic = make_shared<learn_topic>(type,category,name,start_date,end_date,description,parent_topic,number_of_pages);
 				}
 				else
 				{
-					new_topic = make_shared<project_topic>(category,name,start_date,end_date,description);
+					new_topic = make_shared<project_topic>(category,name,start_date,end_date,description,parent_topic);
 				}
 				topics.push_back(new_topic);
 			}

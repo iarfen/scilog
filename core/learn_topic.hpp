@@ -13,7 +13,7 @@ namespace scilog_cli
 	{
 		public:
 			learn_topic();
-			learn_topic(const string&,const string&,const string&,const string&,const string&,const string&,int);
+			learn_topic(const string&,const string&,const string&,const string&,const string&,const string&,const string&,int);
 
 			inline string& get_type()
 			{
