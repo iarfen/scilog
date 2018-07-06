@@ -128,48 +128,33 @@ namespace scilog_cli
 
 	vector<category> get_all_categories()
 	{
-		vector<category> categories;
-		if (boost::filesystem::exists("topics.scilog_topics"))
+		vector<category> categories = vector<category>();
+		for (const auto& x_category: default_categories)
 		{
-			categories = create_categories_from_scilog_file("topics.scilog_topics");
+			categories.push_back(x_category.second);
 		}
-		for (const auto& default_category : default_categories)
+		vector<string> years_path = get_years_path(get_current_source_path());
+		vector<category> vector_categories = get_all_years_categories(years_path);
+		for (const category& x_category : vector_categories)
 		{
-			categories.push_back(default_category.second);
-		}
-		return categories;
-	}
-
-	map<string,category> get_all_categories_map()
-	{
-		map<string,category> categories = default_categories;
-		if (boost::filesystem::exists("topics.scilog_topics"))
-		{
-			vector<category> topic_categories = create_categories_from_scilog_file("topics.scilog_topics");
-			if (topic_categories.size() > 0)
-			{
-				for (const category& x_category : topic_categories)
-				{
-					categories[x_category.get_name()] = x_category;
-				}
-			}
+			categories.push_back(x_category);
 		}
 		return categories;
 	}
 
-	vector<shared_ptr<topic>> get_all_topics()
+	map<string,category>& get_all_categories_map()
 	{
-		vector<shared_ptr<topic>> topics;
-		if (boost::filesystem::exists("topics.scilog_topics"))
+		if (all_categories.size() == 0)
 		{
-			topics = create_topics_from_scilog_file("topics.scilog_topics");
+			initialize_all_categories();
 		}
-		return topics;
+		return all_categories;
 	}
 
 	map<string,shared_ptr<topic>> get_all_topics_map()
 	{
-		vector<shared_ptr<topic>> vector_topics = get_all_topics();
+		vector<string> years_path = get_years_path(get_current_source_path());
+		vector<shared_ptr<topic>> vector_topics = get_all_years_topics(years_path);
 		return create_topics_map(vector_topics);
 	}
 
@@ -244,7 +229,18 @@ namespace scilog_cli
 		return out_entries;
 	}
 
-	vector<shared_ptr<entry>> get_all_years_entries(vector<string> year_paths)
+	vector<category> get_all_years_categories(const vector<string>& year_paths)
+	{
+		vector<category> out_categories;
+		for (const string& year_path : year_paths)
+		{
+			vector<category> categories = create_categories_from_scilog_file(year_path + "/topics.scilog_topics");
+			out_categories.insert(out_categories.begin(),categories.begin(),categories.end());
+		}
+		return out_categories;
+	}
+
+	vector<shared_ptr<entry>> get_all_years_entries(const vector<string>& year_paths)
 	{
 		vector<shared_ptr<entry>> out_entries;
 		for (const string& year_path : year_paths)
@@ -258,12 +254,12 @@ namespace scilog_cli
 		return out_entries;
 	}
 
-	vector<shared_ptr<topic>> get_all_years_topics(vector<string> year_paths)
+	vector<shared_ptr<topic>> get_all_years_topics(const vector<string>& year_paths)
 	{
 		vector<shared_ptr<topic>> out_topics;
 		for (const string& year_path : year_paths)
 		{
-			vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(year_path);
+			vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(year_path + "/topics.scilog_topics");
 			out_topics.insert(out_topics.begin(),topics.begin(),topics.end());
 		}
 		return out_topics;

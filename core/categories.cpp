@@ -1,5 +1,7 @@
 #include "categories.hpp"
 
+#include "core/filesystem.hpp"
+
 using namespace std;
 
 namespace scilog_cli
@@ -107,19 +109,32 @@ namespace scilog_cli
 		{"language",category("language","")}
 	};
 
+	map<string,category> all_categories = map<string,category>();
+
 	bool is_parent_category(const string& actual_category,const string& parent_category)
 	{
-		if (default_categories[actual_category].get_parent_category() == parent_category)
+		if (all_categories[actual_category].get_parent_category() == parent_category)
 		{
 			return true;
 		}
-		else if (default_categories[actual_category].get_parent_category() == "")
+		else if (all_categories[actual_category].get_parent_category() == "")
 		{
 			return false;
 		}
 		else
 		{
-			return is_parent_category(default_categories[actual_category].get_parent_category(),parent_category);
+			return is_parent_category(all_categories[actual_category].get_parent_category(),parent_category);
+		}
+	}
+
+	void initialize_all_categories()
+	{
+		all_categories = default_categories;
+		vector<string> years_path = get_years_path(get_current_source_path());
+		vector<category> vector_categories = get_all_years_categories(years_path);
+		for (const category& x_category : vector_categories)
+		{
+			all_categories[x_category.get_name()] = x_category;
 		}
 	}
 }
