@@ -31,6 +31,7 @@ namespace scilog_cli
 		{"biochemistry",category("biochemistry","chemistry")},
 		{"analytical-chemistry",category("analytical-chemistry","chemistry")},
 		{"physical-chemistry",category("physical-chemistry","chemistry")},
+		{"materials",category("materials","chemistry")},
 		{"biology",category("biology","")},
 		{"cell-biology",category("cell-biology","biology")},
 		{"nutrition",category("nutrition","biology")},
@@ -106,7 +107,9 @@ namespace scilog_cli
 		{"probability-and-statistics",category("probability-and-statistics","applied-mathematics")},
 		{"game-theory",category("game-theory","applied-mathematics")},
 		{"operations-research",category("operations-research","applied-mathematics")},
-		{"language",category("language","")}
+		{"language",category("language","")},
+		{"laboratory",category("laboratory","")},
+		{"machines",category("machines","laboratory")}
 	};
 
 	map<string,category> all_categories = map<string,category>();
