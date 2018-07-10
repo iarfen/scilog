@@ -174,10 +174,6 @@ namespace scilog_cli
 
 		for (const shared_ptr<entry>& entry : entries)
 		{
-			if (entry->get_type() == "")
-			{
-				continue;
-			}
 			if (entry->get_kind() == "learn")
 			{
 				total_learn_entries++;
@@ -262,7 +258,7 @@ namespace scilog_cli
 			}
 		}
 
-		cout << scilog_cli::normal_text << "total entries: " << scilog_cli::green_text << (total_learn_entries + total_project_entries) << endl;
+		cout << scilog_cli::normal_text << "total entries: " << scilog_cli::green_text << entries.size() << endl;
 
 		cout << scilog_cli::normal_text << "total worked days: " << scilog_cli::green_text << (100 * total_worked_days / total_of_days) << " %" << endl;
 

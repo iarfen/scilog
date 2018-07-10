@@ -90,6 +90,7 @@ namespace scilog_cli
 	};
 
 	map<string,shared_ptr<topic>> create_topics_map(vector<shared_ptr<topic>>);
+	string default_topic_type(const map<string,shared_ptr<topic>>&,const string&,const string&);
 }
 
 bool operator ==(const scilog_cli::topic&,const scilog_cli::topic&);

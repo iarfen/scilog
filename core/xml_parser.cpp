@@ -9,6 +9,8 @@
 #include "core/learn_entry.hpp"
 #include "core/project_entry.hpp"
 
+#include "core/categories.hpp"
+
 #include <iostream>
 #include <sstream>
 
@@ -26,6 +28,9 @@ namespace scilog_cli
 		xml_file.parse<0>(file.data());
 		rapidxml::xml_node<>* root_node;
 		root_node = xml_file.first_node("scilog");
+
+		const map<string,shared_ptr<topic>>& topics = get_all_topics_map();
+
 		vector<shared_ptr<entry>> entries = vector<shared_ptr<entry>>();
 		for (rapidxml::xml_node<>* entry_node = root_node->first_node(); entry_node; entry_node = entry_node->next_sibling())
 		{
@@ -33,12 +38,26 @@ namespace scilog_cli
 			if (node_name == "project" or node_name == "learn")
 			{
 				string type = entry_node->first_attribute("type") ? entry_node->first_attribute("type")->value() : "";
+				string data_topic = entry_node->first_attribute("topic") ? entry_node->first_attribute("topic")->value() : "";
+				string day = entry_node->first_attribute("day") ? entry_node->first_attribute("day")->value() : "";
+				string description = entry_node->value() ? entry_node->value() : "";
+
+				if (type == "")
+				{
+					type = default_topic_type(topics,data_topic,node_name);
+				}
+
+				if (type == "" or data_topic == "" or day == "")
+				{
+					cout << "(" << day << "-" << month << ") description: " << description << endl;
+					continue;
+				}
+
 				if (type.find_first_of(",") != string::npos)
 				{
 					type = type.substr(0,type.find_first_of(","));
 				}
-				string topic = entry_node->first_attribute("topic") ? entry_node->first_attribute("topic")->value() : "";
-				string day = entry_node->first_attribute("day") ? entry_node->first_attribute("day")->value() : "";
+
 				if (stoi(day) < 10)
 				{
 					day = "0" + day;
@@ -53,12 +72,16 @@ namespace scilog_cli
 					entry_month = month;
 				}
 				string date = year + "-" + entry_month + "-" + day;
-				string description = entry_node->value() ? entry_node->value() : "";
 
 				shared_ptr<entry> new_entry;
 				if (node_name == "learn")
 				{
 					string string_page_point = entry_node->first_attribute("page_point") ? entry_node->first_attribute("page_point")->value() : "";
+					if (string_page_point == "")
+					{
+						continue;
+					}
+
 					int page_point;
 					if (string_page_point != "")
 					{
@@ -68,11 +91,11 @@ namespace scilog_cli
 					{
 						page_point = 0;
 					}
-					new_entry = make_shared<learn_entry>(type,topic,date,description,page_point);
+					new_entry = make_shared<learn_entry>(type,data_topic,date,description,page_point);
 				}
 				else if (node_name == "project")
 				{
-					new_entry = make_shared<project_entry>(type,topic,date,description);
+					new_entry = make_shared<project_entry>(type,data_topic,date,description);
 				}
 				entries.push_back(new_entry);
 			}
@@ -91,11 +114,16 @@ namespace scilog_cli
 		bool is_learn_topic;
 		for (rapidxml::xml_node<>* category_node = root_node->first_node(); category_node; category_node = category_node->next_sibling())
 		{
-			if (string(category_node->name()) == "learn")
+			string node_name = string(category_node->name());
+			if (node_name == "category")
+			{
+				continue;
+			}
+			if (node_name == "learn")
 			{
 				is_learn_topic = true;
 			}
-			else
+			else if (node_name == "project")
 			{
 				is_learn_topic = false;
 			}
@@ -183,7 +211,7 @@ namespace scilog_cli
 		rapidxml::xml_node<> * root_node;
 		root_node = xml_file.first_node("scilog");
 		ostringstream out;
-		map<string,shared_ptr<topic>> topics = get_all_topics_map();
+		const map<string,shared_ptr<topic>>& topics = get_all_topics_map();
 		vector<string> printed_topics = vector<string>();
 		for (rapidxml::xml_node<>* entry_node = root_node->first_node(); entry_node; entry_node = entry_node->next_sibling())
 		{
@@ -270,6 +298,10 @@ namespace scilog_cli
 					has_topic = true;
 					unespecific_topic = true;
 				}
+			}
+			if (has_type == false and default_topic_type(topics,entry_node->first_attribute("topic")->value(),node_name) != "")
+			{
+				has_type = true;
 			}
 			string error_sentence;
 			if (has_topic and !unespecific_topic)

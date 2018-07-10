@@ -20,7 +20,7 @@ namespace scilog_cli
 			string result = scilog_cli::validate_scilog_file(filepath);
 			if (result != "")
 			{
-				cout << scilog_cli::green_text << year << "/" << filename << scilog_cli::normal_text << " is an invalid file" << endl;
+				cout << scilog_cli::green_text << year << "/" << filename << scilog_cli::normal_text << " has errors" << endl;
 				cout << result;
 			}
 			else

@@ -1,5 +1,6 @@
 #include "filesystem.hpp"
 #include "categories.hpp"
+#include "topics.hpp"
 #include "xml_parser.hpp"
 #include "cli/cli.hpp"
 
@@ -151,11 +152,13 @@ namespace scilog_cli
 		return all_categories;
 	}
 
-	map<string,shared_ptr<topic>> get_all_topics_map()
+	map<string,shared_ptr<topic>>& get_all_topics_map()
 	{
-		vector<string> years_path = get_years_path(get_current_source_path());
-		vector<shared_ptr<topic>> vector_topics = get_all_years_topics(years_path);
-		return create_topics_map(vector_topics);
+		if (all_topics.size() == 0)
+		{
+			initialize_all_topics();
+		}
+		return all_topics;
 	}
 
 	bool is_year_directory(const string& directory_path)

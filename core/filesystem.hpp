@@ -18,7 +18,7 @@ namespace scilog_cli
 	string get_month_number_from_filename(const string&);
 	vector<category> get_all_categories();
 	map<string,category>& get_all_categories_map();
-	map<string,shared_ptr<topic>> get_all_topics_map();
+	map<string,shared_ptr<topic>>& get_all_topics_map();
 
 	bool is_year_directory(const string&);
 
