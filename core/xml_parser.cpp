@@ -482,7 +482,7 @@ namespace scilog_cli
 							}
 						}
 					}
-					if (!already_printed_parent_category)
+					if (!already_printed_parent_category and string(category_node->first_attribute("parent_category")->value()) != "")
 					{
 						out << error_sentence << " has the parent category " << scilog_cli::green_text << string(category_node->first_attribute("parent_category")->value()) << scilog_cli::normal_text << " that doesn't exists" << endl;
 						printed_categories.push_back(string(category_node->first_attribute("parent_category")->value()));
