@@ -342,7 +342,7 @@ namespace scilog_cli
 				}
 				if (!already_printed_topic)
 				{
-					out << "The topic " << scilog_cli::green_text << string(entry_node->first_attribute("topic")->value()) << scilog_cli::normal_text << " doesn't exists" << endl;
+					out << "The topic " << scilog_cli::cyan_text << string(entry_node->first_attribute("topic")->value()) << scilog_cli::normal_text << " doesn't exists" << endl;
 					printed_topics.push_back(string(entry_node->first_attribute("topic")->value()));
 				}
 			}
@@ -484,7 +484,7 @@ namespace scilog_cli
 					}
 					if (!already_printed_parent_category and string(category_node->first_attribute("parent_category")->value()) != "")
 					{
-						out << error_sentence << " has the parent category " << scilog_cli::green_text << string(category_node->first_attribute("parent_category")->value()) << scilog_cli::normal_text << " that doesn't exists" << endl;
+						out << error_sentence << " has the parent category " << scilog_cli::cyan_text << string(category_node->first_attribute("parent_category")->value()) << scilog_cli::normal_text << " that doesn't exists" << endl;
 						printed_categories.push_back(string(category_node->first_attribute("parent_category")->value()));
 					}
 				}
@@ -651,7 +651,7 @@ namespace scilog_cli
 					}
 					if (!already_printed_category)
 					{
-						out << error_sentence << " has the category " << scilog_cli::green_text << string(entry_node->first_attribute("category")->value()) << scilog_cli::normal_text << " that doesn't exists" << endl;
+						out << error_sentence << " has the category " << scilog_cli::cyan_text << string(entry_node->first_attribute("category")->value()) << scilog_cli::normal_text << " that doesn't exists" << endl;
 						printed_categories.push_back(string(entry_node->first_attribute("category")->value()));
 					}
 				}
