@@ -25,7 +25,7 @@ namespace scilog_cli
 			}
 			else
 			{
-				cout << scilog_cli::green_text << year << "/" << filename << scilog_cli::normal_text << " is a valid file" << endl;
+				cout << scilog_cli::green_text << year << "/" << filename << scilog_cli::normal_text << " is valid" << endl;
 			}
 		}
 		else
@@ -74,12 +74,12 @@ namespace scilog_cli
 			string result = scilog_cli::validate_topics_xml_file(filepath);
 			if (result != "")
 			{
-				cout << scilog_cli::green_text << year << "/topics.scilog_topics" << scilog_cli::normal_text << " is an invalid file" << endl;
+				cout << scilog_cli::green_text << year << "/topics.scilog_topics" << scilog_cli::normal_text << " has errors" << endl;
 				cout << result;
 			}
 			else
 			{
-				cout << scilog_cli::green_text << year << "/topics.scilog_topics" << scilog_cli::normal_text << " is a valid file" << endl;
+				cout << scilog_cli::green_text << year << "/topics.scilog_topics" << scilog_cli::normal_text << " is valid" << endl;
 			}
 		}
 		else
