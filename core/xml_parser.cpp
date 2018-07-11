@@ -49,7 +49,6 @@ namespace scilog_cli
 
 				if (type == "" or data_topic == "" or day == "")
 				{
-					cout << "(" << day << "-" << month << ") description: " << description << endl;
 					continue;
 				}
 

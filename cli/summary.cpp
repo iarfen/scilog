@@ -26,66 +26,55 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void command_summary_month(const string& x,const string& directory_path,const string& year,bool year_summary)
+	void command_summary_month(const string& x,const string& directory_path,const string& year,bool month_case)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
-		string filepath = directory_path + "/" + filename;
-		if (!boost::filesystem::exists(filepath))
+		if (!check_scilog_file(filename,directory_path,year,month_case,month_case))
 		{
-			if (!year_summary)
-			{
-				print_non_exist_message(filepath);
-			}
 			return;
 		}
+		string filepath = directory_path + "/" + filename;
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		print_summary(entries);
 		cout << endl;
 	}
 
-	void command_summary_month_by_topics(const string& x,const string& directory_path,const string& year,bool year_summary)
+	void command_summary_month_by_topics(const string& x,const string& directory_path,const string& year,bool month_case)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
-		string filepath = directory_path + "/" + filename;
-		if (!boost::filesystem::exists(filepath))
+		if (!check_scilog_file(filename,directory_path,year,month_case,month_case))
 		{
-			if (!year_summary)
-			{
-				print_non_exist_message(filepath);
-			}
 			return;
 		}
+		string filepath = directory_path + "/" + filename;
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		print_topics(entries);
 		cout << endl;
 	}
 
-	void command_summary_month_by_sciences(const string& x,const string& directory_path,const string& year,bool year_summary)
+	void command_summary_month_by_sciences(const string& x,const string& directory_path,const string& year,bool month_case)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
+		if (!check_scilog_file(filename,directory_path,year,month_case,month_case))
+		{
+			return;
+		}
 		string filepath = directory_path + "/" + filename;
-		string topicspath = directory_path + "/topics.scilog_topics";
-		if (!boost::filesystem::exists(filepath))
-		{
-			if (!year_summary)
-			{
-				print_non_exist_message(filepath);
-			}
-			return;
-		}
-		if (!boost::filesystem::exists(topicspath))
-		{
-			print_non_exist_message(topicspath);
-			return;
-		}
+		check_scilog_topics_file("topics.scilog_topics",directory_path,year,false,true);
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
-		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(topicspath);
+		const map<string,shared_ptr<topic>>& topics = get_all_topics_map();
 		print_sciences(entries,topics);
 		cout << endl;
 	}
 
 	void command_summary_year(const string& directory_path,const string& year,bool each)
 	{
+		vector<string> year_months = get_year_months();
+		for (const string& x_month : year_months)
+		{
+			string filename = get_filename_from_month_number(x_month);
+			check_scilog_file(filename,directory_path,year,false,true);
+		}
 		if (!each)
 		{
 			vector<shared_ptr<entry>> entries = get_year_entries(directory_path,year);
@@ -93,42 +82,58 @@ namespace scilog_cli
 		}
 		else
 		{
-			command_summary_month("1",directory_path,year,true);
-			command_summary_month("2",directory_path,year,true);
-			command_summary_month("3",directory_path,year,true);
-			command_summary_month("4",directory_path,year,true);
-			command_summary_month("5",directory_path,year,true);
-			command_summary_month("6",directory_path,year,true);
-			command_summary_month("7",directory_path,year,true);
-			command_summary_month("8",directory_path,year,true);
-			command_summary_month("9",directory_path,year,true);
-			command_summary_month("10",directory_path,year,true);
-			command_summary_month("11",directory_path,year,true);
-			command_summary_month("12",directory_path,year,true);
+			command_summary_month("1",directory_path,year,false);
+			command_summary_month("2",directory_path,year,false);
+			command_summary_month("3",directory_path,year,false);
+			command_summary_month("4",directory_path,year,false);
+			command_summary_month("5",directory_path,year,false);
+			command_summary_month("6",directory_path,year,false);
+			command_summary_month("7",directory_path,year,false);
+			command_summary_month("8",directory_path,year,false);
+			command_summary_month("9",directory_path,year,false);
+			command_summary_month("10",directory_path,year,false);
+			command_summary_month("11",directory_path,year,false);
+			command_summary_month("12",directory_path,year,false);
 		}
 	}
 
 	void command_summary_year_by_topics(const string& directory_path,const string& year,bool each)
 	{
+		vector<string> year_months = get_year_months();
+		for (const string& x_month : year_months)
+		{
+			string filename = get_filename_from_month_number(x_month);
+			check_scilog_file(filename,directory_path,year,false,true);
+		}
 		vector<shared_ptr<entry>> entries = get_year_entries(directory_path,year);
 		print_topics(entries);
 	}
 
 	void command_summary_year_by_sciences(const string& directory_path,const string& year,bool each)
 	{
-		vector<shared_ptr<entry>> entries = get_year_entries(directory_path,year);
-		string topicspath = directory_path + "/topics.scilog_topics";
-		if (!boost::filesystem::exists(topicspath))
+		vector<string> year_months = get_year_months();
+		for (const string& x_month : year_months)
 		{
-			print_non_exist_message(topicspath);
-			return;
+			string filename = get_filename_from_month_number(x_month);
+			check_scilog_file(filename,directory_path,year,false,true);
 		}
-		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(topicspath);
+		check_scilog_topics_file("topics.scilog_topics",directory_path,year,false,true);
+		vector<shared_ptr<entry>> entries = get_year_entries(directory_path,year);
+		const map<string,shared_ptr<topic>>& topics = get_all_topics_map();
 		print_sciences(entries,topics);
 	}
 
 	void command_summary_all_years(const string& directory_path)
 	{
+		map<string,vector<string>> months = get_all_years_months(directory_path);
+		for (const auto& x : months)
+		{
+			for (const string& x_month : x.second)
+			{
+				string filename = get_filename_from_month_number(x_month);
+				check_scilog_file(filename,directory_path + "/" + x.first,x.first,false,true);
+			}
+		}
 		vector<string> paths = get_years_path(directory_path);
 		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
 		print_summary(entries);
@@ -136,6 +141,15 @@ namespace scilog_cli
 
 	void command_summary_all_years_by_topics(const string& directory_path)
 	{
+		map<string,vector<string>> months = get_all_years_months(directory_path);
+		for (const auto& x : months)
+		{
+			for (const string& x_month : x.second)
+			{
+				string filename = get_filename_from_month_number(x_month);
+				check_scilog_file(filename,directory_path + "/" + x.first,x.first,false,true);
+			}
+		}
 		vector<string> paths = get_years_path(directory_path);
 		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
 		print_topics(entries);
@@ -143,15 +157,19 @@ namespace scilog_cli
 
 	void command_summary_all_years_by_sciences(const string& directory_path)
 	{
+		map<string,vector<string>> months = get_all_years_months(directory_path);
+		for (const auto& x : months)
+		{
+			for (const string& x_month : x.second)
+			{
+				string filename = get_filename_from_month_number(x_month);
+				check_scilog_file(filename,directory_path + "/" + x.first,x.first,false,true);
+			}
+			check_scilog_topics_file("topics.scilog_topics",directory_path + "/" + x.first,x.first,false,true);
+		}
 		vector<string> paths = get_years_path(directory_path);
 		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
-		string topicspath = directory_path + "/topics.scilog_topics";
-		if (!boost::filesystem::exists(topicspath))
-		{
-			print_non_exist_message(topicspath);
-			return;
-		}
-		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(topicspath);
+		const map<string,shared_ptr<topic>>& topics = get_all_topics_map();
 		print_sciences(entries,topics);
 	}
 
@@ -258,29 +276,29 @@ namespace scilog_cli
 			}
 		}
 
-		cout << scilog_cli::normal_text << "total entries: " << scilog_cli::green_text << entries.size() << endl;
+		cout << scilog_cli::normal_text << "total entries: " << scilog_cli::cyan_text << entries.size() << endl;
 
-		cout << scilog_cli::normal_text << "total worked days: " << scilog_cli::green_text << (100 * total_worked_days / total_of_days) << " %" << endl;
+		cout << scilog_cli::normal_text << "total worked days: " << scilog_cli::cyan_text << (100 * total_worked_days / total_of_days) << " %" << endl;
 
-		cout << scilog_cli::normal_text << "readed pages: " << scilog_cli::green_text << total_of_pages << endl;
+		cout << scilog_cli::normal_text << "readed pages: " << scilog_cli::cyan_text << total_of_pages << endl;
 
-		cout << scilog_cli::normal_text << "total learn entries: " << scilog_cli::green_text << total_learn_entries << "    " << (100 * total_learn_entries / entries.size()) << " %" << endl;
-		cout << scilog_cli::normal_text << "total project entries: " << scilog_cli::green_text << total_project_entries << "    " << (100 * total_project_entries / entries.size()) << " %" << endl << endl;
+		cout << scilog_cli::normal_text << "total learn entries: " << scilog_cli::cyan_text << total_learn_entries << "    " << (100 * total_learn_entries / entries.size()) << " %" << endl;
+		cout << scilog_cli::normal_text << "total project entries: " << scilog_cli::cyan_text << total_project_entries << "    " << (100 * total_project_entries / entries.size()) << " %" << endl << endl;
 
-		cout << scilog_cli::normal_text << "learn book entries: " << scilog_cli::green_text << total_learn_book_entries << "    " << (100 * total_learn_book_entries / total_learn_entries) << " %" << endl;
-		cout << scilog_cli::normal_text << "learn documentation entries: " << scilog_cli::green_text << total_learn_documentation_entries << "    " << (100 * total_learn_documentation_entries / total_learn_entries) << " %" << endl;
-		cout << scilog_cli::normal_text << "learn planification entries: " << scilog_cli::green_text << total_learn_planification_entries << "    " << (100 * total_learn_planification_entries / total_learn_entries) << " %" << endl;
+		cout << scilog_cli::normal_text << "learn book entries: " << scilog_cli::cyan_text << total_learn_book_entries << "    " << (100 * total_learn_book_entries / total_learn_entries) << " %" << endl;
+		cout << scilog_cli::normal_text << "learn documentation entries: " << scilog_cli::cyan_text << total_learn_documentation_entries << "    " << (100 * total_learn_documentation_entries / total_learn_entries) << " %" << endl;
+		cout << scilog_cli::normal_text << "learn planification entries: " << scilog_cli::cyan_text << total_learn_planification_entries << "    " << (100 * total_learn_planification_entries / total_learn_entries) << " %" << endl;
 
 		for (const auto& learn_entry : learn_entries)
 		{
-			cout << scilog_cli::normal_text << "learn " << learn_entry.first << " entries: " << scilog_cli::green_text << learn_entry.second << "    " << (100 * learn_entry.second / total_learn_entries) << " %" << endl;
+			cout << scilog_cli::normal_text << "learn " << learn_entry.first << " entries: " << scilog_cli::cyan_text << learn_entry.second << "    " << (100 * learn_entry.second / total_learn_entries) << " %" << endl;
 		}
 
 		cout << endl;
 
 		for (const auto& project_entry : project_entries)
 		{
-			cout << scilog_cli::normal_text << "project " << project_entry.first << " entries: " << scilog_cli::green_text << project_entry.second << "    " << (100 * project_entry.second / total_project_entries) << " %" << endl;
+			cout << scilog_cli::normal_text << "project " << project_entry.first << " entries: " << scilog_cli::cyan_text << project_entry.second << "    " << (100 * project_entry.second / total_project_entries) << " %" << endl;
 		}
 	}
 
@@ -336,19 +354,19 @@ namespace scilog_cli
 				}
 			}
 		}
-		cout << scilog_cli::normal_text << "total entries: " << scilog_cli::green_text << entries.size() << endl << endl;
+		cout << scilog_cli::normal_text << "total entries: " << scilog_cli::cyan_text << entries.size() << endl << endl;
 		for (auto learn_topic_count : learn_topics_count)
 		{
 			if (topics.count(learn_topic_count.first) and topics[learn_topic_count.first]->get_parent_topic() != "")
 			{
 				continue;
 			}
-			cout << scilog_cli::normal_text << "learn " << scilog_cli::green_text << learn_topic_count.first << ": " << learn_topic_count.second << endl;
+			cout << scilog_cli::normal_text << "learn " << scilog_cli::cyan_text << learn_topic_count.first << ": " << learn_topic_count.second << endl;
 			for (const auto& x_topic : topics)
 			{
 				if (x_topic.second->get_parent_topic() != "" and x_topic.second->get_parent_topic() == learn_topic_count.first)
 				{
-					cout << scilog_cli::normal_text << "--learn " << scilog_cli::green_text << x_topic.second->get_name() << ": " << learn_topics_count[x_topic.second->get_name()] << endl;
+					cout << scilog_cli::normal_text << "--learn " << scilog_cli::cyan_text << x_topic.second->get_name() << ": " << learn_topics_count[x_topic.second->get_name()] << endl;
 				}
 			}
 		}
@@ -359,18 +377,18 @@ namespace scilog_cli
 			{
 				continue;
 			}
-			cout << scilog_cli::normal_text << "project " << scilog_cli::green_text << project_topic_count.first << ": " << project_topic_count.second << endl;
+			cout << scilog_cli::normal_text << "project " << scilog_cli::cyan_text << project_topic_count.first << ": " << project_topic_count.second << endl;
 			for (const auto& x_topic : topics)
 			{
 				if (x_topic.second->get_parent_topic() != "" and x_topic.second->get_parent_topic() == project_topic_count.first)
 				{
-					cout << scilog_cli::normal_text << "--project " << scilog_cli::green_text << x_topic.second->get_name() << ": " << project_topics_count[x_topic.second->get_name()] << endl;
+					cout << scilog_cli::normal_text << "--project " << scilog_cli::cyan_text << x_topic.second->get_name() << ": " << project_topics_count[x_topic.second->get_name()] << endl;
 				}
 			}
 		}
 	}
 
-	void print_sciences(const vector<shared_ptr<entry>>& entries,vector<shared_ptr<topic>>& topics)
+	void print_sciences(const vector<shared_ptr<entry>>& entries,const map<string,shared_ptr<topic>>& topics)
 	{
 		map<string,int> learn_sciences_count = map<string,int>();
 		map<string,int> project_sciences_count = map<string,int>();
@@ -378,7 +396,7 @@ namespace scilog_cli
 		map<string,category> categories = get_all_categories_map();
 		for (const shared_ptr<entry>& log_entry : entries)
 		{
-			if (log_entry->get_type() == "learn")
+			if (log_entry->get_kind() == "learn")
 			{
 				learn_entry = true;
 			}
@@ -386,30 +404,35 @@ namespace scilog_cli
 			{
 				learn_entry = false;
 			}
-			vector<shared_ptr<topic>>::iterator actual_topic = find_if(topics.begin(),topics.end(),[log_entry](const shared_ptr<topic>& x) -> bool { return x->get_name() == log_entry->get_topic(); });
-			if (actual_topic == topics.end())
+			if (topics.count(log_entry->get_topic()) == 0)
 			{
 				continue;
 			}
+			const shared_ptr<topic>& actual_topic = topics.at(log_entry->get_topic());
+			/*vector<shared_ptr<topic>>::iterator actual_topic = find_if(topics.begin(),topics.end(),[log_entry](const shared_ptr<topic>& x) -> bool { return x->get_name() == log_entry->get_topic(); });
+			if (actual_topic == topics.end())
+			{
+				continue;
+			}*/
 			if (learn_entry)
 			{
-				if (learn_sciences_count[(*actual_topic)->get_category()] == 0)
+				if (learn_sciences_count[actual_topic->get_category()] == 0)
 				{
-					learn_sciences_count[(*actual_topic)->get_category()] = 0;
+					learn_sciences_count[actual_topic->get_category()] = 0;
 				}
-				learn_sciences_count[(*actual_topic)->get_category()]++;
+				learn_sciences_count[actual_topic->get_category()]++;
 			}
 			else
 			{
-				if (project_sciences_count[(*actual_topic)->get_category()] == 0)
+				if (project_sciences_count[actual_topic->get_category()] == 0)
 				{
-					project_sciences_count[(*actual_topic)->get_category()] = 0;
+					project_sciences_count[actual_topic->get_category()] = 0;
 				}
-				project_sciences_count[(*actual_topic)->get_category()]++;
+				project_sciences_count[actual_topic->get_category()]++;
 			}
-			if ((*actual_topic)->get_category() != "")
+			if (actual_topic->get_category() != "")
 			{
-				category& actual_category = categories[(*actual_topic)->get_category()];
+				category& actual_category = categories[actual_topic->get_category()];
 				while (true)
 				{
 					if (actual_category.get_name() == "")
@@ -440,16 +463,16 @@ namespace scilog_cli
 				}
 			}
 		}
-		cout << scilog_cli::normal_text << "total of topics to learn: " << scilog_cli::green_text << learn_sciences_count.size() << endl;
+		cout << scilog_cli::normal_text << "total of topics to learn: " << scilog_cli::cyan_text << learn_sciences_count.size() << endl;
 		for (const auto& learn_science_count : learn_sciences_count)
 		{
-			cout << scilog_cli::normal_text << "learn " << learn_science_count.first << ": " << scilog_cli::green_text << learn_science_count.second << endl;
+			cout << scilog_cli::normal_text << "learn " << learn_science_count.first << ": " << scilog_cli::cyan_text << learn_science_count.second << endl;
 		}
 		cout << endl;
-		cout << scilog_cli::normal_text << "total of projects: " << scilog_cli::green_text << project_sciences_count.size() << endl;
+		cout << scilog_cli::normal_text << "total of projects: " << scilog_cli::cyan_text << project_sciences_count.size() << endl;
 		for (const auto& project_science_count : project_sciences_count)
 		{
-			cout << scilog_cli::normal_text << "project " << project_science_count.first << ": " << scilog_cli::green_text << project_science_count.second << endl;
+			cout << scilog_cli::normal_text << "project " << project_science_count.first << ": " << scilog_cli::cyan_text << project_science_count.second << endl;
 		}
 	}
 }

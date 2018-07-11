@@ -252,7 +252,7 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			scilog_cli::command_summary_month(values.month_selection,values.directory_path,values.year_selection,false);
+			scilog_cli::command_summary_month(values.month_selection,values.directory_path,values.year_selection,true);
 			return 0;
 		}
 	}
@@ -283,7 +283,7 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			scilog_cli::command_summary_month_by_topics(values.month_selection,values.directory_path,values.year_selection,false);
+			scilog_cli::command_summary_month_by_topics(values.month_selection,values.directory_path,values.year_selection,true);
 			return 0;
 		}
 	}
@@ -314,7 +314,7 @@ int main(int argc, char* argv[])
 		}
 		else
 		{
-			scilog_cli::command_summary_month_by_sciences(values.month_selection,values.directory_path,values.year_selection,false);
+			scilog_cli::command_summary_month_by_sciences(values.month_selection,values.directory_path,values.year_selection,true);
 			return 0;
 		}
 	}

@@ -282,8 +282,77 @@ namespace scilog_cli
 		return paths;
 	}
 
+	vector<string> get_year_months()
+	{
+		return {"1","2","3","4","5","6","7","8","9","10","11","12"};
+	}
+
+	map<string,vector<string>> get_all_years_months(const string& directory_path)
+	{
+		vector<string> years;
+		boost::filesystem::directory_iterator end_itr;
+		for (boost::filesystem::directory_iterator itr(directory_path); itr != end_itr; ++itr)
+		{
+			if (is_directory(itr->status()))
+			{
+				years.push_back(get_last_directory(itr->path().generic_string()));
+			}
+		}
+		map<string,vector<string>> months;
+		vector<string> year_months = get_year_months();
+		for (const string& x_year : years)
+		{
+			months[x_year] = year_months;
+		}
+		return months;
+	}
+
 	void print_non_exist_message(const string& filepath)
 	{
 		cout << scilog_cli::green_text << filepath << scilog_cli::normal_text << " doesn't exist" << endl;
+	}
+
+	bool check_scilog_file(const string& filename,const string& directory_path,const string& year,bool print_non_exist,bool print_has_errors)
+	{
+		string filepath = directory_path + "/" + filename;
+		if (boost::filesystem::exists(filepath))
+		{
+			string result = scilog_cli::validate_scilog_file(filepath);
+			if (print_has_errors and result != "")
+			{
+				cout << scilog_cli::green_text << year << "/" << filename << scilog_cli::normal_text << " has errors" << endl;
+			}
+			return true;
+		}
+		else
+		{
+			if (print_non_exist)
+			{
+				print_non_exist_message(year + "/" + filename);
+			}
+			return false;
+		}
+	}
+
+	bool check_scilog_topics_file(const string& filename,const string& directory_path,const string& year,bool print_non_exist,bool print_has_errors)
+	{
+		string filepath = directory_path + "/" + filename;
+		if (boost::filesystem::exists(filepath))
+		{
+			string result = scilog_cli::validate_topics_xml_file(filepath);
+			if (print_has_errors and result != "")
+			{
+				cout << scilog_cli::green_text << year << "/" << filename << scilog_cli::normal_text << " has errors" << endl;
+			}
+			return true;
+		}
+		else
+		{
+			if (print_non_exist)
+			{
+				print_non_exist_message(year + "/" + filename);
+			}
+			return false;
+		}
 	}
 }

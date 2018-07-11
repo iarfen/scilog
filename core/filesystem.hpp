@@ -34,7 +34,13 @@ namespace scilog_cli
 
 	vector<string> get_years_path(const string&);
 
+	vector<string> get_year_months();
+	map<string,vector<string>> get_all_years_months(const string&);
+
 	void print_non_exist_message(const string&);
+
+	bool check_scilog_file(const string&,const string&,const string&,bool,bool);
+	bool check_scilog_topics_file(const string&,const string&,const string&,bool,bool);
 }
 
 #endif // SCILOG_CORE_SCILOG_FILE_HPP_INCLUDED

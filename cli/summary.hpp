@@ -26,7 +26,7 @@ namespace scilog_cli
 
 	void print_summary(const vector<shared_ptr<entry>>&);
 	void print_topics(const vector<shared_ptr<entry>>&);
-	void print_sciences(const vector<shared_ptr<entry>>&,vector<shared_ptr<topic>>&);
+	void print_sciences(const vector<shared_ptr<entry>>&,const map<string,shared_ptr<topic>>&);
 }
 
 #endif // SCILOG_CLI_SUMMARY_HPP_INCLUDED
