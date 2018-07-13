@@ -3,9 +3,11 @@
 #include "topics.hpp"
 #include "xml_parser.hpp"
 #include "cli/cli.hpp"
+#include "conf.hpp"
 
 #include <chrono>
 #include <iostream>
+#include <string>
 
 #include "boost/filesystem.hpp"
 
@@ -13,34 +15,75 @@ using namespace std;
 
 namespace scilog_cli
 {
-	bool is_year_directory(const string& directory_path)
+	bool* is_year_dir = nullptr;
+
+	bool is_scilog_directory()
 	{
-		try
+		string current_path = get_current_source_path();
+		if (is_year_directory(current_path))
 		{
-			string year = get_last_directory(directory_path);
-			int year_number = stoi(year);
 			return true;
 		}
-		catch (invalid_argument& e)
+		else
 		{
-			return false;
+			vector<string> years_path = get_years_path(current_path);
+			for (const string& x_year : years_path)
+			{
+				if (is_year_directory(current_path + "/" + x_year))
+				{
+					return true;
+				}
+			}
 		}
-		catch (out_of_range& e)
+		return false;
+	}
+
+	bool is_year_directory(const string& directory_path)
+	{
+		if (is_year_dir != nullptr)
 		{
-			return false;
+			return *is_year_dir;
 		}
+		boost::filesystem::directory_iterator end_itr;
+		try
+		{
+			for (boost::filesystem::directory_iterator itr(directory_path); itr != end_itr; ++itr)
+			{
+				if (boost::filesystem::is_regular_file(itr->path()))
+				{
+					string filename = itr->path().string();
+					if (filename.find(".scilog") != string::npos or filename.find(".scilog_topics") != string::npos)
+					{
+						is_year_dir = new bool(true);
+						return true;
+					}
+				}
+			}
+		}
+		catch (exception& e)
+		{
+		}
+		is_year_dir = new bool(false);
+		return false;
 	}
 
 	string get_current_source_path()
 	{
-		string cwd = boost::filesystem::current_path().generic_string();
-		if (is_year_directory(cwd))
+		if (root_dir != "")
 		{
-			return cwd.substr(0,cwd.find_last_of("/"));
+			return root_dir;
 		}
 		else
 		{
-			return cwd;
+			string cwd = boost::filesystem::current_path().generic_string();
+			if (is_year_directory(cwd))
+			{
+				return cwd.substr(0,cwd.find_last_of("/"));
+			}
+			else
+			{
+				return cwd;
+			}
 		}
 	}
 

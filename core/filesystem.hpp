@@ -14,6 +14,9 @@ using namespace std;
 
 namespace scilog_cli
 {
+	extern bool* is_year_dir;
+
+	bool is_scilog_directory();
 	bool is_year_directory(const string&);
 	string get_current_source_path();
 	string get_current_directory_year();

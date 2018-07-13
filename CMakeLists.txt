@@ -14,6 +14,12 @@ set(PACKAGE_VENDOR "ismaelc")
 set(PACKAGE_BUGREPORT "ismael.correa.castro@gmail.com")
 set(PACKAGE_WEBSITE "https://www.github.com/Iarfen/scilog")
 
+if (WIN32)
+	if(NOT EXISTS $ENV{MINGW_HOME})
+		message(FATAL_ERROR "MINGW_HOME environment variable is required to install scilog")
+	endif(NOT EXISTS $ENV{MINGW_HOME})
+endif (WIN32)
+
 if (NOT SCILOG_DIR)
 	if (WIN32)
 		set(SCILOG_DIR "$ENV{HOME}\\scilog")
@@ -38,7 +44,7 @@ file(GLOB_RECURSE TARGET_SRC cli/*.cpp core/*.cpp)
 project(scilog)
 
 add_executable(scilog ${TARGET_SRC} main.cpp scilog.conf)
-target_link_libraries(scilog boost_system-mt boost_date_time-mt boost_filesystem-mt)
+target_link_libraries(scilog boost_system-mt boost_date_time-mt boost_filesystem-mt conf)
 
 install(TARGETS scilog RUNTIME DESTINATION bin)
 install(FILES scilog.conf DESTINATION etc COMPONENT config)

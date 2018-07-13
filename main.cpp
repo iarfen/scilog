@@ -9,6 +9,7 @@
 #include "cli/validate.hpp"
 #include "cli/version.hpp"
 #include "core/filesystem.hpp"
+#include "core/conf.hpp"
 
 #include <cctype>
 #include <iostream>
@@ -20,6 +21,10 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+	if (!scilog_cli::initialize_conf_file())
+	{
+		return 0;
+	}
 	if (argc == 1)
 	{
 		scilog_cli::fs_args values = scilog_cli::fs_selection(argc,argv);
@@ -331,6 +336,7 @@ namespace scilog_cli
 		values.directory_path = "";
 		string cwd = boost::filesystem::current_path().generic_string();
 		values.is_year_dir = scilog_cli::is_year_directory(cwd);
+		values.directory_path = root_dir;
 		if (argc == 2)
 		{
 			if (values.is_year_dir)
@@ -341,7 +347,10 @@ namespace scilog_cli
 			{
 				values.mode = fs_mode::all;
 			}
-			values.directory_path = ".";
+			if (root_dir == "")
+			{
+				values.directory_path = ".";
+			}
 			values.year_selection = get_current_directory_year();
 		}
 		else
@@ -376,7 +385,10 @@ namespace scilog_cli
 				{
 					values.mode = fs_mode::all;
 				}
-				values.directory_path = ".";
+				if (root_dir == "")
+				{
+					values.directory_path = ".";
+				}
 				values.year_selection = get_current_directory_year();
 			}
 			if (values.month_selection != "")
@@ -401,21 +413,45 @@ namespace scilog_cli
 				{
 					if (WIN32)
 					{
-						values.directory_path = "..\\" + values.year_selection;
+						if (root_dir == "")
+						{
+							values.directory_path = "..\\" + values.year_selection;
+						}
+						else
+						{
+							values.directory_path += "/" + values.year_selection;
+						}
 					}
 					else
 					{
-						values.directory_path = "../" + values.year_selection;
+						if (root_dir == "")
+						{
+							values.directory_path = "..\\" + values.year_selection;
+						}
+						else
+						{
+							values.directory_path += "/" + values.year_selection;
+						}
 					}
 				}
 				else
 				{
-					values.directory_path = values.year_selection;
+					if (root_dir == "")
+					{
+						values.directory_path = ".";
+					}
+					else
+					{
+						values.directory_path += "/" + values.year_selection;
+					}
 				}
 			}
 			else
 			{
-				values.directory_path = ".";
+				if (root_dir == "")
+				{
+					values.directory_path = ".";
+				}
 			}
 		}
 		return values;
