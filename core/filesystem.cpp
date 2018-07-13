@@ -13,6 +13,58 @@ using namespace std;
 
 namespace scilog_cli
 {
+	bool is_year_directory(const string& directory_path)
+	{
+		try
+		{
+			string year = get_last_directory(directory_path);
+			int year_number = stoi(year);
+			return true;
+		}
+		catch (invalid_argument& e)
+		{
+			return false;
+		}
+		catch (out_of_range& e)
+		{
+			return false;
+		}
+	}
+
+	string get_current_source_path()
+	{
+		string cwd = boost::filesystem::current_path().generic_string();
+		if (is_year_directory(cwd))
+		{
+			return cwd.substr(0,cwd.find_last_of("/"));
+		}
+		else
+		{
+			return cwd;
+		}
+	}
+
+	string get_current_directory_year()
+	{
+		string cwd = boost::filesystem::current_path().generic_string();
+		if (is_year_directory(cwd))
+		{
+			return get_last_directory(cwd);
+		}
+		else
+		{
+			auto x = chrono::system_clock::now();
+			time_t now_c = chrono::system_clock::to_time_t(x);
+			tm* parts = localtime(&now_c);
+			return to_string(1900 + parts->tm_year);
+		}
+	}
+
+	string get_last_directory(const string& cwd)
+	{
+		return cwd.substr(cwd.find_last_of("/") + 1);
+	}
+
 	string get_filename_from_month_number(const string& x)
 	{
 		if (x == "1" or x == "01" or x == "january")
@@ -159,58 +211,6 @@ namespace scilog_cli
 			initialize_all_topics();
 		}
 		return all_topics;
-	}
-
-	bool is_year_directory(const string& directory_path)
-	{
-		try
-		{
-			string year = get_last_directory(directory_path);
-			int year_number = stoi(year);
-			return true;
-		}
-		catch (invalid_argument& e)
-		{
-			return false;
-		}
-		catch (out_of_range& e)
-		{
-			return false;
-		}
-	}
-
-	string get_current_source_path()
-	{
-		string cwd = boost::filesystem::current_path().generic_string();
-		if (is_year_directory(cwd))
-		{
-			return cwd.substr(0,cwd.find_last_of("/"));
-		}
-		else
-		{
-			return cwd;
-		}
-	}
-
-	string get_current_directory_year()
-	{
-		string cwd = boost::filesystem::current_path().generic_string();
-		if (is_year_directory(cwd))
-		{
-			return get_last_directory(cwd);
-		}
-		else
-		{
-			auto x = chrono::system_clock::now();
-			time_t now_c = chrono::system_clock::to_time_t(x);
-			tm* parts = localtime(&now_c);
-			return to_string(1900 + parts->tm_year);
-		}
-	}
-
-	string get_last_directory(const string& cwd)
-	{
-		return cwd.substr(cwd.find_last_of("/") + 1);
 	}
 
 	vector<shared_ptr<entry>> get_year_entries(const string& directory_path,const string& year)

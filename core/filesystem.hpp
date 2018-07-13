@@ -14,17 +14,18 @@ using namespace std;
 
 namespace scilog_cli
 {
-	string get_filename_from_month_number(const string&);
-	string get_month_number_from_filename(const string&);
-	vector<category> get_all_categories();
-	map<string,category>& get_all_categories_map();
-	map<string,shared_ptr<topic>>& get_all_topics_map();
-
 	bool is_year_directory(const string&);
-
 	string get_current_source_path();
 	string get_current_directory_year();
 	string get_last_directory(const string&);
+
+	string get_filename_from_month_number(const string&);
+	string get_month_number_from_filename(const string&);
+
+	vector<category> get_all_categories();
+	map<string,category>& get_all_categories_map();
+
+	map<string,shared_ptr<topic>>& get_all_topics_map();
 
 	vector<shared_ptr<entry>> get_year_entries(const string&,const string&);
 
