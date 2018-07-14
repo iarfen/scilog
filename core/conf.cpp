@@ -1,5 +1,6 @@
 #include "conf.hpp"
 
+#include "cli/cli.hpp"
 #include "filesystem.hpp"
 
 #include <cstdlib>
@@ -26,7 +27,15 @@ namespace scilog_cli
 		{
 			map<string,conf::variable> variables = conf::parse_file(conf_filepath);
 			root_dir = string(variables["root_dir"]);
-			return true;
+			if (boost::filesystem::exists(root_dir))
+			{
+				return true;
+			}
+			else
+			{
+				cout << scilog_cli::normal_text << "The root_dir " << scilog_cli::green_text << root_dir << scilog_cli::normal_text << " inside scilog.conf doesn't exists" << endl;
+				return false;
+			}
 		}
 		else
 		{
