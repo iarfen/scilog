@@ -333,7 +333,7 @@ namespace scilog_cli
 		fs_args values;
 		values.month_selection = "";
 		values.year_selection = "";
-		values.is_year_dir = scilog_cli::is_year_directory(root_dir);
+		values.is_year_dir = scilog_cli::is_year_directory(boost::filesystem::current_path().generic_string());
 		if (argc == 2)
 		{
 			if (values.is_year_dir)

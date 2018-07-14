@@ -35,6 +35,7 @@ namespace scilog_cli
 			return;
 		}
 		string filepath = root_dir + "/" + year + "/" + filename;
+		cout << "filepath: " << filepath << endl;
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		print_summary(entries);
 		cout << endl;

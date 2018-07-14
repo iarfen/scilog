@@ -15,8 +15,6 @@ using namespace std;
 
 namespace scilog_cli
 {
-	bool* is_year_dir = nullptr;
-
 	bool is_scilog_directory()
 	{
 		string current_path = get_current_source_path();
@@ -40,10 +38,6 @@ namespace scilog_cli
 
 	bool is_year_directory(const string& directory_path)
 	{
-		if (is_year_dir != nullptr)
-		{
-			return *is_year_dir;
-		}
 		boost::filesystem::directory_iterator end_itr;
 		try
 		{
@@ -54,7 +48,6 @@ namespace scilog_cli
 					string filename = itr->path().string();
 					if (filename.find(".scilog") != string::npos or filename.find(".scilog_topics") != string::npos)
 					{
-						is_year_dir = new bool(true);
 						return true;
 					}
 				}
@@ -63,7 +56,6 @@ namespace scilog_cli
 		catch (exception& e)
 		{
 		}
-		is_year_dir = new bool(false);
 		return false;
 	}
 

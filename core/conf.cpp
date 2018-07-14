@@ -17,15 +17,15 @@ namespace scilog_cli
 	bool initialize_conf_file()
 	{
 		string conf_filepath = string(getenv("MINGW_HOME")) + "/etc/scilog.conf";
-		if (boost::filesystem::exists(conf_filepath))
+		if (is_scilog_directory())
+		{
+			root_dir = get_current_source_path();
+			return true;
+		}
+		else if (boost::filesystem::exists(conf_filepath))
 		{
 			map<string,conf::variable> variables = conf::parse_file(conf_filepath);
 			root_dir = string(variables["root_dir"]);
-			return true;
-		}
-		else if (is_scilog_directory())
-		{
-			root_dir = boost::filesystem::current_path().generic_string();
 			return true;
 		}
 		else
