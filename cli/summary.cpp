@@ -1,5 +1,6 @@
 #include "summary.hpp"
 #include "cli/cli.hpp"
+#include "core/conf.hpp"
 #include "core/entry.hpp"
 #include "core/topic.hpp"
 #include "core/learn_topic.hpp"
@@ -26,148 +27,148 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void command_summary_month(const string& x,const string& directory_path,const string& year,bool month_case)
+	void command_summary_month(const string& x,const string& year,bool month_case)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
-		if (!check_scilog_file(filename,directory_path,year,month_case,month_case))
+		if (!check_scilog_file(filename,year,month_case,month_case))
 		{
 			return;
 		}
-		string filepath = directory_path + "/" + filename;
+		string filepath = root_dir + "/" + year + "/" + filename;
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		print_summary(entries);
 		cout << endl;
 	}
 
-	void command_summary_month_by_topics(const string& x,const string& directory_path,const string& year,bool month_case)
+	void command_summary_month_by_topics(const string& x,const string& year,bool month_case)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
-		if (!check_scilog_file(filename,directory_path,year,month_case,month_case))
+		if (!check_scilog_file(filename,year,month_case,month_case))
 		{
 			return;
 		}
-		string filepath = directory_path + "/" + filename;
+		string filepath = root_dir + "/" + year + "/" + filename;
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		print_topics(entries);
 		cout << endl;
 	}
 
-	void command_summary_month_by_sciences(const string& x,const string& directory_path,const string& year,bool month_case)
+	void command_summary_month_by_sciences(const string& x,const string& year,bool month_case)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
-		if (!check_scilog_file(filename,directory_path,year,month_case,month_case))
+		if (!check_scilog_file(filename,year,month_case,month_case))
 		{
 			return;
 		}
-		string filepath = directory_path + "/" + filename;
-		check_scilog_topics_file("topics.scilog_topics",directory_path,year,false,true);
+		string filepath = root_dir + "/" + year + "/" + filename;
+		check_scilog_topics_file("topics.scilog_topics",year,false,true);
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		const map<string,shared_ptr<topic>>& topics = get_all_topics_map();
 		print_sciences(entries,topics);
 		cout << endl;
 	}
 
-	void command_summary_year(const string& directory_path,const string& year,bool each)
+	void command_summary_year(const string& year,bool each)
 	{
 		vector<string> year_months = get_year_months();
 		for (const string& x_month : year_months)
 		{
 			string filename = get_filename_from_month_number(x_month);
-			check_scilog_file(filename,directory_path,year,false,true);
+			check_scilog_file(filename,year,false,true);
 		}
 		if (!each)
 		{
-			vector<shared_ptr<entry>> entries = get_year_entries(directory_path,year);
+			vector<shared_ptr<entry>> entries = get_year_entries(year);
 			print_summary(entries);
 		}
 		else
 		{
-			command_summary_month("1",directory_path,year,false);
-			command_summary_month("2",directory_path,year,false);
-			command_summary_month("3",directory_path,year,false);
-			command_summary_month("4",directory_path,year,false);
-			command_summary_month("5",directory_path,year,false);
-			command_summary_month("6",directory_path,year,false);
-			command_summary_month("7",directory_path,year,false);
-			command_summary_month("8",directory_path,year,false);
-			command_summary_month("9",directory_path,year,false);
-			command_summary_month("10",directory_path,year,false);
-			command_summary_month("11",directory_path,year,false);
-			command_summary_month("12",directory_path,year,false);
+			command_summary_month("1",year,false);
+			command_summary_month("2",year,false);
+			command_summary_month("3",year,false);
+			command_summary_month("4",year,false);
+			command_summary_month("5",year,false);
+			command_summary_month("6",year,false);
+			command_summary_month("7",year,false);
+			command_summary_month("8",year,false);
+			command_summary_month("9",year,false);
+			command_summary_month("10",year,false);
+			command_summary_month("11",year,false);
+			command_summary_month("12",year,false);
 		}
 	}
 
-	void command_summary_year_by_topics(const string& directory_path,const string& year,bool each)
+	void command_summary_year_by_topics(const string& year,bool each)
 	{
 		vector<string> year_months = get_year_months();
 		for (const string& x_month : year_months)
 		{
 			string filename = get_filename_from_month_number(x_month);
-			check_scilog_file(filename,directory_path,year,false,true);
+			check_scilog_file(filename,year,false,true);
 		}
-		vector<shared_ptr<entry>> entries = get_year_entries(directory_path,year);
+		vector<shared_ptr<entry>> entries = get_year_entries(year);
 		print_topics(entries);
 	}
 
-	void command_summary_year_by_sciences(const string& directory_path,const string& year,bool each)
+	void command_summary_year_by_sciences(const string& year,bool each)
 	{
 		vector<string> year_months = get_year_months();
 		for (const string& x_month : year_months)
 		{
 			string filename = get_filename_from_month_number(x_month);
-			check_scilog_file(filename,directory_path,year,false,true);
+			check_scilog_file(filename,year,false,true);
 		}
-		check_scilog_topics_file("topics.scilog_topics",directory_path,year,false,true);
-		vector<shared_ptr<entry>> entries = get_year_entries(directory_path,year);
+		check_scilog_topics_file("topics.scilog_topics",year,false,true);
+		vector<shared_ptr<entry>> entries = get_year_entries(year);
 		const map<string,shared_ptr<topic>>& topics = get_all_topics_map();
 		print_sciences(entries,topics);
 	}
 
-	void command_summary_all_years(const string& directory_path)
+	void command_summary_all_years()
 	{
-		map<string,vector<string>> months = get_all_years_months(directory_path);
+		map<string,vector<string>> months = get_all_years_months();
 		for (const auto& x : months)
 		{
 			for (const string& x_month : x.second)
 			{
 				string filename = get_filename_from_month_number(x_month);
-				check_scilog_file(filename,directory_path + "/" + x.first,x.first,false,true);
+				check_scilog_file(filename,x.first,false,true);
 			}
 		}
-		vector<string> paths = get_years_path(directory_path);
+		vector<string> paths = get_years_path(root_dir);
 		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
 		print_summary(entries);
 	}
 
-	void command_summary_all_years_by_topics(const string& directory_path)
+	void command_summary_all_years_by_topics()
 	{
-		map<string,vector<string>> months = get_all_years_months(directory_path);
+		map<string,vector<string>> months = get_all_years_months();
 		for (const auto& x : months)
 		{
 			for (const string& x_month : x.second)
 			{
 				string filename = get_filename_from_month_number(x_month);
-				check_scilog_file(filename,directory_path + "/" + x.first,x.first,false,true);
+				check_scilog_file(filename,x.first,false,true);
 			}
 		}
-		vector<string> paths = get_years_path(directory_path);
+		vector<string> paths = get_years_path(root_dir);
 		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
 		print_topics(entries);
 	}
 
-	void command_summary_all_years_by_sciences(const string& directory_path)
+	void command_summary_all_years_by_sciences()
 	{
-		map<string,vector<string>> months = get_all_years_months(directory_path);
+		map<string,vector<string>> months = get_all_years_months();
 		for (const auto& x : months)
 		{
 			for (const string& x_month : x.second)
 			{
 				string filename = get_filename_from_month_number(x_month);
-				check_scilog_file(filename,directory_path + "/" + x.first,x.first,false,true);
+				check_scilog_file(filename,x.first,false,true);
 			}
-			check_scilog_topics_file("topics.scilog_topics",directory_path + "/" + x.first,x.first,false,true);
+			check_scilog_topics_file("topics.scilog_topics",x.first,false,true);
 		}
-		vector<string> paths = get_years_path(directory_path);
+		vector<string> paths = get_years_path(root_dir);
 		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
 		const map<string,shared_ptr<topic>>& topics = get_all_topics_map();
 		print_sciences(entries,topics);

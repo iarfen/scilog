@@ -1,11 +1,13 @@
 #include "open.hpp"
 
+#include "core/conf.hpp"
 #include "core/filesystem.hpp"
 
 #include <chrono>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <regex>
 
 #include "boost/filesystem.hpp"
 
@@ -13,7 +15,7 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void command_open(const string& x,const string& directory_path,const string& year)
+	void command_open(const string& x,const string& year)
 	{
 		if (WIN32)
 		{
@@ -21,13 +23,13 @@ namespace scilog_cli
 			if (x != "topics")
 			{
 				string filename = scilog_cli::get_filename_from_month_number(x);
-				filepath = directory_path + "\\" + filename;
+				filepath = root_dir + "/" + year + "/" + filename;
 			}
 			else
 			{
-				filepath = directory_path + "\\topics.scilog_topics";
+				filepath = root_dir + "/" + year + "/topics.scilog_topics";
 			}
-			string command = "\"" + filepath + "\"";
+			string command = "\"" + regex_replace(filepath,regex("/"),"\\") + "\"";
 
 			auto actual_time = chrono::system_clock::now();
 			time_t now_c = chrono::system_clock::to_time_t(actual_time);
@@ -44,12 +46,12 @@ namespace scilog_cli
 		}
 	}
 
-	void command_open_directory(const string& directory_path)
+	void command_open_directory()
 	{
 		string command;
 		if (WIN32)
 		{
-			command = "start " + directory_path;
+			command = "explorer \"" + regex_replace(root_dir,regex("/"),"\\") + "\"";
 		}
 		system(command.c_str());
 	}

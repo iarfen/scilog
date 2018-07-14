@@ -1,4 +1,5 @@
 #include "list_topics.hpp"
+#include "core/conf.hpp"
 #include "core/filesystem.hpp"
 #include "core/learn_topic.hpp"
 #include "core/xml_parser.hpp"
@@ -13,9 +14,9 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void command_list_topics_year(const string& directory_path,const string& filtered_category)
+	void command_list_topics_year(const string& year,const string& filtered_category)
 	{
-		string filepath = directory_path + "/topics.scilog_topics";
+		string filepath = root_dir + "/" + year + "/topics.scilog_topics";
 		if (boost::filesystem::exists(filepath))
 		{
 			vector<shared_ptr<topic>> topics = scilog_cli::create_topics_from_scilog_file(filepath);
@@ -27,14 +28,14 @@ namespace scilog_cli
 		}
 	}
 
-	void command_list_topics_all_years(const string& directory_path,const string& filtered_category)
+	void command_list_topics_all_years(const string& filtered_category)
 	{
 		boost::filesystem::directory_iterator end_itr;
-		for (boost::filesystem::directory_iterator itr(directory_path); itr != end_itr; ++itr)
+		for (boost::filesystem::directory_iterator itr(root_dir); itr != end_itr; ++itr)
 		{
 			if (is_directory(itr->status()))
 			{
-				command_list_topics_year(itr->path().generic_string(),filtered_category);
+				command_list_topics_year(get_last_directory(itr->path().generic_string()),filtered_category);
 			}
 		}
 	}

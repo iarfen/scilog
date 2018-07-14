@@ -14,7 +14,6 @@ namespace scilog_cli
 	struct fs_args
 	{
 		bool is_year_dir;
-		string directory_path;
 		string year_selection;
 		string month_selection;
 		fs_mode mode;

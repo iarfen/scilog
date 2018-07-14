@@ -1,5 +1,7 @@
 #include "create.hpp"
 #include "cli/cli.hpp"
+
+#include "core/conf.hpp"
 #include "core/filesystem.hpp"
 #include "core/sql_parser.hpp"
 #include "core/xml_parser.hpp"
@@ -41,14 +43,14 @@ namespace scilog_cli
 		command_create_month_file("12");
 	}
 
-	void command_create_sql_dump_month(const string& x,const string& directory_path,const string& year,const string& table_prefix)
+	void command_create_sql_dump_month(const string& x,const string& year,const string& table_prefix)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
-		string filepath = directory_path + "/" + filename;
+		string filepath = root_dir + "/" + year + "/" + filename;
 		if (boost::filesystem::exists(filepath))
 		{
 			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
-			vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(directory_path + "/topics.scilog_topics");
+			vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(root_dir + "/topics.scilog_topics");
 			print_sql_dump(entries,topics,table_prefix);
 		}
 		else
@@ -57,16 +59,16 @@ namespace scilog_cli
 		}
 	}
 
-	void command_create_sql_dump_year(const string& directory_path,const string& year,const string& table_prefix)
+	void command_create_sql_dump_year(const string& year,const string& table_prefix)
 	{
-		vector<shared_ptr<entry>> entries = get_year_entries(directory_path,year);
-		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(directory_path + "/topics.scilog_topics");
+		vector<shared_ptr<entry>> entries = get_year_entries(year);
+		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(root_dir + "/" + year + "/topics.scilog_topics");
 		print_sql_dump(entries,topics,table_prefix);
 	}
 
-	void command_create_sql_dump_all_years(const string& directory_path,const string& table_prefix)
+	void command_create_sql_dump_all_years(const string& table_prefix)
 	{
-		vector<string> paths = get_years_path(directory_path);
+		vector<string> paths = get_years_path(root_dir);
 		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
 		vector<shared_ptr<topic>> topics = get_all_years_topics(paths);
 		print_sql_dump(entries,topics,table_prefix);

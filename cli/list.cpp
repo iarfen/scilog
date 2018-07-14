@@ -1,4 +1,5 @@
 #include "list.hpp"
+#include "core/conf.hpp"
 #include "core/filesystem.hpp"
 #include "core/xml_parser.hpp"
 #include "cli/cli.hpp"
@@ -12,48 +13,48 @@ using namespace std;
 
 namespace scilog_cli
 {
-	void command_list_month(const string& x,const string& directory_path,const string& year,entry_kind selected_type,const string& filtered_topic,const string& filtered_category,bool month_case)
+	void command_list_month(const string& x,const string& year,entry_kind selected_type,const string& filtered_topic,const string& filtered_category,bool month_case)
 	{
 		string filename = scilog_cli::get_filename_from_month_number(x);
-		if (check_scilog_file(filename,directory_path,year,month_case,month_case))
+		if (check_scilog_file(filename,year,month_case,month_case))
 		{
-			string filepath = directory_path + "/" + filename;
+			string filepath = root_dir + "/" + year + "/" + filename;
 			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 			const map<string,shared_ptr<topic>>& topics = get_all_topics_map();
 			print_list(entries,selected_type,filtered_topic,filtered_category,topics);
 		}
 	}
 
-	void command_list_year(const string& directory_path,const string& year,entry_kind selected_type,const string& filtered_topic,const string& filtered_category)
+	void command_list_year(const string& year,entry_kind selected_type,const string& filtered_topic,const string& filtered_category)
 	{
 		vector<string> year_months = get_year_months();
 		for (const string& x_month : year_months)
 		{
 			string filename = get_filename_from_month_number(x_month);
-			check_scilog_file(filename,directory_path,year,false,true);
+			check_scilog_file(filename,year,false,true);
 		}
 		for (const string& x_month : year_months)
 		{
-			command_list_month(x_month,directory_path,year,selected_type,filtered_topic,filtered_category,false);
+			command_list_month(x_month,year,selected_type,filtered_topic,filtered_category,false);
 		}
 	}
 
-	void command_list_all_years(const string& directory_path,entry_kind selected_type,const string& filtered_topic,const string& filtered_category)
+	void command_list_all_years(entry_kind selected_type,const string& filtered_topic,const string& filtered_category)
 	{
-		map<string,vector<string>> months = get_all_years_months(directory_path);
+		map<string,vector<string>> months = get_all_years_months();
 		for (const auto& x : months)
 		{
 			for (const string& x_month : x.second)
 			{
 				string filename = get_filename_from_month_number(x_month);
-				check_scilog_file(filename,directory_path + "/" + x.first,x.first,false,true);
+				check_scilog_file(filename,x.first,false,true);
 			}
 		}
 		for (const auto& x : months)
 		{
 			for (const string& x_month : x.second)
 			{
-				command_list_month(x_month,directory_path + "/" + x.first,x.first,selected_type,filtered_topic,filtered_category,false);
+				command_list_month(x_month,x.first,selected_type,filtered_topic,filtered_category,false);
 			}
 		}
 	}

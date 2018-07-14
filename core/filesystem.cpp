@@ -69,21 +69,14 @@ namespace scilog_cli
 
 	string get_current_source_path()
 	{
-		if (root_dir != "")
+		string cwd = boost::filesystem::current_path().generic_string();
+		if (is_year_directory(cwd))
 		{
-			return root_dir;
+			return cwd.substr(0,cwd.find_last_of("/"));
 		}
 		else
 		{
-			string cwd = boost::filesystem::current_path().generic_string();
-			if (is_year_directory(cwd))
-			{
-				return cwd.substr(0,cwd.find_last_of("/"));
-			}
-			else
-			{
-				return cwd;
-			}
+			return cwd;
 		}
 	}
 
@@ -228,7 +221,7 @@ namespace scilog_cli
 		{
 			categories.push_back(x_category.second);
 		}
-		vector<string> years_path = get_years_path(get_current_source_path());
+		vector<string> years_path = get_years_path(root_dir);
 		vector<category> vector_categories = get_all_years_categories(years_path);
 		for (const category& x_category : vector_categories)
 		{
@@ -255,14 +248,14 @@ namespace scilog_cli
 		return all_topics;
 	}
 
-	vector<shared_ptr<entry>> get_year_entries(const string& directory_path,const string& year)
+	vector<shared_ptr<entry>> get_year_entries(const string& year)
 	{
 		vector<shared_ptr<entry>> out_entries;
 		vector<string> filenames = {"01-january","02-february","03-march","04-april","05-may","06-june","07-july","08-august","09-september","10-october","11-november","12-december"};
 
 		for (const string& filename : filenames)
 		{
-			string filepath = directory_path + "/" + filename + ".scilog";
+			string filepath = root_dir + "/" + year + "/" + filename + ".scilog";
 			if (!boost::filesystem::exists(filepath))
 			{
 				continue;
@@ -290,7 +283,7 @@ namespace scilog_cli
 		vector<shared_ptr<entry>> out_entries;
 		for (const string& year_path : year_paths)
 		{
-			vector<shared_ptr<entry>> entries = get_year_entries(year_path,get_last_directory(year_path));
+			vector<shared_ptr<entry>> entries = get_year_entries(get_last_directory(year_path));
 			if (entries.size() > 0)
 			{
 				out_entries.insert(out_entries.begin(),entries.begin(),entries.end());
@@ -329,11 +322,11 @@ namespace scilog_cli
 		return {"1","2","3","4","5","6","7","8","9","10","11","12"};
 	}
 
-	map<string,vector<string>> get_all_years_months(const string& directory_path)
+	map<string,vector<string>> get_all_years_months()
 	{
 		vector<string> years;
 		boost::filesystem::directory_iterator end_itr;
-		for (boost::filesystem::directory_iterator itr(directory_path); itr != end_itr; ++itr)
+		for (boost::filesystem::directory_iterator itr(root_dir); itr != end_itr; ++itr)
 		{
 			if (is_directory(itr->status()))
 			{
@@ -354,9 +347,9 @@ namespace scilog_cli
 		cout << scilog_cli::green_text << filepath << scilog_cli::normal_text << " doesn't exist" << endl;
 	}
 
-	bool check_scilog_file(const string& filename,const string& directory_path,const string& year,bool print_non_exist,bool print_has_errors)
+	bool check_scilog_file(const string& filename,const string& year,bool print_non_exist,bool print_has_errors)
 	{
-		string filepath = directory_path + "/" + filename;
+		string filepath = root_dir + "/" + year + "/" + filename;
 		if (boost::filesystem::exists(filepath))
 		{
 			string result = scilog_cli::validate_scilog_file(filepath);
@@ -376,9 +369,9 @@ namespace scilog_cli
 		}
 	}
 
-	bool check_scilog_topics_file(const string& filename,const string& directory_path,const string& year,bool print_non_exist,bool print_has_errors)
+	bool check_scilog_topics_file(const string& filename,const string& year,bool print_non_exist,bool print_has_errors)
 	{
-		string filepath = directory_path + "/" + filename;
+		string filepath = root_dir + "/" + year + "/" + filename;
 		if (boost::filesystem::exists(filepath))
 		{
 			string result = scilog_cli::validate_topics_xml_file(filepath);
