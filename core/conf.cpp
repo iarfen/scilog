@@ -25,6 +25,7 @@ namespace scilog_cli
 		}
 		else if (is_scilog_directory())
 		{
+			root_dir = boost::filesystem::current_path().generic_string();
 			return true;
 		}
 		else

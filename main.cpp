@@ -334,8 +334,7 @@ namespace scilog_cli
 		values.month_selection = "";
 		values.year_selection = "";
 		values.directory_path = "";
-		string cwd = boost::filesystem::current_path().generic_string();
-		values.is_year_dir = scilog_cli::is_year_directory(cwd);
+		values.is_year_dir = scilog_cli::is_year_directory(root_dir);
 		values.directory_path = root_dir;
 		if (argc == 2)
 		{
@@ -346,10 +345,6 @@ namespace scilog_cli
 			else
 			{
 				values.mode = fs_mode::all;
-			}
-			if (root_dir == "")
-			{
-				values.directory_path = ".";
 			}
 			values.year_selection = get_current_directory_year();
 		}

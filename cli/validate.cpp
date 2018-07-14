@@ -61,7 +61,9 @@ namespace scilog_cli
 		{
 			if (is_directory(itr->status()))
 			{
-				command_validate_year(itr->path().generic_string(),itr->path().generic_string());
+				string current_path = itr->path().generic_string();
+				string year = get_last_directory(current_path);
+				command_validate_year(current_path,year);
 			}
 		}
 	}
