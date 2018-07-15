@@ -30,13 +30,10 @@ namespace scilog_cli
 
 	void command_list_topics_all_years(const string& filtered_category)
 	{
-		boost::filesystem::directory_iterator end_itr;
-		for (boost::filesystem::directory_iterator itr(root_dir); itr != end_itr; ++itr)
+		vector<string> years_path = get_years_path(root_dir);
+		for (const string& x_year : years_path)
 		{
-			if (is_directory(itr->status()))
-			{
-				command_list_topics_year(get_last_directory(itr->path().generic_string()),filtered_category);
-			}
+			command_list_topics_year(get_last_directory(x_year),filtered_category);
 		}
 	}
 

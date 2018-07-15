@@ -57,15 +57,10 @@ namespace scilog_cli
 
 	void command_validate_all_years()
 	{
-		boost::filesystem::directory_iterator end_itr;
-		for (boost::filesystem::directory_iterator itr(root_dir); itr != end_itr; ++itr)
+		vector<string> years_path = get_years_path(root_dir);
+		for (const string& x_year : years_path)
 		{
-			if (is_directory(itr->status()))
-			{
-				string current_path = itr->path().generic_string();
-				string year = get_last_directory(current_path);
-				command_validate_year(year);
-			}
+			command_validate_year(get_last_directory(x_year));
 		}
 	}
 
