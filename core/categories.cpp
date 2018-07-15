@@ -3,6 +3,8 @@
 #include "core/conf.hpp"
 #include "core/filesystem.hpp"
 
+#include "cafi/cafi.hpp"
+
 using namespace std;
 
 namespace scilog_cli
@@ -134,7 +136,7 @@ namespace scilog_cli
 	void initialize_all_categories()
 	{
 		all_categories = default_categories;
-		vector<string> years_path = get_years_path(root_dir);
+		vector<string> years_path = cafi::get_years_path(cafi::root_dir);
 		vector<category> vector_categories = get_all_years_categories(years_path);
 		for (const category& x_category : vector_categories)
 		{

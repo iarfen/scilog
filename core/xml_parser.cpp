@@ -532,10 +532,12 @@ namespace scilog_cli
 				bool repeated_end_date = false;
 				bool has_pages = false;
 				bool repeated_pages = false;
+				bool has_parent = false;
+				bool repeated_parent = false;
 				for (rapidxml::xml_attribute<>* node_attribute = entry_node->first_attribute(); node_attribute; node_attribute = node_attribute->next_attribute())
 				{
 					string attribute_name = string(node_attribute->name());
-					if (!(attribute_name == "type" or attribute_name == "category" or attribute_name == "name" or attribute_name == "start_date" or attribute_name == "end_date" or attribute_name == "pages"))
+					if (!(attribute_name == "type" or attribute_name == "category" or attribute_name == "name" or attribute_name == "start_date" or attribute_name == "end_date" or attribute_name == "pages" or attribute_name == "parent"))
 					{
 						out << "Invalid attribute name '" << attribute_name << "'" << endl;
 					}
@@ -608,6 +610,17 @@ namespace scilog_cli
 						else
 						{
 							has_pages = true;
+						}
+					}
+					else if (attribute_name == "parent")
+					{
+						if (has_parent)
+						{
+							repeated_parent = true;
+						}
+						else
+						{
+							has_parent = true;
 						}
 					}
 				}
@@ -689,6 +702,10 @@ namespace scilog_cli
 					{
 						out << error_sentence << " has a pages attribute repeated" << endl;
 					}
+				}
+				if (repeated_parent)
+				{
+					out << error_sentence << " has a parent repeated" << endl;
 				}
 			}
 		}

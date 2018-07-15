@@ -10,6 +10,7 @@
 #include <regex>
 
 #include "boost/filesystem.hpp"
+#include "cafi/cafi.hpp"
 
 using namespace std;
 
@@ -22,12 +23,12 @@ namespace scilog_cli
 			string filepath;
 			if (x != "topics")
 			{
-				string filename = scilog_cli::get_filename_from_month_number(x);
-				filepath = root_dir + "/" + year + "/" + filename;
+				string filename = cafi::get_filename_from_month(x);
+				filepath = cafi::root_dir + "/" + year + "/" + filename;
 			}
 			else
 			{
-				filepath = root_dir + "/" + year + "/topics.scilog_topics";
+				filepath = cafi::root_dir + "/" + year + "/topics.scilog_topics";
 			}
 			string command = "\"" + regex_replace(filepath,regex("/"),"\\") + "\"";
 
@@ -51,7 +52,7 @@ namespace scilog_cli
 		string command;
 		if (WIN32)
 		{
-			command = "explorer \"" + regex_replace(root_dir,regex("/"),"\\") + "\"";
+			command = "explorer \"" + regex_replace(cafi::root_dir,regex("/"),"\\") + "\"";
 		}
 		system(command.c_str());
 	}

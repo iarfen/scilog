@@ -9,6 +9,7 @@
 #include <iostream>
 
 #include "boost/filesystem.hpp"
+#include "cafi/cafi.hpp"
 
 using namespace std;
 
@@ -16,7 +17,7 @@ namespace scilog_cli
 {
 	void command_list_topics_year(const string& year,const string& filtered_category)
 	{
-		string filepath = root_dir + "/" + year + "/topics.scilog_topics";
+		string filepath = cafi::root_dir + "/" + year + "/topics.scilog_topics";
 		if (boost::filesystem::exists(filepath))
 		{
 			vector<shared_ptr<topic>> topics = scilog_cli::create_topics_from_scilog_file(filepath);
@@ -30,10 +31,10 @@ namespace scilog_cli
 
 	void command_list_topics_all_years(const string& filtered_category)
 	{
-		vector<string> years_path = get_years_path(root_dir);
+		vector<string> years_path = cafi::get_years_path(cafi::root_dir);
 		for (const string& x_year : years_path)
 		{
-			command_list_topics_year(get_last_directory(x_year),filtered_category);
+			command_list_topics_year(cafi::get_last_directory(x_year),filtered_category);
 		}
 	}
 

@@ -7,8 +7,6 @@ using namespace std;
 
 namespace scilog_cli
 {
-	extern string root_dir;
-
 	bool initialize_conf_file();
 }
 

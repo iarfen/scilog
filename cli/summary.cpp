@@ -22,6 +22,7 @@
 
 #include "boost/date_time/gregorian/gregorian.hpp"
 #include "boost/filesystem.hpp"
+#include "cafi/cafi.hpp"
 
 using namespace std;
 
@@ -29,12 +30,12 @@ namespace scilog_cli
 {
 	void command_summary_month(const string& x,const string& year,bool month_case)
 	{
-		string filename = scilog_cli::get_filename_from_month_number(x);
+		string filename = cafi::get_filename_from_month(x);
 		if (!check_scilog_file(filename,year,month_case,month_case))
 		{
 			return;
 		}
-		string filepath = root_dir + "/" + year + "/" + filename;
+		string filepath = cafi::root_dir + "/" + year + "/" + filename;
 		cout << "filepath: " << filepath << endl;
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		print_summary(entries);
@@ -43,12 +44,12 @@ namespace scilog_cli
 
 	void command_summary_month_by_topics(const string& x,const string& year,bool month_case)
 	{
-		string filename = scilog_cli::get_filename_from_month_number(x);
+		string filename = cafi::get_filename_from_month(x);
 		if (!check_scilog_file(filename,year,month_case,month_case))
 		{
 			return;
 		}
-		string filepath = root_dir + "/" + year + "/" + filename;
+		string filepath = cafi::root_dir + "/" + year + "/" + filename;
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		print_topics(entries);
 		cout << endl;
@@ -56,12 +57,12 @@ namespace scilog_cli
 
 	void command_summary_month_by_sciences(const string& x,const string& year,bool month_case)
 	{
-		string filename = scilog_cli::get_filename_from_month_number(x);
+		string filename = cafi::get_filename_from_month(x);
 		if (!check_scilog_file(filename,year,month_case,month_case))
 		{
 			return;
 		}
-		string filepath = root_dir + "/" + year + "/" + filename;
+		string filepath = cafi::root_dir + "/" + year + "/" + filename;
 		check_scilog_topics_file("topics.scilog_topics",year,false,true);
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		const map<string,shared_ptr<topic>>& topics = get_all_topics_map();
@@ -71,10 +72,10 @@ namespace scilog_cli
 
 	void command_summary_year(const string& year,bool each)
 	{
-		vector<string> year_months = get_year_months();
+		vector<string> year_months = cafi::get_year_months();
 		for (const string& x_month : year_months)
 		{
-			string filename = get_filename_from_month_number(x_month);
+			string filename = cafi::get_filename_from_month(x_month);
 			check_scilog_file(filename,year,false,true);
 		}
 		if (!each)
@@ -101,10 +102,10 @@ namespace scilog_cli
 
 	void command_summary_year_by_topics(const string& year,bool each)
 	{
-		vector<string> year_months = get_year_months();
+		vector<string> year_months = cafi::get_year_months();
 		for (const string& x_month : year_months)
 		{
-			string filename = get_filename_from_month_number(x_month);
+			string filename = cafi::get_filename_from_month(x_month);
 			check_scilog_file(filename,year,false,true);
 		}
 		vector<shared_ptr<entry>> entries = get_year_entries(year);
@@ -113,10 +114,10 @@ namespace scilog_cli
 
 	void command_summary_year_by_sciences(const string& year,bool each)
 	{
-		vector<string> year_months = get_year_months();
+		vector<string> year_months = cafi::get_year_months();
 		for (const string& x_month : year_months)
 		{
-			string filename = get_filename_from_month_number(x_month);
+			string filename = cafi::get_filename_from_month(x_month);
 			check_scilog_file(filename,year,false,true);
 		}
 		check_scilog_topics_file("topics.scilog_topics",year,false,true);
@@ -127,49 +128,49 @@ namespace scilog_cli
 
 	void command_summary_all_years()
 	{
-		map<string,vector<string>> months = get_all_years_months();
+		map<string,vector<string>> months = cafi::get_all_years_months();
 		for (const auto& x : months)
 		{
 			for (const string& x_month : x.second)
 			{
-				string filename = get_filename_from_month_number(x_month);
+				string filename = cafi::get_filename_from_month(x_month);
 				check_scilog_file(filename,x.first,false,true);
 			}
 		}
-		vector<string> paths = get_years_path(root_dir);
+		vector<string> paths = cafi::get_years_path(cafi::root_dir);
 		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
 		print_summary(entries);
 	}
 
 	void command_summary_all_years_by_topics()
 	{
-		map<string,vector<string>> months = get_all_years_months();
+		map<string,vector<string>> months = cafi::get_all_years_months();
 		for (const auto& x : months)
 		{
 			for (const string& x_month : x.second)
 			{
-				string filename = get_filename_from_month_number(x_month);
+				string filename = cafi::get_filename_from_month(x_month);
 				check_scilog_file(filename,x.first,false,true);
 			}
 		}
-		vector<string> paths = get_years_path(root_dir);
+		vector<string> paths = cafi::get_years_path(cafi::root_dir);
 		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
 		print_topics(entries);
 	}
 
 	void command_summary_all_years_by_sciences()
 	{
-		map<string,vector<string>> months = get_all_years_months();
+		map<string,vector<string>> months = cafi::get_all_years_months();
 		for (const auto& x : months)
 		{
 			for (const string& x_month : x.second)
 			{
-				string filename = get_filename_from_month_number(x_month);
+				string filename = cafi::get_filename_from_month(x_month);
 				check_scilog_file(filename,x.first,false,true);
 			}
 			check_scilog_topics_file("topics.scilog_topics",x.first,false,true);
 		}
-		vector<string> paths = get_years_path(root_dir);
+		vector<string> paths = cafi::get_years_path(cafi::root_dir);
 		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
 		const map<string,shared_ptr<topic>>& topics = get_all_topics_map();
 		print_sciences(entries,topics);

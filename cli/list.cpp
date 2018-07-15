@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "boost/filesystem.hpp"
+#include "cafi/cafi.hpp"
 
 using namespace std;
 
@@ -15,10 +16,10 @@ namespace scilog_cli
 {
 	void command_list_month(const string& x,const string& year,entry_kind selected_type,const string& filtered_topic,const string& filtered_category,bool month_case)
 	{
-		string filename = scilog_cli::get_filename_from_month_number(x);
+		string filename = cafi::get_filename_from_month(x);
 		if (check_scilog_file(filename,year,month_case,month_case))
 		{
-			string filepath = root_dir + "/" + year + "/" + filename;
+			string filepath = cafi::root_dir + "/" + year + "/" + filename;
 			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 			const map<string,shared_ptr<topic>>& topics = get_all_topics_map();
 			print_list(entries,selected_type,filtered_topic,filtered_category,topics);
@@ -27,10 +28,10 @@ namespace scilog_cli
 
 	void command_list_year(const string& year,entry_kind selected_type,const string& filtered_topic,const string& filtered_category)
 	{
-		vector<string> year_months = get_year_months();
+		vector<string> year_months = cafi::get_year_months();
 		for (const string& x_month : year_months)
 		{
-			string filename = get_filename_from_month_number(x_month);
+			string filename = cafi::get_filename_from_month(x_month);
 			check_scilog_file(filename,year,false,true);
 		}
 		for (const string& x_month : year_months)
@@ -41,12 +42,12 @@ namespace scilog_cli
 
 	void command_list_all_years(entry_kind selected_type,const string& filtered_topic,const string& filtered_category)
 	{
-		map<string,vector<string>> months = get_all_years_months();
+		map<string,vector<string>> months = cafi::get_all_years_months();
 		for (const auto& x : months)
 		{
 			for (const string& x_month : x.second)
 			{
-				string filename = get_filename_from_month_number(x_month);
+				string filename = cafi::get_filename_from_month(x_month);
 				check_scilog_file(filename,x.first,false,true);
 			}
 		}

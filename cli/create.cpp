@@ -10,6 +10,7 @@
 #include <fstream>
 
 #include "boost/filesystem.hpp"
+#include "cafi/cafi.hpp"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ namespace scilog_cli
 {
 	void command_create_month_file(const string& x)
 	{
-		string filename = scilog_cli::get_filename_from_month_number(x);
+		string filename = cafi::get_filename_from_month(x);
 		ofstream new_file (filename);
 
 		new_file << "<?xml version='1.0' encoding='UTF-8'?>" << endl;
@@ -45,12 +46,12 @@ namespace scilog_cli
 
 	void command_create_sql_dump_month(const string& x,const string& year,const string& table_prefix)
 	{
-		string filename = scilog_cli::get_filename_from_month_number(x);
-		string filepath = root_dir + "/" + year + "/" + filename;
+		string filename = cafi::get_filename_from_month(x);
+		string filepath = cafi::root_dir + "/" + year + "/" + filename;
 		if (boost::filesystem::exists(filepath))
 		{
 			vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
-			vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(root_dir + "/topics.scilog_topics");
+			vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(cafi::root_dir + "/topics.scilog_topics");
 			print_sql_dump(entries,topics,table_prefix);
 		}
 		else
@@ -62,13 +63,13 @@ namespace scilog_cli
 	void command_create_sql_dump_year(const string& year,const string& table_prefix)
 	{
 		vector<shared_ptr<entry>> entries = get_year_entries(year);
-		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(root_dir + "/" + year + "/topics.scilog_topics");
+		vector<shared_ptr<topic>> topics = create_topics_from_scilog_file(cafi::root_dir + "/" + year + "/topics.scilog_topics");
 		print_sql_dump(entries,topics,table_prefix);
 	}
 
 	void command_create_sql_dump_all_years(const string& table_prefix)
 	{
-		vector<string> paths = get_years_path(root_dir);
+		vector<string> paths = cafi::get_years_path(cafi::root_dir);
 		vector<shared_ptr<entry>> entries = get_all_years_entries(paths);
 		vector<shared_ptr<topic>> topics = get_all_years_topics(paths);
 		print_sql_dump(entries,topics,table_prefix);

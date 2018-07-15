@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "boost/filesystem.hpp"
+#include "cafi/cafi.hpp"
 
 using namespace std;
 
@@ -14,8 +15,8 @@ namespace scilog_cli
 {
 	void command_validate_month(const string& x,const string& year,bool print_exist_message)
 	{
-		string filename = scilog_cli::get_filename_from_month_number(x);
-		string filepath = root_dir + "/" + year + "/" + filename;
+		string filename = cafi::get_filename_from_month(x);
+		string filepath = cafi::root_dir + "/" + year + "/" + filename;
 		if (boost::filesystem::exists(filepath))
 		{
 			string result = scilog_cli::validate_scilog_file(filepath);
@@ -57,16 +58,16 @@ namespace scilog_cli
 
 	void command_validate_all_years()
 	{
-		vector<string> years_path = get_years_path(root_dir);
+		vector<string> years_path = cafi::get_years_path(cafi::root_dir);
 		for (const string& x_year : years_path)
 		{
-			command_validate_year(get_last_directory(x_year));
+			command_validate_year(cafi::get_last_directory(x_year));
 		}
 	}
 
 	void command_validate_topics(const string& year)
 	{
-		string filepath = root_dir + "/" + year + "/topics.scilog_topics";
+		string filepath = cafi::root_dir + "/" + year + "/topics.scilog_topics";
 		if (boost::filesystem::exists(filepath))
 		{
 			string result = scilog_cli::validate_topics_xml_file(filepath);

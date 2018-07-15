@@ -3,6 +3,8 @@
 #include "core/conf.hpp"
 #include "core/filesystem.hpp"
 
+#include "cafi/cafi.hpp"
+
 using namespace std;
 
 namespace scilog_cli
@@ -11,7 +13,7 @@ namespace scilog_cli
 
 	void initialize_all_topics()
 	{
-		vector<string> years_path = get_years_path(root_dir);
+		vector<string> years_path = cafi::get_years_path(cafi::root_dir);
 		vector<shared_ptr<topic>> vector_topics = get_all_years_topics(years_path);
 		for (const shared_ptr<topic>& x_topic : vector_topics)
 		{
