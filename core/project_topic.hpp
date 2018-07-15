@@ -11,7 +11,7 @@ namespace scilog_cli
 	{
 		public:
 			project_topic();
-			project_topic(const string&,const string&,const string&,const string&,const string&,const string&);
+			project_topic(const string&,const string&,const string&,const string&,const string&,const string&,bool);
 
 			virtual topic_kind get_kind() const;
 	};

@@ -8,7 +8,7 @@ namespace scilog_cli
 	{
 	}
 
-	project_entry::project_entry(const string& new_type, const string& new_topic, const string& new_date, const string& new_description) : entry("project",new_type,new_topic,new_date,new_description)
+	project_entry::project_entry(const string& new_type,const string& new_topic,const string& new_date,const string& new_description,bool new_finished) : entry("project",new_type,new_topic,new_date,new_description,new_finished)
 	{
 	}
 }

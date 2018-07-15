@@ -11,7 +11,7 @@ namespace scilog_cli
 	{
 		public:
 			project_entry();
-			project_entry(const string&, const string&, const string&, const string&);
+			project_entry(const string&,const string&,const string&,const string&,bool);
 	};
 }
 

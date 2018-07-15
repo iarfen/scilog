@@ -95,7 +95,12 @@ namespace scilog_cli
 			{
 				cout << scilog_cli::cyan_text << entry->get_topic() << ": ";
 			}
-			cout << scilog_cli::normal_text << entry->get_description() << endl;
+			cout << scilog_cli::normal_text << entry->get_description();
+			if (entry->get_finished())
+			{
+				cout << scilog_cli::cyan_text << " finished";
+			}
+			cout << endl;
 		}
 	}
 

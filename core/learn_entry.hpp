@@ -11,7 +11,7 @@ namespace scilog_cli
 	{
 		public:
 			learn_entry();
-			learn_entry(const string&, const string&, const string&, const string&,int);
+			learn_entry(const string&,const string&,const string&,const string&,bool,int);
 
 			inline int& get_page_point()
 			{

@@ -8,7 +8,7 @@ namespace scilog_cli
 	{
 	}
 
-	learn_entry::learn_entry(const string& new_type, const string& new_topic, const string& new_date, const string& new_description,int new_page_point) : entry("learn",new_type,new_topic,new_date,new_description),page_point(new_page_point)
+	learn_entry::learn_entry(const string& new_type, const string& new_topic, const string& new_date, const string& new_description,bool new_finished,int new_page_point) : entry("learn",new_type,new_topic,new_date,new_description,new_finished),page_point(new_page_point)
 	{
 	}
 }

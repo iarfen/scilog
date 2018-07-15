@@ -46,7 +46,12 @@ namespace scilog_cli
 			{
 				continue;
 			}
-			cout << scilog_cli::green_text << x_topic->get_name() << ": " << scilog_cli::normal_text << x_topic->get_description();
+			cout << scilog_cli::green_text << x_topic->get_name();
+			if (x_topic->get_finished())
+			{
+				 cout << scilog_cli::cyan_text << " (finished)";
+			}
+			cout << scilog_cli::green_text << ": " << scilog_cli::normal_text << x_topic->get_description();
 			if (x_topic->get_kind() == topic_kind::learn)
 			{
 				const shared_ptr<learn_topic>& x_learn_topic = dynamic_pointer_cast<learn_topic>(x_topic);

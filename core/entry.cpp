@@ -4,11 +4,11 @@ using namespace std;
 
 namespace scilog_cli
 {
-	entry::entry() : kind(), type(), topic(), date(), description()
+	entry::entry() : kind(), type(), topic(), date(), description(), finished()
 	{
 	}
 
-	entry::entry(const string& new_kind, const string& new_type, const string& new_topic, const string& new_date, const string& new_description) : kind(new_kind), type(new_type), topic(new_topic), date(new_date), description(new_description)
+	entry::entry(const string& new_kind, const string& new_type, const string& new_topic, const string& new_date, const string& new_description, bool new_finished) : kind(new_kind), type(new_type), topic(new_topic), date(new_date), description(new_description),finished(new_finished)
 	{
 	}
 }

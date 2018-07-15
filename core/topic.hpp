@@ -16,7 +16,7 @@ namespace scilog_cli
 	{
 		public:
 			topic();
-			topic(const string&,const string&,const string&,const string&,const string&,const string&);
+			topic(const string&,const string&,const string&,const string&,const string&,const string&,bool);
 
 			inline string& get_category()
 			{
@@ -78,6 +78,16 @@ namespace scilog_cli
 				return parent_topic;
 			}
 
+			inline bool& get_finished()
+			{
+				return finished;
+			}
+
+			inline const bool& get_finished() const
+			{
+				return finished;
+			}
+
 			virtual topic_kind get_kind() const;
 
 		private:
@@ -87,6 +97,7 @@ namespace scilog_cli
 			string end_date;
 			string description;
 			string parent_topic;
+			bool finished;
 	};
 
 	map<string,shared_ptr<topic>> create_topics_map(vector<shared_ptr<topic>>);

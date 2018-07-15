@@ -41,6 +41,11 @@ namespace scilog_cli
 				string data_topic = entry_node->first_attribute("topic") ? entry_node->first_attribute("topic")->value() : "";
 				string day = entry_node->first_attribute("day") ? entry_node->first_attribute("day")->value() : "";
 				string description = entry_node->value() ? entry_node->value() : "";
+				bool finished = false;
+				if (entry_node->first_attribute("finished"))
+				{
+					finished = (string(entry_node->first_attribute("finished")->value()) == "true") ? true : false;
+				}
 
 				if (type == "")
 				{
@@ -90,11 +95,11 @@ namespace scilog_cli
 					{
 						page_point = 0;
 					}
-					new_entry = make_shared<learn_entry>(type,data_topic,date,description,page_point);
+					new_entry = make_shared<learn_entry>(type,data_topic,date,description,finished,page_point);
 				}
 				else if (node_name == "project")
 				{
-					new_entry = make_shared<project_entry>(type,data_topic,date,description);
+					new_entry = make_shared<project_entry>(type,data_topic,date,description,finished);
 				}
 				entries.push_back(new_entry);
 			}
@@ -134,6 +139,11 @@ namespace scilog_cli
 				string category = topic_node->first_attribute("category") ? topic_node->first_attribute("category")->value() : "";
 				string description = topic_node->value() ? topic_node->value() : "";
 				string parent_topic = topic_node->first_attribute("parent") ? topic_node->first_attribute("parent")->value() : "";
+				bool finished = false;
+				if (topic_node->first_attribute("finished"))
+				{
+					finished = (string(topic_node->first_attribute("finished")->value()) == "true") ? true : false;
+				}
 				shared_ptr<topic> new_topic;
 				if (is_learn_topic)
 				{
@@ -148,11 +158,11 @@ namespace scilog_cli
 					{
 						number_of_pages = 0;
 					}
-					new_topic = make_shared<learn_topic>(type,category,name,start_date,end_date,description,parent_topic,number_of_pages);
+					new_topic = make_shared<learn_topic>(type,category,name,start_date,end_date,description,parent_topic,finished,number_of_pages);
 				}
 				else
 				{
-					new_topic = make_shared<project_topic>(category,name,start_date,end_date,description,parent_topic);
+					new_topic = make_shared<project_topic>(category,name,start_date,end_date,description,parent_topic,finished);
 				}
 				topics.push_back(new_topic);
 			}
@@ -232,10 +242,12 @@ namespace scilog_cli
 			bool invalid_page_point = false;
 			bool has_page_point = false;
 			bool repeated_page_point = false;
+			bool has_finished = false;
+			bool repeated_finished = false;
 			for (rapidxml::xml_attribute<>* node_attribute = entry_node->first_attribute(); node_attribute; node_attribute = node_attribute->next_attribute())
 			{
 				string attribute_name = string(node_attribute->name());
-				if (!(attribute_name == "type" or attribute_name == "topic" or attribute_name == "day" or attribute_name == "page_point"))
+				if (!(attribute_name == "type" or attribute_name == "topic" or attribute_name == "day" or attribute_name == "page_point" or attribute_name == "finished"))
 				{
 					out << "Invalid attribute name '" << attribute_name << "'" << endl;
 				}
@@ -290,6 +302,17 @@ namespace scilog_cli
 					else
 					{
 						has_page_point = true;
+					}
+				}
+				else if (attribute_name == "finished")
+				{
+					if (has_finished)
+					{
+						repeated_finished = true;
+					}
+					else
+					{
+						has_finished = true;
 					}
 				}
 				if (attribute_name == "type" and string(node_attribute->value()) == "planification")
@@ -360,6 +383,10 @@ namespace scilog_cli
 			if (repeated_page_point)
 			{
 				out << error_sentence << " has a page_point repeated" << endl;
+			}
+			if (repeated_finished)
+			{
+				out << error_sentence << " has a finished repeated" << endl;
 			}
 			string description = entry_node->value();
 			if (description == "")
@@ -534,10 +561,12 @@ namespace scilog_cli
 				bool repeated_pages = false;
 				bool has_parent = false;
 				bool repeated_parent = false;
+				bool has_finished = false;
+				bool repeated_finished = false;
 				for (rapidxml::xml_attribute<>* node_attribute = entry_node->first_attribute(); node_attribute; node_attribute = node_attribute->next_attribute())
 				{
 					string attribute_name = string(node_attribute->name());
-					if (!(attribute_name == "type" or attribute_name == "category" or attribute_name == "name" or attribute_name == "start_date" or attribute_name == "end_date" or attribute_name == "pages" or attribute_name == "parent"))
+					if (!(attribute_name == "type" or attribute_name == "category" or attribute_name == "name" or attribute_name == "start_date" or attribute_name == "end_date" or attribute_name == "pages" or attribute_name == "parent" or attribute_name == "finished"))
 					{
 						out << "Invalid attribute name '" << attribute_name << "'" << endl;
 					}
@@ -623,6 +652,17 @@ namespace scilog_cli
 							has_parent = true;
 						}
 					}
+					else if (attribute_name == "finished")
+					{
+						if (has_finished)
+						{
+							repeated_finished = true;
+						}
+						else
+						{
+							has_finished = true;
+						}
+					}
 				}
 				string error_sentence;
 				if (has_name)
@@ -706,6 +746,10 @@ namespace scilog_cli
 				if (repeated_parent)
 				{
 					out << error_sentence << " has a parent repeated" << endl;
+				}
+				if (repeated_finished)
+				{
+					out << error_sentence << " has a finished repeated" << endl;
 				}
 			}
 		}

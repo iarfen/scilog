@@ -11,7 +11,7 @@ namespace scilog_cli
 	{
 		public:
 		entry();
-		entry(const string&, const string&, const string&, const string&, const string&);
+		entry(const string&, const string&, const string&, const string&, const string&, bool);
 		virtual ~entry() {};
 
 		inline string& get_kind()
@@ -64,12 +64,23 @@ namespace scilog_cli
 			return description;
 		}
 
+		inline bool& get_finished()
+		{
+			return finished;
+		}
+
+		inline const bool& get_finished() const
+		{
+			return finished;
+		}
+
 		private:
 			string kind;
 			string type;
 			string topic;
 			string date;
 			string description;
+			bool finished;
 	};
 }
 
