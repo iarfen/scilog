@@ -36,7 +36,6 @@ namespace scilog_cli
 			return;
 		}
 		string filepath = cafi::root_dir + "/" + year + "/" + filename;
-		cout << "filepath: " << filepath << endl;
 		vector<shared_ptr<entry>> entries = create_entries_from_scilog_file(filepath,x,year);
 		print_summary(entries);
 		cout << endl;
@@ -176,8 +175,9 @@ namespace scilog_cli
 		print_sciences(entries,topics);
 	}
 
-	void print_summary(const vector<shared_ptr<entry>>& entries)
+	void print_summary(vector<shared_ptr<entry>> entries)
 	{
+		sort(entries.begin(),entries.end(),[](shared_ptr<entry>& a,shared_ptr<entry>& b) -> bool { return a->get_date() < b->get_date(); });
 		int total_worked_days = 0;
 		int total_of_pages = 0;
 
@@ -268,6 +268,17 @@ namespace scilog_cli
 			for (const auto& x : page_points)
 			{
 				int previous_page_point = -1;
+				string x_topic = x.first;
+				string x_date = x.second.begin()->first;
+				int previous_month_page_point = previous_pages(x_topic,x_date);
+				if (previous_month_page_point != 0)
+				{
+					total_of_pages += (x.second.at(x_date) - previous_month_page_point);
+				}
+				else
+				{
+					total_of_pages += x.second.at(x_date);
+				}
 				for (const auto& y : page_points[x.first])
 				{
 					if (previous_page_point > 0 and y.second > 0)

@@ -119,6 +119,10 @@ namespace scilog_cli
 
 	bool is_parent_category(const string& actual_category,const string& parent_category)
 	{
+		if (all_categories.size() == 0)
+		{
+			initialize_all_categories();
+		}
 		if (all_categories[actual_category].get_parent_category() == parent_category)
 		{
 			return true;

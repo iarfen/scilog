@@ -26,6 +26,8 @@ namespace scilog_cli
 		private:
 			int page_point;
 	};
+
+	int previous_pages(const string&,const string&);
 }
 
 #endif // SCILOG_CORE_LEARN_ENTRY_HPP_INCLUDED
