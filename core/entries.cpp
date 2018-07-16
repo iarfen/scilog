@@ -21,7 +21,7 @@ namespace scilog_cli
 		}
 	}
 
-	vector<shared_ptr<entry>>& get_entries(const string& month,const string& year)
+	const vector<shared_ptr<entry>>& get_entries(const string& month,const string& year)
 	{
 		load_entries(month,year);
 		return all_entries[year][month];
