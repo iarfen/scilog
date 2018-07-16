@@ -16,7 +16,7 @@ namespace scilog_cli
 
 	void load_entries(const string&,const string&);
 
-	const vector<shared_ptr<entry>>& get_entries(const string&,const string&);
+	vector<shared_ptr<entry>>& get_entries(const string&,const string&);
 }
 
 #endif // SCILOG_CORE_ENTRIES_HPP_INCLUDED

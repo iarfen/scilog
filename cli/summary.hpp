@@ -24,7 +24,7 @@ namespace scilog_cli
 	void command_summary_all_years_by_topics();
 	void command_summary_all_years_by_sciences();
 
-	void print_summary(vector<shared_ptr<entry>>);
+	void print_summary(vector<shared_ptr<entry>>&);
 	void print_topics(const vector<shared_ptr<entry>>&);
 	void print_sciences(const vector<shared_ptr<entry>>&,const map<string,shared_ptr<topic>>&);
 }

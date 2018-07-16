@@ -38,7 +38,7 @@ namespace scilog_cli
 			month = "12";
 			year = to_string(stoi(actual_year) - 1);
 		}
-		vector<shared_ptr<entry>> entries = get_entries(month,year);
+		vector<shared_ptr<entry>>& entries = get_entries(month,year);
 		auto it = find_if(entries.begin(),entries.end(),[x_topic](shared_ptr<entry>& a) -> bool { a->get_topic() == x_topic; });
 		if (it != entries.end())
 		{
