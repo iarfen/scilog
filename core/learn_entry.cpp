@@ -39,7 +39,7 @@ namespace scilog_cli
 			year = to_string(stoi(actual_year) - 1);
 		}
 		vector<shared_ptr<entry>>& entries = get_entries(month,year);
-		auto it = find_if(entries.begin(),entries.end(),[x_topic](shared_ptr<entry>& a) -> bool { a->get_topic() == x_topic; });
+		auto it = find_if(entries.begin(),entries.end(),[x_topic](const shared_ptr<entry>& a) -> bool { a->get_topic() == x_topic; });
 		if (it != entries.end())
 		{
 			shared_ptr<learn_entry> selected_entry = dynamic_pointer_cast<learn_entry>(*it);

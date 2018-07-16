@@ -177,7 +177,7 @@ namespace scilog_cli
 
 	void print_summary(vector<shared_ptr<entry>>& entries)
 	{
-		sort(entries.begin(),entries.end(),[](shared_ptr<entry>& a,shared_ptr<entry>& b) -> bool { return a->get_date() < b->get_date(); });
+		sort(entries.begin(),entries.end(),[](const shared_ptr<entry>& a,const shared_ptr<entry>& b) -> bool { return a->get_date() < b->get_date(); });
 		int total_worked_days = 0;
 		int total_of_pages = 0;
 
