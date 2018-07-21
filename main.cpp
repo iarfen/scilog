@@ -1,5 +1,6 @@
 #include "main.hpp"
 
+#include "cli/calendar.hpp"
 #include "cli/create.hpp"
 #include "cli/help.hpp"
 #include "cli/list.hpp"
@@ -42,6 +43,15 @@ int main(int argc, char* argv[])
 	{
 		scilog_cli::command_version();
 		return 0;
+	}
+	else if (command == "calendar")
+	{
+		cafi::arguments values = cafi::parse_commands(argc,argv);
+		if (values.month_selection == "")
+		{
+			values.month_selection = "now";
+		}
+		scilog_cli::command_calendar_month(values.month_selection,values.year_selection);
 	}
 	else if (command == "open")
 	{
