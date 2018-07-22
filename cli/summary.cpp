@@ -7,7 +7,7 @@
 #include "core/project_topic.hpp"
 #include "core/learn_entry.hpp"
 #include "core/project_entry.hpp"
-#include "core/categories.hpp"
+#include "core/category.hpp"
 #include "core/xml_parser.hpp"
 #include "core/filesystem.hpp"
 

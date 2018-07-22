@@ -1,7 +1,5 @@
 #include "learn_entry.hpp"
 
-#include "core/entries.hpp"
-
 #include <algorithm>
 #include <iostream>
 #include <memory>

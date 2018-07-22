@@ -100,6 +100,10 @@ namespace scilog_cli
 			bool finished;
 	};
 
+	extern map<string,shared_ptr<topic>> all_topics;
+
+	void initialize_all_topics();
+
 	map<string,shared_ptr<topic>> create_topics_map(vector<shared_ptr<topic>>);
 	string default_topic_type(const map<string,shared_ptr<topic>>&,const string&,const string&);
 }

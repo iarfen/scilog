@@ -9,7 +9,7 @@
 #include "core/learn_entry.hpp"
 #include "core/project_entry.hpp"
 
-#include "core/categories.hpp"
+#include "core/category.hpp"
 
 #include <iostream>
 #include <sstream>

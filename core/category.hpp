@@ -1,6 +1,7 @@
 #ifndef SCILOG_CORE_CATEGORY_HPP_INCLUDED
 #define SCILOG_CORE_CATEGORY_HPP_INCLUDED
 
+#include <map>
 #include <string>
 
 using namespace std;
@@ -37,6 +38,13 @@ namespace scilog_cli
 			string name;
 			string parent_category;
 	};
+
+	extern map<string,category> default_categories;
+	extern map<string,category> all_categories;
+
+	bool is_parent_category(const string&,const string&);
+
+	void initialize_all_categories();
 }
 
 bool operator ==(const scilog_cli::category&,const scilog_cli::category&);

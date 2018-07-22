@@ -1,5 +1,5 @@
 #include "sql_parser.hpp"
-#include "categories.hpp"
+#include "category.hpp"
 
 #include <iostream>
 #include <sstream>

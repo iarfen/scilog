@@ -1,7 +1,10 @@
 #ifndef SCILOG_CORE_ENTRY_HPP_INCLUDED
 #define SCILOG_CORE_ENTRY_HPP_INCLUDED
 
+#include <map>
+#include <memory>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -82,6 +85,12 @@ namespace scilog_cli
 			string description;
 			bool finished;
 	};
+
+	extern map<string,map<string,vector<shared_ptr<entry>>>> all_entries;
+
+	void load_entries(const string&,const string&);
+
+	const vector<shared_ptr<entry>>& get_entries(const string&,const string&);
 }
 
 bool operator ==(const scilog_cli::entry&,const scilog_cli::entry&);

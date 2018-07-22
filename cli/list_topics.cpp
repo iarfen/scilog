@@ -4,7 +4,7 @@
 #include "core/learn_topic.hpp"
 #include "core/xml_parser.hpp"
 #include "cli/cli.hpp"
-#include "core/categories.hpp"
+#include "core/category.hpp"
 
 #include <iostream>
 

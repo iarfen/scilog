@@ -2,7 +2,12 @@
 
 #include "learn_topic.hpp"
 #include "project_topic.hpp"
-#include "categories.hpp"
+#include "category.hpp"
+
+#include "core/conf.hpp"
+#include "core/filesystem.hpp"
+
+#include "cafi/cafi.hpp"
 
 using namespace std;
 
@@ -19,6 +24,18 @@ namespace scilog_cli
 	topic_kind topic::get_kind() const
 	{
 		return topic_kind::project;
+	}
+
+	map<string,shared_ptr<topic>> all_topics = map<string,shared_ptr<topic>>();
+
+	void initialize_all_topics()
+	{
+		vector<string> years_path = cafi::get_years_path(cafi::root_dir);
+		vector<shared_ptr<topic>> vector_topics = get_all_years_topics(years_path);
+		for (const shared_ptr<topic>& x_topic : vector_topics)
+		{
+			all_topics[x_topic->get_name()] = x_topic;
+		}
 	}
 
 	map<string,shared_ptr<topic>> create_topics_map(vector<shared_ptr<topic>> topics_vector)

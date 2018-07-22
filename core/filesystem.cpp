@@ -1,6 +1,6 @@
 #include "filesystem.hpp"
-#include "categories.hpp"
-#include "topics.hpp"
+#include "category.hpp"
+#include "topic.hpp"
 #include "xml_parser.hpp"
 #include "cli/cli.hpp"
 #include "conf.hpp"
