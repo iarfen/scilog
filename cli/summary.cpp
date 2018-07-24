@@ -299,20 +299,28 @@ namespace scilog_cli
 		cout << scilog_cli::normal_text << "total learn entries: " << scilog_cli::cyan_text << total_learn_entries << "    " << (100 * total_learn_entries / entries.size()) << " %" << endl;
 		cout << scilog_cli::normal_text << "total project entries: " << scilog_cli::cyan_text << total_project_entries << "    " << (100 * total_project_entries / entries.size()) << " %" << endl << endl;
 
-		cout << scilog_cli::normal_text << "learn book entries: " << scilog_cli::cyan_text << total_learn_book_entries << "    " << (100 * total_learn_book_entries / total_learn_entries) << " %" << endl;
-		cout << scilog_cli::normal_text << "learn documentation entries: " << scilog_cli::cyan_text << total_learn_documentation_entries << "    " << (100 * total_learn_documentation_entries / total_learn_entries) << " %" << endl;
-		cout << scilog_cli::normal_text << "learn planification entries: " << scilog_cli::cyan_text << total_learn_planification_entries << "    " << (100 * total_learn_planification_entries / total_learn_entries) << " %" << endl;
-
-		for (const auto& learn_entry : learn_entries)
+		if (total_learn_entries > 0)
 		{
-			cout << scilog_cli::normal_text << "learn " << learn_entry.first << " entries: " << scilog_cli::cyan_text << learn_entry.second << "    " << (100 * learn_entry.second / total_learn_entries) << " %" << endl;
+			cout << scilog_cli::normal_text << "learn book entries: " << scilog_cli::cyan_text << total_learn_book_entries << "    " << (100 * total_learn_book_entries / total_learn_entries) << " %" << endl;
+			cout << scilog_cli::normal_text << "learn documentation entries: " << scilog_cli::cyan_text << total_learn_documentation_entries << "    " << (100 * total_learn_documentation_entries / total_learn_entries) << " %" << endl;
+			cout << scilog_cli::normal_text << "learn planification entries: " << scilog_cli::cyan_text << total_learn_planification_entries << "    " << (100 * total_learn_planification_entries / total_learn_entries) << " %" << endl;
 		}
 
-		cout << endl;
-
-		for (const auto& project_entry : project_entries)
+		if (learn_entries.size() > 0)
 		{
-			cout << scilog_cli::normal_text << "project " << project_entry.first << " entries: " << scilog_cli::cyan_text << project_entry.second << "    " << (100 * project_entry.second / total_project_entries) << " %" << endl;
+			for (const auto& learn_entry : learn_entries)
+			{
+				cout << scilog_cli::normal_text << "learn " << learn_entry.first << " entries: " << scilog_cli::cyan_text << learn_entry.second << "    " << (100 * learn_entry.second / total_learn_entries) << " %" << endl;
+			}
+			cout << endl;
+		}
+
+		if (project_entries.size() > 0)
+		{
+			for (const auto& project_entry : project_entries)
+			{
+				cout << scilog_cli::normal_text << "project " << project_entry.first << " entries: " << scilog_cli::cyan_text << project_entry.second << "    " << (100 * project_entry.second / total_project_entries) << " %" << endl;
+			}
 		}
 	}
 
